@@ -1,10 +1,10 @@
 <h1>PHP-FPM (+CLI) Docker image</h1>
 <p>
-    Debian-slim based, open source, lightweight, Docker image with ease of configuration in heart.
-    Dockerfile can be seen here here: <a target="blank"
-        href="https://github.com/milejko/php-fpm/blob/main/Dockerfile">https://github.com/milejko/php-fpm</a>.<br>
+    Debian-slim based, open source, lightweight, Docker image with ease of configuration in the heart.<br>
     Using the best quality <a target="blank" href="https://github.com/oerdnj">Ondřej Surý's</a> PHP packages for
     stability and easy access to all PHP extensions.<br>
+    Dockerfile can be seen here: <a target="blank"
+    href="https://github.com/milejko/php-fpm/blob/main/Dockerfile">https://github.com/milejko/php-fpm</a>.<br>
     Supported versions: 7.4, 8.0, 8.1, 8.2<br>
 </p>
 
@@ -26,7 +26,7 @@ docker run --env FPM_LOG_LEVEL=debug --publish 127.0.0.1:9000:9000 phpinfo-fpm
 </pre>
 <p>
     Now your PHP-FPM container is up and ready for connections, also take a note that in this example FPM_LOG_LEVEL is
-    set to "debug".
+    set to "debug".<br>
     It is not very useful without a PHP application mounted inside /app directory, and nginx with
     <code>fastcgi_pass 127.0.0.1:9000;</code> in front of it, but it definitely runs.
 </p>
@@ -40,7 +40,7 @@ docker run --env FPM_LOG_LEVEL=debug --publish 127.0.0.1:9000:9000 phpinfo-fpm
 ARG PHP_VERSION=8.2
 FROM milejko/php-fpm:${PHP_VERSION}
 RUN echo "&lt;?php phpinfo();" > /app/index.php
-ENTRYPOINT [ "php", "index.php" ]
+CMD [ "php", "index.php" ]
 </pre>
 <p>
     Build your image and execute it, using:
@@ -62,12 +62,13 @@ docker run phpinfo-cli
 ARG PHP_VERSION=8.2
 FROM milejko/php-fpm:${PHP_VERSION}
 RUN echo "&lt;?php phpinfo();" > /app/index.php
-ENTRYPOINT [ "php", "-S", "0.0.0.0:8080" ]
+EXPOSE 8080
+CMD [ "php", "-S", "0.0.0.0:8080" ]
 </pre>
 <p>Build your image and execute it, using:</p>
 <pre>
 docker build -t phpinfo-http .
-docker run --expose 8080 --publish 127.0.0.1:8080:8080 phpinfo-http
+docker run --publish 127.0.0.1:8080:8080 phpinfo-http
 </pre>
 <p>
     Now after visiting <a target="blank" href="http://127.0.0.1:8080">http://127.0.0.1:8080</a> in your favourite
@@ -115,4 +116,4 @@ OPCACHE_JIT=on
 OPCACHE_JIT_BUFFER_SIZE=32M
 </pre>
 <br>
-<small>Enjoy <a href="https://github.com/milejko">Mariusz Miłejko</a></small>
+Enjoy! By <a href="https://github.com/milejko">Mariusz Miłejko</a>
