@@ -1,5 +1,5 @@
-PHP Docker image, Debian based extendable with APT packages
-===========================================================
+PHP Docker image, extendable with APT packages
+==============================================
 
 Debian-slim based, open source, lightweight, Docker image with ease of configuration in the heart.  
 Using the best quality [Ondřej Surý's](https://github.com/oerdnj) PHP packages for stability and easy access to all PHP extensions.<br>
