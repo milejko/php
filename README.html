@@ -1,0 +1,117 @@
+<h1>PHP-FPM (+CLI) Docker image</h1>
+<p>
+    Debian-slim based, open source, lightweight, Docker image with ease of configuration in heart.
+    Dockerfile can be seen here here: <a target="blank"
+        href="https://github.com/milejko/php-fpm/blob/main/Dockerfile">https://github.com/milejko/php-fpm</a>.<br>
+    Using the best quality <a target="blank" href="https://github.com/oerdnj">Ondřej Surý's</a> PHP packages for
+    stability and easy access to all PHP extensions.<br>
+    Supported versions: 7.4, 8.0, 8.1, 8.2<br>
+</p>
+
+<h2>Example #1: Run a regular PHP-FPM server</h2>
+<p>
+    The example below shows a typical php-fpm:8.2 image usage.
+</p>
+<code>Dockerfile</code>
+<pre>
+ARG PHP_VERSION=8.2
+FROM milejko/php-fpm:${PHP_VERSION}
+</pre>
+<p>
+    Build your image and execute it, using:
+</p>
+<pre>
+docker build -t phpinfo-fpm .
+docker run --env FPM_LOG_LEVEL=debug --publish 127.0.0.1:9000:9000 phpinfo-fpm
+</pre>
+<p>
+    Now your PHP-FPM container is up and ready for connections, also take a note that in this example FPM_LOG_LEVEL is
+    set to "debug".
+    It is not very useful without a PHP application mounted inside /app directory, and nginx with
+    <code>fastcgi_pass 127.0.0.1:9000;</code> in front of it, but it definitely runs.
+</p>
+
+<h2>Example #2: Display phpinfo() in the terminal</h2>
+<p>
+    In this example by modifying ENTRYPOINT we get .php file executed with PHP-CLI
+</p>
+<code>Dockerfile</code>
+<pre>
+ARG PHP_VERSION=8.2
+FROM milejko/php-fpm:${PHP_VERSION}
+RUN echo "&lt;?php phpinfo();" > /app/index.php
+ENTRYPOINT [ "php", "index.php" ]
+</pre>
+<p>
+    Build your image and execute it, using:
+</p>
+<pre>
+docker build -t phpinfo-cli .
+docker run phpinfo-cli
+</pre>
+<p>
+    You should be able to see the phpinfo() page in your terminal.
+</p>
+
+<h2>Example #3: Display phpinfo() website</h2>
+<p>
+    PHP provides a built-in webserver. In the following example we'll create such server.
+</p>
+<code>Dockerfile</code>
+<pre>
+ARG PHP_VERSION=8.2
+FROM milejko/php-fpm:${PHP_VERSION}
+RUN echo "&lt;?php phpinfo();" > /app/index.php
+ENTRYPOINT [ "php", "-S", "0.0.0.0:8080" ]
+</pre>
+<p>Build your image and execute it, using:</p>
+<pre>
+docker build -t phpinfo-http .
+docker run --expose 8080 --publish 127.0.0.1:8080:8080 phpinfo-http
+</pre>
+<p>
+    Now after visiting <a target="blank" href="http://127.0.0.1:8080">http://127.0.0.1:8080</a> in your favourite
+    browser, phpinfo() page should be visible.
+</p>
+
+<h2>Adding more extensions</h2>
+<p>
+    In this example popular PDO-MYSQL, REDIS and AMQP extensions will be added.<br>
+    First create your own Dockerfile, with this code:
+</p>
+<code>Dockerfile</code>
+<pre>
+ARG PHP_VERSION=8.2
+FROM milejko/php-fpm:${PHP_VERSION}
+RUN apt update && apt install -y \
+    php${PHP_VERSION}-amqp \
+    php${PHP_VERSION}-pdo-mysql \
+    php${PHP_VERSION}-redis
+</pre>
+
+<h2>Available environmental values</h2>
+<p>To tweak those values just pass them by adding --env ENV=value during runtime.</p>
+<pre>
+APP_DIR=/app
+MEMORY_LIMIT=128M
+POST_MAX_SIZE=256M
+UPLOAD_MAX_FILESIZE=256M
+</pre>
+<pre>
+FPM_LISTEN_PORT=9000
+FPM_LOG_LEVEL=notice
+FPM_PM_MAX_CHILDREN=90
+FPM_PM_START_SERVERS=10
+FPM_PM_MIN_SPARE_SERVERS=4
+FPM_PM_MAX_SPARE_SERVERS=16
+FPM_PM_MAX_REQUEST=0
+</pre>
+<pre>
+OPCACHE_ENABLE=1
+OPCACHE_MEMORY_CONSUMPTION=128M
+OPCACHE_INTERNED_STRINGS_BUFFER=16
+OPCACHE_JIT=on
+OPCACHE_JIT_BUFFER_SIZE=32M
+</pre>
+<br>
+<small>Enjoy <a href="https://github.com/milejko">Mariusz Miłejko</a></small>

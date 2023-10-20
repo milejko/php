@@ -11,6 +11,7 @@ ENV APP_DIR=/app \
 	PHP_VERSION=${PHP_VERSION} \
 	\
 	MEMORY_LIMIT=128M \
+	MAX_EXECUTION_TIME=30 \
 	POST_MAX_SIZE=256M \
 	UPLOAD_MAX_FILESIZE=256M \
 	\
@@ -62,5 +63,8 @@ WORKDIR ${APP_DIR}
 # 9000 by default
 EXPOSE ${FPM_LISTEN_PORT}
 
-# configure & run php-fpm
-ENTRYPOINT ["/docker-entrypoint.sh"]
+# configure php-cli & php-fpm
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
+
+# run php-fpm
+CMD [ "/usr/sbin/php-fpm${PHP_VERSION}" ]

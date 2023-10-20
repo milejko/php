@@ -13,10 +13,6 @@ pm.min_spare_servers    = ${FPM_PM_MIN_SPARE_SERVERS}
 pm.max_spare_servers    = ${FPM_PM_MAX_SPARE_SERVERS}
 pm.max_requests         = ${FPM_PM_MAX_REQUEST}
 
-php_admin_value[memory_limit]           = ${MEMORY_LIMIT}
-php_admin_value[upload_max_filesize]    = ${UPLOAD_MAX_FILESIZE}
-php_admin_value[post_max_size]          = ${POST_MAX_SIZE}
-
 ; Ensure worker stdout and stderr are sent to the main error log.
 catch_workers_output    = yes
 decorate_workers_output = no
