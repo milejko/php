@@ -1,12 +1,11 @@
 name: "Build & push stable Docker images"
 
 on:
+  schedule:
+    - cron: "30 4 * * *"
   push:
-      branches:
-        - main
-      tags:        
-        - v1.*
-        - v0.*
+    tags:
+      - "v*.*.*"
 
 jobs:
   test-job-build:
@@ -14,10 +13,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    - name: set env
-      run: echo "::set-env name=NOW::$(date +'%Y-%m-%dT%H:%M:%S')"
-    - name: echo tags
-      run: echo ${{ env.NOW }}
+      
 
   # php74-fpm-image-build:
   #   runs-on: ubuntu-latest
