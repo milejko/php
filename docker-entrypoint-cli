@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# PHP configuration (ie. memory_limit, upload_max_size)
+envsubst < /etc/php/mods-available/config.ini.tmpl  > /etc/php/${PHP_VERSION}/cli/conf.d/99-config.ini
+
+# Allow running commands by CMD
+set -e
+
+# first arg is `-f` or `--some-option`
+if [ "${1#-}" != "$1" ]; then
+	set -- php "$@"
+fi
+
+exec "$@"

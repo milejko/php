@@ -1,21 +1,20 @@
-<h1>PHP-FPM (+CLI) Docker image</h1>
+<h1>PHP Docker image, extendable with APT packages</h1>
 <p>
     Debian-slim based, open source, lightweight, Docker image with ease of configuration in the heart.<br>
     Using the best quality <a target="blank" href="https://github.com/oerdnj">Ondřej Surý's</a> PHP packages for
     stability and easy access to all PHP extensions.<br>
     Dockerfile can be seen here: <a target="blank"
-    href="https://github.com/milejko/php-fpm/blob/main/Dockerfile">https://github.com/milejko/php-fpm</a>.<br>
+    href="https://github.com/milejko/php/blob/main/Dockerfile">https://github.com/milejko/php</a>.<br>
     Supported versions: 7.3, 7.4, 8.0, 8.1, 8.2<br>
 </p>
 
 <h2>Example #1: Run a regular PHP-FPM server</h2>
 <p>
-    The example below shows a typical php-fpm:8.2 image usage.
+    The example below shows a typical php:8.2-fpm image usage.
 </p>
 <code>Dockerfile</code>
 <pre>
-ARG PHP_VERSION=8.2
-FROM milejko/php-fpm:${PHP_VERSION}
+FROM milejko/php:8.2-fpm
 </pre>
 <p>
     Build your image and execute it, using:
@@ -33,12 +32,11 @@ docker run --env FPM_LOG_LEVEL=debug --publish 127.0.0.1:9000:9000 phpinfo-fpm
 
 <h2>Example #2: Display phpinfo() in the terminal</h2>
 <p>
-    In this example by modifying ENTRYPOINT we get .php file executed with PHP-CLI
+    In this example by replacing CMD we'll get index.php file executed with PHP-CLI
 </p>
 <code>Dockerfile</code>
 <pre>
-ARG PHP_VERSION=8.2
-FROM milejko/php-fpm:${PHP_VERSION}
+FROM milejko/php:8.2-cli
 RUN echo "&lt;?php phpinfo();" > /app/index.php
 CMD [ "php", "index.php" ]
 </pre>
@@ -59,8 +57,7 @@ docker run phpinfo-cli
 </p>
 <code>Dockerfile</code>
 <pre>
-ARG PHP_VERSION=8.2
-FROM milejko/php-fpm:${PHP_VERSION}
+FROM milejko/php:8.2-cli
 RUN echo "&lt;?php phpinfo();" > /app/index.php
 EXPOSE 8080
 CMD [ "php", "-S", "0.0.0.0:8080" ]
@@ -83,7 +80,7 @@ docker run --publish 127.0.0.1:8080:8080 phpinfo-http
 <code>Dockerfile</code>
 <pre>
 ARG PHP_VERSION=8.2
-FROM milejko/php-fpm:${PHP_VERSION}
+FROM milejko/php:${PHP_VERSION}-fpm
 RUN apt update && apt install -y \
     php${PHP_VERSION}-amqp \
     php${PHP_VERSION}-pdo-mysql \

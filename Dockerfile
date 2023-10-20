@@ -1,6 +1,7 @@
 ARG DEBIAN_VERSION=12-slim
 
-FROM debian:${DEBIAN_VERSION}
+## PHP-CLI image
+FROM debian:${DEBIAN_VERSION} as php-cli
 
 ARG PHP_VERSION=8.2
 
@@ -10,10 +11,51 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV APP_DIR=/app \
 	PHP_VERSION=${PHP_VERSION} \
 	\
-	MEMORY_LIMIT=128M \
+	MEMORY_LIMIT=-1 \
 	MAX_EXECUTION_TIME=30 \
 	POST_MAX_SIZE=256M \
-	UPLOAD_MAX_FILESIZE=256M \
+	UPLOAD_MAX_FILESIZE=256M
+
+RUN apt update && \
+	# installation of gettext-base (for entrypoint's envsubst), and lsb-release and wget for Ondrey Sury repository
+	apt install -yq gettext-base lsb-release wget && \
+	# adding Ondrey Sury repository
+	wget https://packages.sury.org/php/apt.gpg -O /usr/share/keyrings/deb.sury.org-php.gpg && \
+	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php-sury.list && \
+	apt update && \
+	# adding php%version packages
+	apt install -yq \
+	php${PHP_VERSION}-cli \
+	php${PHP_VERSION}-bcmath \
+	php${PHP_VERSION}-curl \
+	php${PHP_VERSION}-dom \
+	php${PHP_VERSION}-intl \
+	php${PHP_VERSION}-mbstring \
+	php${PHP_VERSION}-zip \
+	php${PHP_VERSION}-xml \
+	unzip \
+	zip
+
+# https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
+STOPSIGNAL SIGQUIT
+
+# copy fpm configuration and entrypoint
+COPY --link ./etc /etc
+COPY --link --chmod=755 ./docker-entrypoint-cli /docker-entrypoint
+
+# /app by default
+WORKDIR ${APP_DIR}
+
+# configure php-cli
+ENTRYPOINT [ "/docker-entrypoint" ]
+
+# PHP-CLI interactive shell
+CMD [ "php", "-a" ]
+
+## PHP-FPM image
+FROM php-cli as php-fpm
+
+ENV MEMORY_LIMIT=128M \
 	\
 	FPM_LISTEN_PORT=9000 \
 	FPM_LOG_LEVEL=notice \
@@ -30,41 +72,14 @@ ENV APP_DIR=/app \
 	OPCACHE_JIT_BUFFER_SIZE=32M
 
 RUN apt update && \
-	# installation of gettext-base (for entrypoint's envsubst), and lsb-release and wget for Ondrey Sury repository
-	apt install -yq gettext-base lsb-release wget && \
-	# adding Ondrey Sury repository
-	wget https://packages.sury.org/php/apt.gpg -O /usr/share/keyrings/deb.sury.org-php.gpg && \
-	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php-sury.list && \
-	apt update && \
 	# adding php%version packages
 	apt install -yq \
-	php${PHP_VERSION}-cli \
-	php${PHP_VERSION}-fpm \
-	php${PHP_VERSION}-bcmath \
-	php${PHP_VERSION}-curl \
-	php${PHP_VERSION}-dom \
-	php${PHP_VERSION}-intl \
-	php${PHP_VERSION}-mbstring \
-	php${PHP_VERSION}-zip \
-	php${PHP_VERSION}-xml \
-	unzip \
-	zip
+	php${PHP_VERSION}-fpm
 
-# https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
-STOPSIGNAL SIGQUIT
-
-# copy fpm configuration and entrypoint
-COPY --link ./etc /etc
-COPY --link --chmod=755 ./docker-entrypoint.sh /docker-entrypoint.sh
-
-# /app by default
-WORKDIR ${APP_DIR}
+COPY --link --chmod=755 ./docker-entrypoint-fpm /docker-entrypoint
 
 # 9000 by default
 EXPOSE ${FPM_LISTEN_PORT}
 
-# configure php-cli & php-fpm
-ENTRYPOINT [ "/docker-entrypoint.sh" ]
-
-# run php-fpm
+# PHP-FPM foreground
 CMD [ "/usr/sbin/php-fpm${PHP_VERSION}" ]

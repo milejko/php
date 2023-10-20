@@ -9,20 +9,12 @@ on:
       - "v*.*.*"
 
 jobs:
-  php-fpm-image-build:
+  php-images-build:
     runs-on: ubuntu-latest
     steps:
     - 
       name: Checkout code
       uses: actions/checkout@v4
-    -
-      name: Calculate daily tag name
-      id: meta
-      uses: docker/metadata-action@v4
-      with:
-        images: milejko/php-fpm
-        tags: |
-          type=raw,value=8.0-{{date 'YYYYMMDD'}}
     - 
       name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -35,12 +27,39 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    -
+      name: Calculate daily tag name
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: milejko/php
+        tags: |
+          type=raw,value=8.0-cli-{{date 'YYYYMMDD'}}
     - 
-      name: Build and push Docker image
+      name: Build and push CLI Docker image
       uses: docker/build-push-action@v5
       with:
         push: true
         platforms: linux/amd64,linux/arm64
-        tags: milejko/php-fpm:8.0,milejko/php-fpm:8.0-latest,milejko/php-fpm:latest,${{ steps.meta.outputs.tags }}
+        target: php-cli
+        tags: milejko/php:8.0-cli,${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        build-args: PHP_VERSION=8.0
+    -
+      name: Calculate daily tag name
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: milejko/php
+        tags: |
+          type=raw,value=8.0-fpm-{{date 'YYYYMMDD'}}
+    - 
+      name: Build and push FPM Docker image
+      uses: docker/build-push-action@v5
+      with:
+        push: true
+        platforms: linux/amd64,linux/arm64
+        target: php-fpm
+        tags: milejko/php:8.0-fpm,${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         build-args: PHP_VERSION=8.0
