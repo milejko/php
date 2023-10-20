@@ -82,13 +82,13 @@ jobs:
       name: Checkout code
       uses: actions/checkout@v4
     -
-      name: Docker meta
+      name: Calculate daily tag name
       id: meta
       uses: docker/metadata-action@v4
       with:
         images: milejko/php-fpm
         tags: |
-          type=raw,value={{date 'YYYYMMDD'}}
+          type=raw,value=8.2-{{date 'YYYYMMDD'}}
     - 
       name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -102,7 +102,7 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - 
-      name: Build Docker image
+      name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
         push: true
