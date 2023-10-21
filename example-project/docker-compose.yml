@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  php-fpm:
+    image: milejko/php:8.2-fpm
+    environment:
+      - MEMORY_LIMIT=256M
+      - UPLOAD_MAX_FILESIZE=10M
+      - POST_MAX_SIZE=10M
+      - MAX_EXECUTION_TIME=10
+      - FPM_LOG_LEVEL=warning
+    restart: always
+    volumes:
+      - ./app:/app
+    
+  nginx:
+    image: nginx:latest
+    restart: always
+    ports:
+        - target: 80
+          published: 8080
+    volumes:
+      - ./app:/app
+      - ./etc/nginx/conf.d:/etc/nginx/conf.d
+    tmpfs:
+      - /var/cache/nginx
