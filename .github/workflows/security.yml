@@ -1,0 +1,28 @@
+name: "PHP Docker images CI"
+
+on:
+  schedule:
+    # once per day
+    - cron: "30 4 * * *"
+  pull_request:
+  push:
+
+jobs:
+  security-check:
+    runs-on: ubuntu-latest
+    steps:
+    - 
+      name: Checkout code
+      uses: actions/checkout@v4
+    - 
+      name: Build image for Snyk to Scan
+      run: docker build -t "milejko/php:fpm-latest-testing" --target php-fpm .
+    -
+      name: Run Snyk to check Docker image for vulnerabilities
+      continue-on-error: false
+      uses: snyk/actions/docker@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --file=Dockerfile
+        image: milejko/php:fpm-latest-testing
