@@ -1,3 +1,6 @@
+
+# syntax=docker/dockerfile:1.6
+
 ARG DEBIAN_VERSION=bookworm-slim
 
 ## PHP-CLI image
@@ -15,27 +18,28 @@ ENV CONFIG_TARGET=cli \
 	POST_MAX_SIZE=256M \
 	UPLOAD_MAX_FILESIZE=256M
 
-RUN apt update && \
+RUN	apt update && \
 	apt install --no-install-recommends -yq \
 		gettext-base \
 		lsb-release \
-		curl \
+		wget \
 		ca-certificates  \
 		unzip \
 		zip && \
-	curl https://packages.sury.org/php/apt.gpg > /usr/share/keyrings/deb.sury.org-php.gpg && \
+	wget https://packages.sury.org/php/apt.gpg -O /usr/share/keyrings/deb.sury.org-php.gpg && \
 	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php-sury.list && \
 	apt update && \
 	apt install --no-install-recommends -yq \
-	php${PHP_VERSION}-cli \
-	php${PHP_VERSION}-fpm \
-	php${PHP_VERSION}-bcmath \
-	php${PHP_VERSION}-curl \
-	php${PHP_VERSION}-dom \
-	php${PHP_VERSION}-intl \
-	php${PHP_VERSION}-mbstring \
-	php${PHP_VERSION}-zip \
-	php${PHP_VERSION}-xml
+		php${PHP_VERSION}-cli \
+		php${PHP_VERSION}-fpm \
+		php${PHP_VERSION}-bcmath \
+		php${PHP_VERSION}-curl \
+		php${PHP_VERSION}-dom \
+		php${PHP_VERSION}-intl \
+		php${PHP_VERSION}-mbstring \
+		php${PHP_VERSION}-zip \
+		php${PHP_VERSION}-xml && \
+	apt purge --autoremove -yq wget
 
 # https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
 STOPSIGNAL SIGQUIT
