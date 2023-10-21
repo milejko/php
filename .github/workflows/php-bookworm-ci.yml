@@ -27,7 +27,7 @@ jobs:
       run: docker run php-cli-testing -r 'phpinfo();'
     - 
       name: Check interactive shell
-      run: docker run php-cli-testing
+      run: docker run php-cli-testing | grep "blob"
 
   php82-fpm-image-test:
     runs-on: ubuntu-latest
