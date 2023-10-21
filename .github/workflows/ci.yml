@@ -37,19 +37,21 @@ jobs:
       uses: actions/checkout@v4
     - 
       name: Build testing Doker image
-      # uses: docker/build-push-action@v5
-      # with:
-      #   push: false
-      #   target: php-fpm
-      #   tags: milejko/php-fpm-testing
-      #   build-args: PHP_VERSION=8.3
-      run: docker build -t milejko/php-cli-testing --build-arg PHP_VERSION=8.3 --target php-fpm .
+      uses: docker/build-push-action@v5
+      with:
+        push: false
+        target: php-fpm
+        tags: milejko/php-fpm-testing
+        build-args: PHP_VERSION=8.3
     - 
       name: Check FPM binary
       run: docker run --entrypoint="" milejko/php-fpm-testing find /usr/sbin/php-fpm8.3
     - 
       name: Check CLI version
       run: docker run --entrypoint="" milejko/php-fpm-testing php -v | grep "PHP 8.3"
+    - 
+      name: Build image for Snyk to Scan
+      run: docker build -t milejko/php-cli-testing --build-arg PHP_VERSION=8.3 --target php-fpm .
     - 
       name: Run Snyk to check Docker image for vulnerabilities
       continue-on-error: true
