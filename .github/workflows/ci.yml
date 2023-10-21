@@ -51,11 +51,18 @@ jobs:
       run: docker run --entrypoint="" php-fpm-testing php -v | grep "PHP 8.3"
     - 
       name: Run Snyk to check Docker image for vulnerabilities
+      continue-on-error: true
       uses: snyk/actions/docker@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
+        args: --file=Dockerfile
         image: php-cli-testing
+    - 
+      name: Upload result to GitHub Code Scanning
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: snyk.sarif
 
   php82-cli-image-test:
     runs-on: ubuntu-latest
