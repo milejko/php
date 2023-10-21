@@ -29,7 +29,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     -
       name: Calculate daily tag name
-      id: meta
+      id: meta-cli
       uses: docker/metadata-action@v4
       with:
         images: milejko/php
@@ -42,12 +42,12 @@ jobs:
         push: true
         platforms: linux/amd64,linux/arm64
         target: php-cli
-        tags: milejko/php:8.1-cli,${{ steps.meta.outputs.tags }}
+        tags: milejko/php:8.1-cli,${{ steps.meta-cli.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         build-args: PHP_VERSION=8.1
     -
       name: Calculate daily tag name
-      id: meta
+      id: meta-fpm
       uses: docker/metadata-action@v4
       with:
         images: milejko/php
@@ -60,6 +60,6 @@ jobs:
         push: true
         platforms: linux/amd64,linux/arm64
         target: php-fpm
-        tags: milejko/php:8.1-fpm,${{ steps.meta.outputs.tags }}
+        tags: milejko/php:8.1-fpm,${{ steps.meta-fpm.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         build-args: PHP_VERSION=8.1

@@ -1,4 +1,4 @@
-ARG DEBIAN_VERSION=12-slim
+ARG DEBIAN_VERSION=bookworm-slim
 
 ## PHP-CLI image
 FROM debian:${DEBIAN_VERSION} as php-cli
