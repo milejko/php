@@ -50,9 +50,6 @@ jobs:
       name: Check CLI version
       run: docker run --entrypoint="" milejko/php-fpm-testing php -v | grep "PHP 8.3"
     - 
-      name: Build image for Snyk to Scan
-      run: docker build -t milejko/php-cli-testing --build-arg PHP_VERSION=8.3 --target php-fpm .
-    - 
       name: Run Snyk to check Docker image for vulnerabilities
       continue-on-error: true
       uses: snyk/actions/docker@master
@@ -61,11 +58,6 @@ jobs:
       with:
         args: --file=Dockerfile
         image: milejko/php-cli-testing
-    - 
-      name: Upload result to GitHub Code Scanning
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: snyk.sarif
 
   php82-cli-image-test:
     runs-on: ubuntu-latest
