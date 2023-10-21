@@ -18,13 +18,13 @@ ENV APP_DIR=/app \
 
 RUN apt update && \
 	# installation of gettext-base (for entrypoint's envsubst), and lsb-release and wget for Ondrey Sury repository
-	apt install -yq gettext-base lsb-release wget && \
+	apt install --no-install-recommends -yq gettext-base lsb-release wget && \
 	# adding Ondrey Sury repository
 	wget https://packages.sury.org/php/apt.gpg -O /usr/share/keyrings/deb.sury.org-php.gpg && \
 	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php-sury.list && \
 	apt update && \
 	# adding php%version packages
-	apt install -yq \
+	apt install --no-install-recommends -yq \
 	php${PHP_VERSION}-cli \
 	php${PHP_VERSION}-bcmath \
 	php${PHP_VERSION}-curl \
