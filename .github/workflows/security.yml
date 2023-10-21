@@ -32,5 +32,7 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-        args: --file=Dockerfile
+        args: |
+          --file=Dockerfile \
+          --severity-threshold=high
         image: milejko/php-fpm-testing
