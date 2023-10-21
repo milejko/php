@@ -36,19 +36,7 @@ jobs:
       with:
         images: milejko/php
         tags: |
-          type=raw,value=milejko/php:8.2-cli-{{date 'YYYYMMDD'}}
-          type=raw,value=milejko/php:8.2-cli
-          type=raw,value=milejko/php:cli-latest
-          type=raw,value=milejko/php:latest
-    - 
-      name: Build and push Bookworm-slim PHP-FPM Docker image
-      uses: docker/build-push-action@v5
-      with:
-        push: false
-        platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7,linux/386
-        target: php-cli
-        tags: ${{ steps.meta.outputs.tags }},
-        labels: ${{ steps.meta.outputs.labels }},
-        build-args: |
-          PHP_VERSION=8.2
-          DEBIAN_VERSION=bookworm-slim
+          type=raw,value=8.2-cli-{{date 'YYYYMMDD'}}
+          type=raw,value=8.2-cli
+          type=raw,value=cli-latest
+          type=raw,value=latest
