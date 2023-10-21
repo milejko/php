@@ -29,7 +29,7 @@ jobs:
       name: Check interactive shell
       run: docker run php-cli-testing | grep "Interactive shell"
 
-  php82-fpm-image-test:
+  php83-fpm-image-test:
     runs-on: ubuntu-latest
     steps:
     - 
