@@ -21,13 +21,13 @@ jobs:
         build-args: PHP_VERSION=8.2
     - 
       name: Check CLI version
-      run: docker run php-cli-testing -v
+      run: docker run php-cli-testing -v | grep "PHP 8.2"
     - 
       name: Check running PHP command
-      run: docker run php-cli-testing -r 'phpinfo();'
+      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.2"
     - 
       name: Check interactive shell
-      run: docker run php-cli-testing | grep "blob"
+      run: docker run php-cli-testing | grep "Interactive shell"
 
   php82-fpm-image-test:
     runs-on: ubuntu-latest
@@ -48,7 +48,7 @@ jobs:
       run: docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm8.2
     - 
       name: Check CLI version
-      run: docker run --entrypoint="" php-fpm-testing php -v
+      run: docker run --entrypoint="" php-fpm-testing php -v | grep "PHP 8.2"
 
   php81-cli-image-test:
     runs-on: ubuntu-latest
@@ -66,13 +66,13 @@ jobs:
         build-args: PHP_VERSION=8.1
     - 
       name: Check CLI version
-      run: docker run php-cli-testing -v
+      run: docker run php-cli-testing -v | grep "PHP 8.1"
     - 
       name: Check running PHP command
-      run: docker run php-cli-testing -r 'phpinfo();'
+      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.1"
     - 
       name: Check interactive shell
-      run: docker run php-cli-testing
+      run: docker run php-cli-testing | grep "Interactive shell"
 
   php81-fpm-image-test:
     runs-on: ubuntu-latest
@@ -93,7 +93,7 @@ jobs:
       run: docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm8.1
     - 
       name: Check CLI version
-      run: docker run --entrypoint="" php-fpm-testing php -v
+      run: docker run --entrypoint="" php-fpm-testing php -v | grep "PHP 8.1"
 
   php80-cli-image-test:
     runs-on: ubuntu-latest
@@ -111,13 +111,13 @@ jobs:
         build-args: PHP_VERSION=8.0
     - 
       name: Check CLI version
-      run: docker run php-cli-testing -v
+      run: docker run php-cli-testing -v | grep "PHP 8.0"
     - 
       name: Check running PHP command
-      run: docker run php-cli-testing -r 'phpinfo();'
+      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.0"
     - 
       name: Check interactive shell
-      run: docker run php-cli-testing
+      run: docker run php-cli-testing | grep "Interactive shell"
 
   php80-fpm-image-test:
     runs-on: ubuntu-latest
@@ -138,7 +138,7 @@ jobs:
       run: docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm8.0
     - 
       name: Check CLI version
-      run: docker run --entrypoint="" php-fpm-testing php -v
+      run: docker run --entrypoint="" php-fpm-testing php -v | grep "PHP 8.0"
 
   php74-cli-image-test:
     runs-on: ubuntu-latest
@@ -156,13 +156,13 @@ jobs:
         build-args: PHP_VERSION=7.4
     - 
       name: Check CLI version
-      run: docker run php-cli-testing -v
+      run: docker run php-cli-testing -v | grep "PHP 7.4"
     - 
       name: Check running PHP command
-      run: docker run php-cli-testing -r 'phpinfo();'
+      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 7.4"
     - 
       name: Check interactive shell
-      run: docker run php-cli-testing
+      run: docker run php-cli-testing | grep "Interactive shell"
 
   php74-fpm-image-test:
     runs-on: ubuntu-latest
@@ -183,5 +183,5 @@ jobs:
       run: docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm7.4
     - 
       name: Check CLI version
-      run: docker run --entrypoint="" php-fpm-testing php -v
+      run: docker run --entrypoint="" php-fpm-testing php -v | grep "PHP 7.4"
 
