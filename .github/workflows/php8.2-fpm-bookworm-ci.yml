@@ -1,4 +1,4 @@
-name: "Build & push stable PHP-FPM 8.2 Docker images"
+name: "PHP 8.2 FPM Bookworm"
 
 on:
   schedule:
