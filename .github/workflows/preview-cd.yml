@@ -3,7 +3,7 @@ name: "Preview PHP Docker Images delivery"
 on:
   schedule:
     # once per week
-    - cron: "30 4 * * 0"
+    - cron: "20 4 * * 0"
   push:
     tags:
       - "v*.*.*"

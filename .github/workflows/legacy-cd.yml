@@ -3,7 +3,7 @@ name: "Legacy PHP Docker Images delivery"
 on:
   schedule:
     # once per month
-    - cron: "30 4 1 * *"
+    - cron: "15 4 1 * *"
   push:
     tags:
       - "v*.*.*"
