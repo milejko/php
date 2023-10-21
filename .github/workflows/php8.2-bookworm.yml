@@ -47,9 +47,7 @@ jobs:
         target: php-cli
         tags: ${{ steps.meta.outputs.tags }},
         labels: ${{ steps.meta.outputs.labels }},
-        build-args: |
-          PHP_VERSION=8.2
-          DEBIAN_VERSION=bookworm-slim
+        build-args: PHP_VERSION=8.2
 
   php82-fpm-image-build:
     runs-on: ubuntu-latest
@@ -88,6 +86,4 @@ jobs:
         target: php-fpm
         tags: ${{ steps.meta.outputs.tags }},
         labels: ${{ steps.meta.outputs.labels }},
-        build-args: |
-          PHP_VERSION=8.2
-          DEBIAN_VERSION=bookworm-slim
+        build-args: PHP_VERSION=8.2
