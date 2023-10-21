@@ -5,6 +5,51 @@ on:
   push:
 
 jobs:
+  php83-cli-image-test:
+    runs-on: ubuntu-latest
+    steps:
+    - 
+      name: Checkout code
+      uses: actions/checkout@v4
+    - 
+      name: Build testing Docker image
+      uses: docker/build-push-action@v5
+      with:
+        push: false
+        target: php-cli
+        tags: php-cli-testing
+        build-args: PHP_VERSION=8.3
+    - 
+      name: Check CLI version
+      run: docker run php-cli-testing -v | grep "PHP 8.3"
+    - 
+      name: Check running PHP command
+      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.3"
+    - 
+      name: Check interactive shell
+      run: docker run php-cli-testing | grep "Interactive shell"
+
+  php82-fpm-image-test:
+    runs-on: ubuntu-latest
+    steps:
+    - 
+      name: Checkout code
+      uses: actions/checkout@v4
+    - 
+      name: Build testing Doker image
+      uses: docker/build-push-action@v5
+      with:
+        push: false
+        target: php-fpm
+        tags: php-fpm-testing
+        build-args: PHP_VERSION=8.3
+    - 
+      name: Check FPM binary
+      run: docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm8.3
+    - 
+      name: Check CLI version
+      run: docker run --entrypoint="" php-fpm-testing php -v | grep "PHP 8.3"
+
   php82-cli-image-test:
     runs-on: ubuntu-latest
     steps:
