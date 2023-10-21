@@ -17,11 +17,17 @@ jobs:
       with:
         push: false
         target: php-cli
-        tags: php-cli-testing,
+        tags: php-cli-testing
         build-args: PHP_VERSION=8.2
     - 
-      name: Run tests
-      run: docker run php-cli-testing -v && docker run php-cli-testing -r 'phpinfo();'
+      name: Check CLI version
+      run: docker run php-cli-testing -v
+    - 
+      name: Check running PHP command
+      run: docker run php-cli-testing -r 'phpinfo();'
+    - 
+      name: Check interactive shell
+      run: docker run php-cli-testing
 
   php82-fpm-image-test:
     runs-on: ubuntu-latest
@@ -35,11 +41,14 @@ jobs:
       with:
         push: false
         target: php-fpm
-        tags: php-fpm-testing,
+        tags: php-fpm-testing
         build-args: PHP_VERSION=8.2
     - 
-      name: Run tests (acting as CLI)
-      run: docker run --entrypoint="" php-fpm-testing php -v && docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm8.2
+      name: Check FPM binary
+      run: docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm8.2
+    - 
+      name: Check CLI version
+      run: docker run --entrypoint="" php-fpm-testing php -v
 
   php81-cli-image-test:
     runs-on: ubuntu-latest
@@ -53,11 +62,17 @@ jobs:
       with:
         push: false
         target: php-cli
-        tags: php-cli-testing,
+        tags: php-cli-testing
         build-args: PHP_VERSION=8.1
     - 
-      name: Run tests
-      run: docker run php-cli-testing -v && docker run php-cli-testing -r 'phpinfo();'
+      name: Check CLI version
+      run: docker run php-cli-testing -v
+    - 
+      name: Check running PHP command
+      run: docker run php-cli-testing -r 'phpinfo();'
+    - 
+      name: Check interactive shell
+      run: docker run php-cli-testing
 
   php81-fpm-image-test:
     runs-on: ubuntu-latest
@@ -71,11 +86,14 @@ jobs:
       with:
         push: false
         target: php-fpm
-        tags: php-fpm-testing,
+        tags: php-fpm-testing
         build-args: PHP_VERSION=8.1
     - 
-      name: Run tests (acting as CLI)
-      run: docker run --entrypoint="" php-fpm-testing php -v && docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm8.2
+      name: Check FPM binary
+      run: docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm8.1
+    - 
+      name: Check CLI version
+      run: docker run --entrypoint="" php-fpm-testing php -v
 
   php80-cli-image-test:
     runs-on: ubuntu-latest
@@ -89,11 +107,17 @@ jobs:
       with:
         push: false
         target: php-cli
-        tags: php-cli-testing,
+        tags: php-cli-testing
         build-args: PHP_VERSION=8.0
     - 
-      name: Run tests
-      run: docker run php-cli-testing -v && docker run php-cli-testing -r 'phpinfo();'
+      name: Check CLI version
+      run: docker run php-cli-testing -v
+    - 
+      name: Check running PHP command
+      run: docker run php-cli-testing -r 'phpinfo();'
+    - 
+      name: Check interactive shell
+      run: docker run php-cli-testing
 
   php80-fpm-image-test:
     runs-on: ubuntu-latest
@@ -107,11 +131,14 @@ jobs:
       with:
         push: false
         target: php-fpm
-        tags: php-fpm-testing,
+        tags: php-fpm-testing
         build-args: PHP_VERSION=8.0
     - 
-      name: Run tests (acting as CLI)
-      run: docker run --entrypoint="" php-fpm-testing php -v && docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm8.2
+      name: Check FPM binary
+      run: docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm8.0
+    - 
+      name: Check CLI version
+      run: docker run --entrypoint="" php-fpm-testing php -v
 
   php74-cli-image-test:
     runs-on: ubuntu-latest
@@ -125,11 +152,17 @@ jobs:
       with:
         push: false
         target: php-cli
-        tags: php-cli-testing,
+        tags: php-cli-testing
         build-args: PHP_VERSION=7.4
     - 
-      name: Run tests
-      run: docker run php-cli-testing -v && docker run php-cli-testing -r 'phpinfo();'
+      name: Check CLI version
+      run: docker run php-cli-testing -v
+    - 
+      name: Check running PHP command
+      run: docker run php-cli-testing -r 'phpinfo();'
+    - 
+      name: Check interactive shell
+      run: docker run php-cli-testing
 
   php74-fpm-image-test:
     runs-on: ubuntu-latest
@@ -143,8 +176,12 @@ jobs:
       with:
         push: false
         target: php-fpm
-        tags: php-fpm-testing,
+        tags: php-fpm-testing
         build-args: PHP_VERSION=7.4
     - 
-      name: Run tests (acting as CLI)
-      run: docker run --entrypoint="" php-fpm-testing php -v && docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm8.2
+      name: Check FPM binary
+      run: docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm7.4
+    - 
+      name: Check CLI version
+      run: docker run --entrypoint="" php-fpm-testing php -v
+
