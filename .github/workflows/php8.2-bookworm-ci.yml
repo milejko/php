@@ -39,4 +39,4 @@ jobs:
         build-args: PHP_VERSION=8.2
     - 
       name: Run tests (acting as CLI)
-      run: docker run php-fpm-testing --entrypoint='' php -v && docker run php-fpm-testing --entrypoint='' whereis php-fpm82
+      run: docker run --entrypoint="" php-fpm-testing php -v && docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm8.2
