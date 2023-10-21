@@ -2,7 +2,7 @@
 <p>
     Debian-slim based, open source, lightweight, Docker image with ease of configuration in the heart.<br>
     Using the best quality <a target="blank" href="https://github.com/oerdnj">Ondřej Surý's</a> PHP packages for
-    stability and easy access to all PHP extensions.<br>
+    stability and easy access to all PHP modules.<br>
     Dockerfile can be seen here: <a target="blank"
     href="https://github.com/milejko/php/blob/main/Dockerfile">https://github.com/milejko/php</a>.<br>
     Supported versions: 7.4, 8.0, 8.1, 8.2<br>
@@ -72,9 +72,17 @@ docker run --publish 127.0.0.1:8080:8080 phpinfo-http
     browser, phpinfo() page should be visible.
 </p>
 
-<h2>Adding more extensions</h2>
+<h2>PHP modules enabled by default</h2>
+<pre>
+bcmath, calendar, Core, ctype, curl, date, dom, exif, FFI, fileinfo, filter, ftp, gettext, hash, iconv,
+intl, json, libxml, mbstring, openssl, pcntl, pcre, PDO, Phar, posix, random, readline, Reflection,
+session, shmop, SimpleXML, sockets, sodium, SPL, standard, sysvmsg, sysvsem, sysvshm, tokenizer,
+xml, xmlreader, xmlwriter, xsl, Zend OPcache, zip, zlib
+</pre>
+
+<h2>Adding more PHP modules</h2>
 <p>
-    In this example popular PDO-MYSQL, REDIS and AMQP extensions will be added.<br>
+    In this example popular PDO-MYSQL, REDIS and AMQP modules will be added.<br>
     First create your own Dockerfile, with this code:
 </p>
 <code>Dockerfile</code>

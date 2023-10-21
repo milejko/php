@@ -4,11 +4,10 @@ ARG DEBIAN_VERSION=bookworm-slim
 FROM debian:${DEBIAN_VERSION} as php-cli
 
 ARG PHP_VERSION=8.2
-
-# ARG gives noninteractive frontend only during image build
 ARG DEBIAN_FRONTEND=noninteractive
 
-ENV APP_DIR=/app \
+ENV CONFIG_TARGET=cli \
+	APP_DIR=/app \
 	PHP_VERSION=${PHP_VERSION} \
 	\
 	MEMORY_LIMIT=-1 \
@@ -17,45 +16,45 @@ ENV APP_DIR=/app \
 	UPLOAD_MAX_FILESIZE=256M
 
 RUN apt update && \
-	# installation of gettext-base (for entrypoint's envsubst), and lsb-release and wget for Ondrey Sury repository
-	apt install --no-install-recommends -yq gettext-base lsb-release wget && \
-	# adding Ondrey Sury repository
-	wget https://packages.sury.org/php/apt.gpg -O /usr/share/keyrings/deb.sury.org-php.gpg && \
+	apt install --no-install-recommends -yq \
+		gettext-base \
+		lsb-release \
+		curl \
+		ca-certificates  \
+		unzip \
+		zip && \
+	curl https://packages.sury.org/php/apt.gpg > /usr/share/keyrings/deb.sury.org-php.gpg && \
 	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php-sury.list && \
 	apt update && \
-	# adding php%version packages
 	apt install --no-install-recommends -yq \
 	php${PHP_VERSION}-cli \
+	php${PHP_VERSION}-fpm \
 	php${PHP_VERSION}-bcmath \
 	php${PHP_VERSION}-curl \
 	php${PHP_VERSION}-dom \
 	php${PHP_VERSION}-intl \
 	php${PHP_VERSION}-mbstring \
 	php${PHP_VERSION}-zip \
-	php${PHP_VERSION}-xml \
-	unzip \
-	zip
+	php${PHP_VERSION}-xml
 
 # https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
 STOPSIGNAL SIGQUIT
 
-# copy fpm configuration and entrypoint
-COPY --link ./etc /etc
-COPY --link --chmod=755 ./docker-entrypoint-cli /docker-entrypoint
+COPY --link ./etc/php /etc/php
+COPY --link --chmod=755 ./etc/php/cli/compile-config.sh /etc/php/compile-config.sh
+COPY --link --chmod=755 ./docker-entrypoint.sh /docker-entrypoint.sh
 
-# /app by default
 WORKDIR ${APP_DIR}
 
-# configure php-cli
-ENTRYPOINT [ "/docker-entrypoint" ]
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
 
-# PHP-CLI interactive shell
 CMD [ "php", "-a" ]
 
 ## PHP-FPM image
 FROM php-cli as php-fpm
 
-ENV MEMORY_LIMIT=128M \
+ENV CONFIG_TARGET=fpm \
+	MEMORY_LIMIT=128M \
 	\
 	FPM_LISTEN_PORT=9000 \
 	FPM_LOG_LEVEL=notice \
@@ -71,15 +70,11 @@ ENV MEMORY_LIMIT=128M \
 	OPCACHE_JIT=on \
 	OPCACHE_JIT_BUFFER_SIZE=32M
 
-RUN apt update && \
-	# adding php%version packages
-	apt install -yq \
+RUN apt --no-install-recommends install -yq \
 	php${PHP_VERSION}-fpm
 
-COPY --link --chmod=755 ./docker-entrypoint-fpm /docker-entrypoint
+COPY --link --chmod=755 ./etc/php/fpm/compile-config.sh /etc/php/compile-config.sh
 
-# 9000 by default
 EXPOSE ${FPM_LISTEN_PORT}
 
-# PHP-FPM foreground
 CMD [ "/usr/sbin/php-fpm${PHP_VERSION}" ]
