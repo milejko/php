@@ -44,7 +44,7 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }},
         build-args: PHP_VERSION=8.3
 
-  php82-fpm-image-build:
+  php83-fpm-image-build:
     runs-on: ubuntu-latest
     steps:
     - 
