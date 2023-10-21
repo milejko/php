@@ -12,16 +12,16 @@ jobs:
       name: Checkout code
       uses: actions/checkout@v4
     - 
-      name: Build and push Docker image
+      name: Build testing Docker image
       uses: docker/build-push-action@v5
       with:
         push: false
         target: php-cli
-        tags: php8.2-cli-testing,
+        tags: php-cli-testing,
         build-args: PHP_VERSION=8.2
     - 
       name: Run tests
-      run: docker run php8.2-cli-testing php -v
+      run: docker run php-cli-testing -v && docker run php-cli-testing -r 'phpinfo();'
 
   php82-fpm-image-test:
     runs-on: ubuntu-latest
@@ -30,13 +30,13 @@ jobs:
       name: Checkout code
       uses: actions/checkout@v4
     - 
-      name: Build and push Docker image
+      name: Build testing Doker image
       uses: docker/build-push-action@v5
       with:
         push: false
         target: php-fpm
-        tags: php8.2-fpm-testing,
+        tags: php-fpm-testing,
         build-args: PHP_VERSION=8.2
     - 
       name: Run tests (acting as CLI)
-      run: docker run php8.2-fpm-testing php -v
+      run: docker run php-fpm-testing --entrypoint='' php -v && docker run php-fpm-testing --entrypoint='' whereis php-fpm82
