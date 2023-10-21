@@ -117,7 +117,7 @@ jobs:
       run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.0"
     - 
       name: Check interactive shell
-      run: docker run php-cli-testing | grep "Interactive shell"
+      run: docker run php-cli-testing | grep "Interactive mode enabled"
 
   php80-fpm-image-test:
     runs-on: ubuntu-latest
@@ -162,7 +162,7 @@ jobs:
       run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 7.4"
     - 
       name: Check interactive shell
-      run: docker run php-cli-testing | grep "Interactive shell"
+      run: docker run php-cli-testing | grep "Interactive mode enabled"
 
   php74-fpm-image-test:
     runs-on: ubuntu-latest
