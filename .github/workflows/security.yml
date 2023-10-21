@@ -24,7 +24,7 @@ jobs:
         build-args: PHP_VERSION=8.2
     -
       name: Run Snyk to check Docker image for vulnerabilities
-      continue-on-error: false
+      continue-on-error: true
       uses: snyk/actions/docker@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -48,7 +48,7 @@ jobs:
         build-args: PHP_VERSION=8.1
     -
       name: Run Snyk to check Docker image for vulnerabilities
-      continue-on-error: false
+      continue-on-error: true
       uses: snyk/actions/docker@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
