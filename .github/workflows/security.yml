@@ -15,8 +15,16 @@ jobs:
       name: Checkout code
       uses: actions/checkout@v4
     - 
-      name: Build image for Snyk to Scan
-      run: docker build -t "milejko/php:fpm-latest-testing" --target php-fpm .
+      name: Build testing Docker image
+      uses: docker/build-push-action@v5
+      with:
+        push: false
+        target: php-fpm
+        tags: milejko/php-fpm-testing
+        build-args: PHP_VERSION=8.2
+    # - 
+    #   name: Build image for Snyk to Scan
+    #   run: docker build -t milejko/php-fpm-testing --target php-fpm .
     -
       name: Run Snyk to check Docker image for vulnerabilities
       continue-on-error: false
@@ -27,4 +35,4 @@ jobs:
         args: |
           --file=Dockerfile
           --severity-threshold=high
-        image: milejko/php:fpm-latest-testing
+        image: milejko/php-fpm-testing
