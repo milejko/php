@@ -42,7 +42,7 @@ STOPSIGNAL SIGQUIT
 
 COPY --link ./etc/php /etc/php
 COPY --link --chmod=755 ./etc/php/cli/compile-config.sh /etc/php/compile-config.sh
-COPY --link --chmod=755 ./docker-entrypoint.sh /docker-entrypoint.sh
+COPY --link --chmod=755 ./docker-entrypoint-cli.sh /docker-entrypoint.sh
 
 WORKDIR ${APP_DIR}
 
@@ -74,7 +74,6 @@ RUN apt --no-install-recommends install -yq \
 	php${PHP_VERSION}-fpm
 
 COPY --link --chmod=755 ./etc/php/fpm/compile-config.sh /etc/php/compile-config.sh
+COPY --link --chmod=755 ./docker-entrypoint-fpm.sh /docker-entrypoint.sh
 
 EXPOSE ${FPM_LISTEN_PORT}
-
-CMD [ "/usr/sbin/php-fpm${PHP_VERSION}" ]

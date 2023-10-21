@@ -1,14 +1,58 @@
 <h1>PHP Docker image, extendable with APT packages</h1>
 <p>
-    Debian-slim based, open source, lightweight, Docker image with ease of configuration in the heart.<br>
-    Using the best quality <a target="blank" href="https://github.com/oerdnj">Ondřej Surý's</a> PHP packages for
-    stability and easy access to all PHP modules.<br>
-    Dockerfile can be seen here: <a target="blank"
+    Debian-slim based, open source, Docker image with ease of configuration in the heart.<br>
+    Dockerfile can be found here: <a target="blank"
     href="https://github.com/milejko/php/blob/main/Dockerfile">https://github.com/milejko/php</a>.<br>
+    <br>
     Supported versions: 7.4, 8.0, 8.1, 8.2<br>
+    Supported architectures: linux/amd64, linux/arm64
+</p>
+<h2>Core features</h2>
+<ul>
+    <li>
+        Clean way of configuration: using ENVs during runtime (ie. MEMORY_LIMIT, UPLOAD_MAX_FILESIZE and more... list below)
+    </li>
+    <li>
+        PHP and default modules are installed from <a target="_blank" href="https://deb.sury.org">Debian packages</a>
+    </li>
+    <li>
+        Other PHP modules can be easily installed with <code>apt install</code>
+    </li>
+</ul>
+
+<h2>Example #1: Display phpinfo() in the terminal</h2>
+<p>
+    PHP-CLI by default runs PHP's interactive shell, but also can run directly PHP code:
+</p>
+<pre>
+docker run milejko/php:8.2-cli -r 'phpinfo();'
+</pre>
+<p>
+    You should be able to see the phpinfo() page in your terminal.
 </p>
 
-<h2>Example #1: Run a regular PHP-FPM server</h2>
+<h2>Example #2: Display phpinfo() as a website</h2>
+<p>
+    PHP provides a built-in webserver. In the following example we'll create such server.
+</p>
+<code>Dockerfile</code>
+<pre>
+FROM milejko/php:8.2-cli
+RUN echo "&lt;?php phpinfo();" > /app/index.php
+EXPOSE 8080
+CMD [ "php", "-S", "0.0.0.0:8080" ]
+</pre>
+<p>Build your image and execute it, using:</p>
+<pre>
+docker build -t phpinfo-http .
+docker run --publish 127.0.0.1:8080:8080 phpinfo-http
+</pre>
+<p>
+    Now after visiting <a target="blank" href="http://127.0.0.1:8080">http://127.0.0.1:8080</a> in your favourite
+    browser, phpinfo() page should be visible.
+</p>
+
+<h2>Example #3: Run a regular PHP-FPM server</h2>
 <p>
     The example below shows a typical php:8.2-fpm image usage.
 </p>
@@ -30,54 +74,54 @@ docker run --env FPM_LOG_LEVEL=debug --publish 127.0.0.1:9000:9000 phpinfo-fpm
     <code>fastcgi_pass 127.0.0.1:9000;</code> in front of it, but it definitely runs.
 </p>
 
-<h2>Example #2: Display phpinfo() in the terminal</h2>
-<p>
-    In this example by replacing CMD we'll get index.php file executed with PHP-CLI
-</p>
-<code>Dockerfile</code>
-<pre>
-FROM milejko/php:8.2-cli
-RUN echo "&lt;?php phpinfo();" > /app/index.php
-CMD [ "php", "index.php" ]
-</pre>
-<p>
-    Build your image and execute it, using:
-</p>
-<pre>
-docker build -t phpinfo-cli .
-docker run phpinfo-cli
-</pre>
-<p>
-    You should be able to see the phpinfo() page in your terminal.
-</p>
-
-<h2>Example #3: Display phpinfo() website</h2>
-<p>
-    PHP provides a built-in webserver. In the following example we'll create such server.
-</p>
-<code>Dockerfile</code>
-<pre>
-FROM milejko/php:8.2-cli
-RUN echo "&lt;?php phpinfo();" > /app/index.php
-EXPOSE 8080
-CMD [ "php", "-S", "0.0.0.0:8080" ]
-</pre>
-<p>Build your image and execute it, using:</p>
-<pre>
-docker build -t phpinfo-http .
-docker run --publish 127.0.0.1:8080:8080 phpinfo-http
-</pre>
-<p>
-    Now after visiting <a target="blank" href="http://127.0.0.1:8080">http://127.0.0.1:8080</a> in your favourite
-    browser, phpinfo() page should be visible.
-</p>
-
 <h2>PHP modules enabled by default</h2>
 <pre>
-bcmath, calendar, Core, ctype, curl, date, dom, exif, FFI, fileinfo, filter, ftp, gettext, hash, iconv,
-intl, json, libxml, mbstring, openssl, pcntl, pcre, PDO, Phar, posix, random, readline, Reflection,
-session, shmop, SimpleXML, sockets, sodium, SPL, standard, sysvmsg, sysvsem, sysvshm, tokenizer,
-xml, xmlreader, xmlwriter, xsl, Zend OPcache, zip, zlib
+bcmath
+calendar
+Core
+ctype
+curl
+date
+dom
+exif
+FFI
+fileinfo
+filter
+ftp
+gettext
+hash
+iconv
+intl
+json
+libxml
+mbstring
+openssl
+pcntl
+pcre
+PDO
+Phar
+posix
+random
+readline
+Reflection
+session
+shmop
+SimpleXML
+sockets
+sodium
+SPL
+standard
+sysvmsg
+sysvsem
+sysvshm
+tokenizer
+xml
+xmlreader
+xmlwriter
+xsl
+Zend OPcache
+zip
+zlib
 </pre>
 
 <h2>Adding more PHP modules</h2>
