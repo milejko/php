@@ -43,7 +43,7 @@ jobs:
       #   target: php-fpm
       #   tags: milejko/php-fpm-testing
       #   build-args: PHP_VERSION=8.3
-      run: docker build -t milejko/php-cli-testing --build-args PHP_VERSION=8.3 --target php-cli
+      run: docker build -t milejko/php-cli-testing --build-arg PHP_VERSION=8.3 --target php-cli
     - 
       name: Check FPM binary
       run: docker run --entrypoint="" milejko/php-fpm-testing find /usr/sbin/php-fpm8.3
