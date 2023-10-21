@@ -1,4 +1,4 @@
-name: "PHP 8.0 FPM Bookworm"
+name: "PHP 8.0 Bookworm"
 
 on:
   schedule:
