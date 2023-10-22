@@ -20,7 +20,7 @@ jobs:
       with:
         push: false
         target: php-fpm
-        tags: milejko/php-fpm-testing
+        tags: php-fpm-testing
         build-args: PHP_VERSION=8.2
     -
       name: Run Snyk to check Docker image for vulnerabilities
@@ -30,7 +30,7 @@ jobs:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         args: --file=Dockerfile --severity-threshold=high
-        image: milejko/php-fpm-testing
+        image: php-fpm-testing
 
   php81-security-check:
     runs-on: ubuntu-latest
@@ -44,7 +44,7 @@ jobs:
       with:
         push: false
         target: php-fpm
-        tags: milejko/php-fpm-testing
+        tags: php-fpm-testing
         build-args: PHP_VERSION=8.1
     -
       name: Run Snyk to check Docker image for vulnerabilities
@@ -54,4 +54,4 @@ jobs:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         args: --file=Dockerfile --severity-threshold=high
-        image: milejko/php-fpm-testing
+        image: php-fpm-testing
