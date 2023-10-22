@@ -170,7 +170,7 @@ jobs:
     - 
       name: Check FPM binary
       run: 
-        docker run php-fpm-testing find /usr/sbin/php-fpm8.3 &&
+        docker run php-fpm-testing find /usr/sbin/php-fpm8.1 &&
         docker run php-fpm-testing find /usr/bin/php-fpm
 
   php80-cli-image-test:
