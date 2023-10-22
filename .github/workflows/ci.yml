@@ -27,7 +27,7 @@ jobs:
         docker run php-cli-testing composer | grep "Composer" &&
         docker run php-cli-testing | grep "Interactive shell" &&
         docker run -e UPLOAD_MAX_FILESIZE=200M php-cli-testing -r 'phpinfo();' | grep "UPLOAD_MAX_FILESIZE => 200M" &&
-        docker run -e OPCACHE_MEMORY_CONSUMPTION=200M php-cli-testing -r 'phpinfo();' | grep "opcache.memory_consumption => 200M"
+        docker run -e OPCACHE_MEMORY_CONSUMPTION=200M php-cli-testing -r 'phpinfo();' | grep "opcache.memory_consumption => 201M"
 
   php83-fpm-image-test:
     runs-on: ubuntu-latest
