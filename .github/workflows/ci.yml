@@ -26,6 +26,9 @@ jobs:
       name: Check running PHP command
       run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.3"
     - 
+      name: Check Composer
+      run: docker run php-cli-testing composer | grep "Composer"
+    - 
       name: Check interactive shell
       run: docker run php-cli-testing | grep "Interactive shell"
 
@@ -45,10 +48,19 @@ jobs:
         build-args: PHP_VERSION=8.3
     - 
       name: Check FPM binary
-      run: docker run --entrypoint="" milejko/php-fpm-testing find /usr/sbin/php-fpm8.3
+      run: docker run milejko/php-fpm-testing find /usr/sbin/php-fpm8.3
+    - 
+      name: Check FPM binary link
+      run: docker run milejko/php-fpm-testing find /usr/bin/php-fpm
     - 
       name: Check CLI version
-      run: docker run --entrypoint="" milejko/php-fpm-testing php -v | grep "PHP 8.3"
+      run: docker run milejko/php-fpm-testing -v | grep "PHP 8.3"
+    - 
+      name: Check running PHP command
+      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.3"
+    - 
+      name: Check Composer
+      run: docker run php-cli-testing composer | grep "Composer"
 
   php82-cli-image-test:
     runs-on: ubuntu-latest
@@ -90,10 +102,19 @@ jobs:
         build-args: PHP_VERSION=8.2
     - 
       name: Check FPM binary
-      run: docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm8.2
+      run: docker run milejko/php-fpm-testing find /usr/sbin/php-fpm8.2
+    - 
+      name: Check FPM binary link
+      run: docker run milejko/php-fpm-testing find /usr/bin/php-fpm
     - 
       name: Check CLI version
-      run: docker run --entrypoint="" php-fpm-testing php -v | grep "PHP 8.2"
+      run: docker run milejko/php-fpm-testing -v | grep "PHP 8.2"
+    - 
+      name: Check running PHP command
+      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.2"
+    - 
+      name: Check Composer
+      run: docker run php-cli-testing composer | grep "Composer"
 
   php81-cli-image-test:
     runs-on: ubuntu-latest
@@ -135,10 +156,19 @@ jobs:
         build-args: PHP_VERSION=8.1
     - 
       name: Check FPM binary
-      run: docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm8.1
+      run: docker run milejko/php-fpm-testing find /usr/sbin/php-fpm8.1
+    - 
+      name: Check FPM binary link
+      run: docker run milejko/php-fpm-testing find /usr/bin/php-fpm
     - 
       name: Check CLI version
-      run: docker run --entrypoint="" php-fpm-testing php -v | grep "PHP 8.1"
+      run: docker run milejko/php-fpm-testing -v | grep "PHP 8.1"
+    - 
+      name: Check running PHP command
+      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.1"
+    - 
+      name: Check Composer
+      run: docker run php-cli-testing composer | grep "Composer"
 
   php80-cli-image-test:
     runs-on: ubuntu-latest
@@ -180,10 +210,19 @@ jobs:
         build-args: PHP_VERSION=8.0
     - 
       name: Check FPM binary
-      run: docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm8.0
+      run: docker run milejko/php-fpm-testing find /usr/sbin/php-fpm8.0
+    - 
+      name: Check FPM binary link
+      run: docker run milejko/php-fpm-testing find /usr/bin/php-fpm
     - 
       name: Check CLI version
-      run: docker run --entrypoint="" php-fpm-testing php -v | grep "PHP 8.0"
+      run: docker run milejko/php-fpm-testing -v | grep "PHP 8.0"
+    - 
+      name: Check running PHP command
+      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.0"
+    - 
+      name: Check Composer
+      run: docker run php-cli-testing composer | grep "Composer"
 
   php74-cli-image-test:
     runs-on: ubuntu-latest
@@ -225,8 +264,16 @@ jobs:
         build-args: PHP_VERSION=7.4
     - 
       name: Check FPM binary
-      run: docker run --entrypoint="" php-fpm-testing find /usr/sbin/php-fpm7.4
+      run: docker run milejko/php-fpm-testing find /usr/sbin/php-fpm7.4
+    - 
+      name: Check FPM binary link
+      run: docker run milejko/php-fpm-testing find /usr/bin/php-fpm
     - 
       name: Check CLI version
-      run: docker run --entrypoint="" php-fpm-testing php -v | grep "PHP 7.4"
-
+      run: docker run milejko/php-fpm-testing -v | grep "PHP 7.4"
+    - 
+      name: Check running PHP command
+      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 7.4"
+    - 
+      name: Check Composer
+      run: docker run php-cli-testing composer | grep "Composer"
