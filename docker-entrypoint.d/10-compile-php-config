@@ -8,4 +8,4 @@ ln -sf ${MODS_DIR}/php-config.ini ${FPM_CONF_DIR}/99-php-config.ini
 
 FPM_CONF_DIR="/etc/php/${PHP_VERSION}/fpm/conf.d"
 # link only if php-fpm installed
-[ -d ${FPM_CONF_DIR} ] && ln -sf ${MODS_DIR}/php-config.ini ${FPM_CONF_DIR}/99-php-config.ini
+if [ -d ${FPM_CONF_DIR} ]; then ln -sf ${MODS_DIR}/php-config.ini ${FPM_CONF_DIR}/99-php-config.ini; fi;
