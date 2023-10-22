@@ -1,4 +1,3 @@
-
 # syntax=docker/dockerfile:1.6
 
 ARG DEBIAN_VERSION=bookworm-slim
@@ -25,7 +24,7 @@ ENV CONFIG_TARGET=cli \
 	OPCACHE_JIT=off \
 	OPCACHE_JIT_BUFFER_SIZE=32M
 
-RUN	apt update && \
+RUN apt update && \
 	apt install --no-install-recommends -yq \
 		gettext-base \
 		lsb-release \
