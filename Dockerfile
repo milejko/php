@@ -19,7 +19,7 @@ ENV CONFIG_TARGET=cli \
 	UPLOAD_MAX_FILESIZE=256M \
 	\
 	OPCACHE_ENABLE=1 \
-	OPCACHE_ENABLE_CLI=1 \
+	OPCACHE_ENABLE_CLI=0 \
 	OPCACHE_MEMORY_CONSUMPTION=128M \
 	OPCACHE_INTERNED_STRINGS_BUFFER=16 \
 	OPCACHE_JIT=off \
@@ -55,11 +55,11 @@ STOPSIGNAL SIGQUIT
 
 COPY --link ./etc/php /etc/php
 COPY --link --chmod=755 ./docker-entrypoint.d-cli /docker-entrypoint.d
-COPY --link --chmod=755 ./docker-entrypoint.sh-cli /docker-entrypoint.sh
+COPY --link --chmod=755 ./docker-entrypoint /docker-entrypoint
 
 WORKDIR ${APP_DIR}
 
-ENTRYPOINT [ "/docker-entrypoint.sh" ]
+ENTRYPOINT [ "/docker-entrypoint" ]
 
 CMD [ "php", "-a" ]
 
@@ -78,9 +78,11 @@ ENV CONFIG_TARGET=fpm \
 	FPM_PM_MAX_REQUEST=0
 
 RUN apt --no-install-recommends install -yq \
-	php${PHP_VERSION}-fpm
+	php${PHP_VERSION}-fpm && \
+	ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/bin/php-fpm
 
-COPY --link --chmod=755 ./docker-entrypoint.d-fpm/* /docker-entrypoint.d
-COPY --link --chmod=755 ./docker-entrypoint.sh-fpm /docker-entrypoint.sh
+COPY --link --chmod=755 ./docker-entrypoint.d-fpm /docker-entrypoint.d
 
 EXPOSE ${FPM_LISTEN_PORT}
+
+CMD [ "/usr/bin/php-fpm" ]
