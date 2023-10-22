@@ -24,7 +24,8 @@ jobs:
       run: >-
         docker run php-cli-testing -v | grep "PHP 8.3" &&
         docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.3" &&
-        docker run -e UPLOAD_MAX_FILESIZE=1M php-cli-testing -r 'phpinfo();' | grep "UPLOAD_MAX_FILESIZE => 1M"
+        docker run -e UPLOAD_MAX_FILESIZE=1M php-cli-testing -r 'phpinfo();' | grep "UPLOAD_MAX_FILESIZE => 1M" &&
+        docker run -e OPCACHE_MEMORY_CONSUMPTION=1M php-cli-testing -r 'phpinfo();' | grep "opcache.memory_consumption => 1M" &&
   php83-fpm-image-test:
     runs-on: ubuntu-latest
     steps:
