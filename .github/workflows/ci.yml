@@ -57,10 +57,10 @@ jobs:
       run: docker run milejko/php-fpm-testing -v | grep "PHP 8.3"
     - 
       name: Check running PHP command
-      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.3"
+      run: docker run php-fpm-testing -r 'phpinfo();' | grep "PHP Version => 8.3"
     - 
       name: Check Composer
-      run: docker run php-cli-testing composer | grep "Composer"
+      run: docker run php-fpm-testing composer | grep "Composer"
 
   php82-cli-image-test:
     runs-on: ubuntu-latest
@@ -82,6 +82,9 @@ jobs:
     - 
       name: Check running PHP command
       run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.2"
+    - 
+      name: Check Composer
+      run: docker run php-cli-testing composer | grep "Composer"
     - 
       name: Check interactive shell
       run: docker run php-cli-testing | grep "Interactive shell"
@@ -111,10 +114,10 @@ jobs:
       run: docker run milejko/php-fpm-testing -v | grep "PHP 8.2"
     - 
       name: Check running PHP command
-      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.2"
+      run: docker run php-fpm-testing -r 'phpinfo();' | grep "PHP Version => 8.2"
     - 
       name: Check Composer
-      run: docker run php-cli-testing composer | grep "Composer"
+      run: docker run php-fpm-testing composer | grep "Composer"
 
   php81-cli-image-test:
     runs-on: ubuntu-latest
@@ -136,6 +139,9 @@ jobs:
     - 
       name: Check running PHP command
       run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.1"
+    - 
+      name: Check Composer
+      run: docker run php-cli-testing composer | grep "Composer"
     - 
       name: Check interactive shell
       run: docker run php-cli-testing | grep "Interactive shell"
@@ -165,10 +171,10 @@ jobs:
       run: docker run milejko/php-fpm-testing -v | grep "PHP 8.1"
     - 
       name: Check running PHP command
-      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.1"
+      run: docker run php-fpm-testing -r 'phpinfo();' | grep "PHP Version => 8.1"
     - 
       name: Check Composer
-      run: docker run php-cli-testing composer | grep "Composer"
+      run: docker run php-fpm-testing composer | grep "Composer"
 
   php80-cli-image-test:
     runs-on: ubuntu-latest
@@ -190,6 +196,9 @@ jobs:
     - 
       name: Check running PHP command
       run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.0"
+    - 
+      name: Check Composer
+      run: docker run php-cli-testing composer | grep "Composer"
     - 
       name: Check interactive shell
       run: docker run php-cli-testing | grep "Interactive mode enabled"
@@ -219,10 +228,10 @@ jobs:
       run: docker run milejko/php-fpm-testing -v | grep "PHP 8.0"
     - 
       name: Check running PHP command
-      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.0"
+      run: docker run php-fpm-testing -r 'phpinfo();' | grep "PHP Version => 8.0"
     - 
       name: Check Composer
-      run: docker run php-cli-testing composer | grep "Composer"
+      run: docker run php-fpm-testing composer | grep "Composer"
 
   php74-cli-image-test:
     runs-on: ubuntu-latest
@@ -244,6 +253,9 @@ jobs:
     - 
       name: Check running PHP command
       run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 7.4"
+    - 
+      name: Check Composer
+      run: docker run php-cli-testing composer | grep "Composer"
     - 
       name: Check interactive shell
       run: docker run php-cli-testing | grep "Interactive mode enabled"
@@ -273,7 +285,7 @@ jobs:
       run: docker run milejko/php-fpm-testing -v | grep "PHP 7.4"
     - 
       name: Check running PHP command
-      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 7.4"
+      run: docker run php-fpm-testing -r 'phpinfo();' | grep "PHP Version => 7.4"
     - 
       name: Check Composer
-      run: docker run php-cli-testing composer | grep "Composer"
+      run: docker run php-fpm-testing composer | grep "Composer"
