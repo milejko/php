@@ -1,4 +1,5 @@
 #!/bin/sh
 
-/etc/php/compile-config.sh
+run-parts /docker-entrypoint.d
+
 /usr/sbin/php-fpm${PHP_VERSION}

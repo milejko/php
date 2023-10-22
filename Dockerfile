@@ -16,7 +16,14 @@ ENV CONFIG_TARGET=cli \
 	MEMORY_LIMIT=-1 \
 	MAX_EXECUTION_TIME=30 \
 	POST_MAX_SIZE=256M \
-	UPLOAD_MAX_FILESIZE=256M
+	UPLOAD_MAX_FILESIZE=256M \
+	\
+	OPCACHE_ENABLE=1 \
+	OPCACHE_ENABLE_CLI=1 \
+	OPCACHE_MEMORY_CONSUMPTION=128M \
+	OPCACHE_INTERNED_STRINGS_BUFFER=16 \
+	OPCACHE_JIT=off \
+	OPCACHE_JIT_BUFFER_SIZE=32M
 
 RUN	apt update && \
 	apt install --no-install-recommends -yq \
@@ -31,7 +38,6 @@ RUN	apt update && \
 	apt update && \
 	apt install --no-install-recommends -yq \
 		php${PHP_VERSION}-cli \
-		php${PHP_VERSION}-fpm \
 		php${PHP_VERSION}-bcmath \
 		php${PHP_VERSION}-curl \
 		php${PHP_VERSION}-dom \
@@ -39,14 +45,17 @@ RUN	apt update && \
 		php${PHP_VERSION}-mbstring \
 		php${PHP_VERSION}-zip \
 		php${PHP_VERSION}-xml && \
-	apt purge --autoremove -yq wget
+	wget https://getcomposer.org/installer -O composer-setup.php && \
+	php composer-setup.php && \
+	rm composer-setup.php && \
+	mv composer.phar /usr/bin/composer
 
 # https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
 STOPSIGNAL SIGQUIT
 
 COPY --link ./etc/php /etc/php
-COPY --link --chmod=755 ./etc/php/cli/compile-config.sh /etc/php/compile-config.sh
-COPY --link --chmod=755 ./docker-entrypoint-cli.sh /docker-entrypoint.sh
+COPY --link --chmod=755 ./docker-entrypoint.d-cli /docker-entrypoint.d
+COPY --link --chmod=755 ./docker-entrypoint.sh-cli /docker-entrypoint.sh
 
 WORKDIR ${APP_DIR}
 
@@ -66,18 +75,12 @@ ENV CONFIG_TARGET=fpm \
 	FPM_PM_START_SERVERS=10 \
 	FPM_PM_MIN_SPARE_SERVERS=4 \
 	FPM_PM_MAX_SPARE_SERVERS=16 \
-	FPM_PM_MAX_REQUEST=0 \
-	\
-	OPCACHE_ENABLE=1 \
-	OPCACHE_MEMORY_CONSUMPTION=128M \
-	OPCACHE_INTERNED_STRINGS_BUFFER=16 \
-	OPCACHE_JIT=on \
-	OPCACHE_JIT_BUFFER_SIZE=32M
+	FPM_PM_MAX_REQUEST=0
 
 RUN apt --no-install-recommends install -yq \
 	php${PHP_VERSION}-fpm
 
-COPY --link --chmod=755 ./etc/php/fpm/compile-config.sh /etc/php/compile-config.sh
-COPY --link --chmod=755 ./docker-entrypoint-fpm.sh /docker-entrypoint.sh
+COPY --link --chmod=755 ./docker-entrypoint.d-fpm/* /docker-entrypoint.d
+COPY --link --chmod=755 ./docker-entrypoint.sh-fpm /docker-entrypoint.sh
 
 EXPOSE ${FPM_LISTEN_PORT}
