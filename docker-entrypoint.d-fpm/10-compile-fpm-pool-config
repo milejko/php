@@ -1,3 +1,0 @@
-#!/bin/sh
-TARGET_DIR="/etc/php/${PHP_VERSION}/fpm/pool.d"
-[ -d $TARGET_DIR ] && envsubst < /etc/php/fpm/pool.d/www.conf.tmpl > ${TARGET_DIR}/www.conf

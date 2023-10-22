@@ -1,0 +1,5 @@
+#!/bin/sh
+
+FPM_POOL_DIR="/etc/php/${PHP_VERSION}/fpm/pool.d"
+# compile only if php-fpm installed
+[ -d $FPM_POOL_DIR ] && envsubst < /etc/php/fpm/pool.d/www.conf.tmpl > ${FPM_POOL_DIR}/www.conf || true

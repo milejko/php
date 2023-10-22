@@ -1,6 +1,9 @@
 name: "PHP Docker images CI"
 
 on:
+  schedule:
+    # once per week (external changes can break this images)
+    - cron: "30 3 * * 0"
   pull_request:
   push:
 
@@ -20,17 +23,25 @@ jobs:
         tags: php-cli-testing
         build-args: PHP_VERSION=8.3
     - 
-      name: Check CLI version
-      run: docker run php-cli-testing -v | grep "PHP 8.3"
+      name: Check image version
+      run:
+        docker run php-cli-testing -v | grep "PHP 8.3" &&
+        docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.3"
     - 
-      name: Check running PHP command
-      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.3"
-    - 
-      name: Check Composer
-      run: docker run php-cli-testing composer | grep "Composer"
-    - 
-      name: Check interactive shell
-      run: docker run php-cli-testing | grep "Interactive shell"
+      name: Check image consistency
+      run:
+        docker run php-cli-testing -m | grep "date" &&
+        docker run php-cli-testing -m | grep "exif" &&
+        docker run php-cli-testing -m | grep "json" &&
+        docker run php-cli-testing -m | grep "mbstring" &&
+        docker run php-cli-testing -m | grep "PDO" &&
+        docker run php-cli-testing -m | grep "session" &&
+        docker run php-cli-testing -m | grep "tokenizer" &&
+        docker run php-cli-testing -m | grep "Zend OPcache" &&
+        docker run php-cli-testing composer -V | grep "Composer version" &&
+        docker run php-cli-testing | grep "Interactive shell" &&
+        docker run -e UPLOAD_MAX_FILESIZE=200M php-cli-testing -r 'phpinfo();' | grep "UPLOAD_MAX_FILESIZE => 200M" &&
+        docker run -e OPCACHE_MEMORY_CONSUMPTION=200M php-cli-testing -r 'phpinfo();' | grep "opcache.memory_consumption => 200M"
 
   php83-fpm-image-test:
     runs-on: ubuntu-latest
@@ -48,19 +59,9 @@ jobs:
         build-args: PHP_VERSION=8.3
     - 
       name: Check FPM binary
-      run: docker run php-fpm-testing find /usr/sbin/php-fpm8.3
-    - 
-      name: Check FPM binary link
-      run: docker run php-fpm-testing find /usr/bin/php-fpm
-    - 
-      name: Check CLI version
-      run: docker run php-fpm-testing -v | grep "PHP 8.3"
-    - 
-      name: Check running PHP command
-      run: docker run php-fpm-testing -r 'phpinfo();' | grep "PHP Version => 8.3"
-    - 
-      name: Check Composer
-      run: docker run php-fpm-testing composer | grep "Composer"
+      run: 
+        docker run php-fpm-testing find /usr/sbin/php-fpm8.3 &&
+        docker run php-fpm-testing find /usr/bin/php-fpm
 
   php82-cli-image-test:
     runs-on: ubuntu-latest
@@ -77,17 +78,25 @@ jobs:
         tags: php-cli-testing
         build-args: PHP_VERSION=8.2
     - 
-      name: Check CLI version
-      run: docker run php-cli-testing -v | grep "PHP 8.2"
+      name: Check image version
+      run:
+        docker run php-cli-testing -v | grep "PHP 8.2" &&
+        docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.2"
     - 
-      name: Check running PHP command
-      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.2"
-    - 
-      name: Check Composer
-      run: docker run php-cli-testing composer | grep "Composer"
-    - 
-      name: Check interactive shell
-      run: docker run php-cli-testing | grep "Interactive shell"
+      name: Check image consistency
+      run:
+        docker run php-cli-testing -m | grep "date" &&
+        docker run php-cli-testing -m | grep "exif" &&
+        docker run php-cli-testing -m | grep "json" &&
+        docker run php-cli-testing -m | grep "mbstring" &&
+        docker run php-cli-testing -m | grep "PDO" &&
+        docker run php-cli-testing -m | grep "session" &&
+        docker run php-cli-testing -m | grep "tokenizer" &&
+        docker run php-cli-testing -m | grep "Zend OPcache" &&
+        docker run php-cli-testing composer -V | grep "Composer version" &&
+        docker run php-cli-testing | grep "Interactive shell" &&
+        docker run -e UPLOAD_MAX_FILESIZE=200M php-cli-testing -r 'phpinfo();' | grep "UPLOAD_MAX_FILESIZE => 200M" &&
+        docker run -e OPCACHE_MEMORY_CONSUMPTION=200M php-cli-testing -r 'phpinfo();' | grep "opcache.memory_consumption => 200M"
 
   php82-fpm-image-test:
     runs-on: ubuntu-latest
@@ -105,19 +114,9 @@ jobs:
         build-args: PHP_VERSION=8.2
     - 
       name: Check FPM binary
-      run: docker run php-fpm-testing find /usr/sbin/php-fpm8.2
-    - 
-      name: Check FPM binary link
-      run: docker run php-fpm-testing find /usr/bin/php-fpm
-    - 
-      name: Check CLI version
-      run: docker run php-fpm-testing -v | grep "PHP 8.2"
-    - 
-      name: Check running PHP command
-      run: docker run php-fpm-testing -r 'phpinfo();' | grep "PHP Version => 8.2"
-    - 
-      name: Check Composer
-      run: docker run php-fpm-testing composer | grep "Composer"
+      run: 
+        docker run php-fpm-testing find /usr/sbin/php-fpm8.2 &&
+        docker run php-fpm-testing find /usr/bin/php-fpm
 
   php81-cli-image-test:
     runs-on: ubuntu-latest
@@ -134,17 +133,25 @@ jobs:
         tags: php-cli-testing
         build-args: PHP_VERSION=8.1
     - 
-      name: Check CLI version
-      run: docker run php-cli-testing -v | grep "PHP 8.1"
+      name: Check image version
+      run:
+        docker run php-cli-testing -v | grep "PHP 8.1" &&
+        docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.1"
     - 
-      name: Check running PHP command
-      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.1"
-    - 
-      name: Check Composer
-      run: docker run php-cli-testing composer | grep "Composer"
-    - 
-      name: Check interactive shell
-      run: docker run php-cli-testing | grep "Interactive shell"
+      name: Check image consistency
+      run:
+        docker run php-cli-testing -m | grep "date" &&
+        docker run php-cli-testing -m | grep "exif" &&
+        docker run php-cli-testing -m | grep "json" &&
+        docker run php-cli-testing -m | grep "mbstring" &&
+        docker run php-cli-testing -m | grep "PDO" &&
+        docker run php-cli-testing -m | grep "session" &&
+        docker run php-cli-testing -m | grep "tokenizer" &&
+        docker run php-cli-testing -m | grep "Zend OPcache" &&
+        docker run php-cli-testing composer -V | grep "Composer version" &&
+        docker run php-cli-testing | grep "Interactive shell" &&
+        docker run -e UPLOAD_MAX_FILESIZE=200M php-cli-testing -r 'phpinfo();' | grep "UPLOAD_MAX_FILESIZE => 200M" &&
+        docker run -e OPCACHE_MEMORY_CONSUMPTION=200M php-cli-testing -r 'phpinfo();' | grep "opcache.memory_consumption => 200M"
 
   php81-fpm-image-test:
     runs-on: ubuntu-latest
@@ -162,19 +169,9 @@ jobs:
         build-args: PHP_VERSION=8.1
     - 
       name: Check FPM binary
-      run: docker run php-fpm-testing find /usr/sbin/php-fpm8.1
-    - 
-      name: Check FPM binary link
-      run: docker run php-fpm-testing find /usr/bin/php-fpm
-    - 
-      name: Check CLI version
-      run: docker run php-fpm-testing -v | grep "PHP 8.1"
-    - 
-      name: Check running PHP command
-      run: docker run php-fpm-testing -r 'phpinfo();' | grep "PHP Version => 8.1"
-    - 
-      name: Check Composer
-      run: docker run php-fpm-testing composer | grep "Composer"
+      run: 
+        docker run php-fpm-testing find /usr/sbin/php-fpm8.1 &&
+        docker run php-fpm-testing find /usr/bin/php-fpm
 
   php80-cli-image-test:
     runs-on: ubuntu-latest
@@ -191,17 +188,25 @@ jobs:
         tags: php-cli-testing
         build-args: PHP_VERSION=8.0
     - 
-      name: Check CLI version
-      run: docker run php-cli-testing -v | grep "PHP 8.0"
+      name: Check image version
+      run:
+        docker run php-cli-testing -v | grep "PHP 8.0" &&
+        docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.0"
     - 
-      name: Check running PHP command
-      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.0"
-    - 
-      name: Check Composer
-      run: docker run php-cli-testing composer | grep "Composer"
-    - 
-      name: Check interactive shell
-      run: docker run php-cli-testing | grep "Interactive mode enabled"
+      name: Check image consistency
+      run:
+        docker run php-cli-testing -m | grep "date" &&
+        docker run php-cli-testing -m | grep "exif" &&
+        docker run php-cli-testing -m | grep "json" &&
+        docker run php-cli-testing -m | grep "mbstring" &&
+        docker run php-cli-testing -m | grep "PDO" &&
+        docker run php-cli-testing -m | grep "session" &&
+        docker run php-cli-testing -m | grep "tokenizer" &&
+        docker run php-cli-testing -m | grep "Zend OPcache" &&
+        docker run php-cli-testing composer -V | grep "Composer version" &&
+        docker run php-cli-testing | grep "Interactive mode enabled" &&
+        docker run -e UPLOAD_MAX_FILESIZE=200M php-cli-testing -r 'phpinfo();' | grep "UPLOAD_MAX_FILESIZE => 200M" &&
+        docker run -e OPCACHE_MEMORY_CONSUMPTION=200M php-cli-testing -r 'phpinfo();' | grep "opcache.memory_consumption => 200M"
 
   php80-fpm-image-test:
     runs-on: ubuntu-latest
@@ -219,19 +224,9 @@ jobs:
         build-args: PHP_VERSION=8.0
     - 
       name: Check FPM binary
-      run: docker run php-fpm-testing find /usr/sbin/php-fpm8.0
-    - 
-      name: Check FPM binary link
-      run: docker run php-fpm-testing find /usr/bin/php-fpm
-    - 
-      name: Check CLI version
-      run: docker run php-fpm-testing -v | grep "PHP 8.0"
-    - 
-      name: Check running PHP command
-      run: docker run php-fpm-testing -r 'phpinfo();' | grep "PHP Version => 8.0"
-    - 
-      name: Check Composer
-      run: docker run php-fpm-testing composer | grep "Composer"
+      run: 
+        docker run php-fpm-testing find /usr/sbin/php-fpm8.0 &&
+        docker run php-fpm-testing find /usr/bin/php-fpm
 
   php74-cli-image-test:
     runs-on: ubuntu-latest
@@ -248,17 +243,25 @@ jobs:
         tags: php-cli-testing
         build-args: PHP_VERSION=7.4
     - 
-      name: Check CLI version
-      run: docker run php-cli-testing -v | grep "PHP 7.4"
+      name: Check image version
+      run:
+        docker run php-cli-testing -v | grep "PHP 7.4" &&
+        docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 7.4"
     - 
-      name: Check running PHP command
-      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 7.4"
-    - 
-      name: Check Composer
-      run: docker run php-cli-testing composer | grep "Composer"
-    - 
-      name: Check interactive shell
-      run: docker run php-cli-testing | grep "Interactive mode enabled"
+      name: Check image consistency
+      run:
+        docker run php-cli-testing -m | grep "date" &&
+        docker run php-cli-testing -m | grep "exif" &&
+        docker run php-cli-testing -m | grep "json" &&
+        docker run php-cli-testing -m | grep "mbstring" &&
+        docker run php-cli-testing -m | grep "PDO" &&
+        docker run php-cli-testing -m | grep "session" &&
+        docker run php-cli-testing -m | grep "tokenizer" &&
+        docker run php-cli-testing -m | grep "Zend OPcache" &&
+        docker run php-cli-testing composer -V | grep "Composer version" &&
+        docker run php-cli-testing | grep "Interactive mode enabled" &&
+        docker run -e UPLOAD_MAX_FILESIZE=200M php-cli-testing -r 'phpinfo();' | grep "UPLOAD_MAX_FILESIZE => 200M" &&
+        docker run -e OPCACHE_MEMORY_CONSUMPTION=200M php-cli-testing -r 'phpinfo();' | grep "opcache.memory_consumption => 200M"
 
   php74-fpm-image-test:
     runs-on: ubuntu-latest
@@ -276,16 +279,6 @@ jobs:
         build-args: PHP_VERSION=7.4
     - 
       name: Check FPM binary
-      run: docker run php-fpm-testing find /usr/sbin/php-fpm7.4
-    - 
-      name: Check FPM binary link
-      run: docker run php-fpm-testing find /usr/bin/php-fpm
-    - 
-      name: Check CLI version
-      run: docker run php-fpm-testing -v | grep "PHP 7.4"
-    - 
-      name: Check running PHP command
-      run: docker run php-fpm-testing -r 'phpinfo();' | grep "PHP Version => 7.4"
-    - 
-      name: Check Composer
-      run: docker run php-fpm-testing composer | grep "Composer"
+      run: 
+        docker run php-fpm-testing find /usr/sbin/php-fpm7.4 &&
+        docker run php-fpm-testing find /usr/bin/php-fpm

@@ -2,14 +2,13 @@
 
 ARG DEBIAN_VERSION=bookworm-slim
 
-## PHP-CLI image
+## PHP-CLI stage
 FROM debian:${DEBIAN_VERSION} as php-cli
 
 ARG PHP_VERSION=8.2
 ARG DEBIAN_FRONTEND=noninteractive
 
-ENV CONFIG_TARGET=cli \
-	APP_DIR=/app \
+ENV APP_DIR=/app \
 	PHP_VERSION=${PHP_VERSION} \
 	\
 	MEMORY_LIMIT=-1 \
@@ -46,14 +45,14 @@ RUN apt update && \
 		php${PHP_VERSION}-xml && \
 	wget https://getcomposer.org/installer -O composer-setup.php && \
 	php composer-setup.php && \
-	rm composer-setup.php && \
-	mv composer.phar /usr/bin/composer
+	mv composer.phar /usr/bin/composer && \
+	rm composer-setup.php
 
 # https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
 STOPSIGNAL SIGQUIT
 
 COPY --link ./etc/php /etc/php
-COPY --link --chmod=755 ./docker-entrypoint.d-cli /docker-entrypoint.d
+COPY --link --chmod=755 ./docker-entrypoint.d /docker-entrypoint.d
 COPY --link --chmod=755 ./docker-entrypoint /docker-entrypoint
 
 WORKDIR ${APP_DIR}
@@ -62,11 +61,10 @@ ENTRYPOINT [ "/docker-entrypoint" ]
 
 CMD [ "php", "-a" ]
 
-## PHP-FPM image
+## PHP-FPM stage
 FROM php-cli as php-fpm
 
-ENV CONFIG_TARGET=fpm \
-	MEMORY_LIMIT=128M \
+ENV MEMORY_LIMIT=128M \
 	\
 	FPM_LISTEN_PORT=9000 \
 	FPM_LOG_LEVEL=notice \
@@ -79,8 +77,6 @@ ENV CONFIG_TARGET=fpm \
 RUN apt --no-install-recommends install -yq \
 	php${PHP_VERSION}-fpm && \
 	ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/bin/php-fpm
-
-COPY --link --chmod=755 ./docker-entrypoint.d-fpm /docker-entrypoint.d
 
 EXPOSE ${FPM_LISTEN_PORT}
 
