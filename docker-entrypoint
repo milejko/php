@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/etc/php/compile-config.sh
+run-parts /docker-entrypoint.d
 
 # first arg is `-f` or `--some-option`
 if [ "${1#-}" != "$1" ]; then
