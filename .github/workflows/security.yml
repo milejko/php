@@ -8,6 +8,30 @@ on:
   push:
 
 jobs:
+  php83-security-check:
+    runs-on: ubuntu-latest
+    steps:
+    - 
+      name: Checkout code
+      uses: actions/checkout@v4
+    - 
+      name: Build testing Docker image
+      uses: docker/build-push-action@v5
+      with:
+        push: false
+        target: php-fpm
+        tags: php-fpm-testing
+        build-args: PHP_VERSION=8.3
+    -
+      name: Run Snyk to check Docker image for vulnerabilities
+      continue-on-error: true
+      uses: snyk/actions/docker@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --file=Dockerfile --severity-threshold=high
+        image: php-fpm-testing
+
   php82-security-check:
     runs-on: ubuntu-latest
     steps:
@@ -46,6 +70,30 @@ jobs:
         target: php-fpm
         tags: php-fpm-testing
         build-args: PHP_VERSION=8.1
+    -
+      name: Run Snyk to check Docker image for vulnerabilities
+      continue-on-error: true
+      uses: snyk/actions/docker@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --file=Dockerfile --severity-threshold=high
+        image: php-fpm-testing
+
+  php80-security-check:
+    runs-on: ubuntu-latest
+    steps:
+    - 
+      name: Checkout code
+      uses: actions/checkout@v4
+    - 
+      name: Build testing Docker image
+      uses: docker/build-push-action@v5
+      with:
+        push: false
+        target: php-fpm
+        tags: php-fpm-testing
+        build-args: PHP_VERSION=8.0
     -
       name: Run Snyk to check Docker image for vulnerabilities
       continue-on-error: true
