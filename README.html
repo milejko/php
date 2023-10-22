@@ -10,16 +10,16 @@
 <h2>Core features</h2>
 <ul>
     <li>
-        Clean way of configuration: using ENVs during runtime (ie. MEMORY_LIMIT, UPLOAD_MAX_FILESIZE and more... list below)
+        A clean way of configuring: by passing ENVs during the runtime/orchestration (<a href="#env">ie. MEMORY_LIMIT, list below</a>)
     </li>
     <li>
-        PHP and default modules are installed from <a target="_blank" href="https://deb.sury.org">Debian packages</a>
+        PHP and <a href="#modules">default modules</a> are installed from <a target="_blank" href="https://deb.sury.org">DEB packages</a>
     </li>
     <li>
-        Composer out of the box
+        Composer tool out of the box
     </li>
     <li>
-        Other PHP modules can be easily installed with <code>apt install</code>
+        Other PHP modules easily installed with <code>apt install phpX.Y-module</code>
     </li>
 </ul>
 
@@ -66,6 +66,7 @@ docker run --publish 127.0.0.1:8080:8080 phpinfo-http
 <code>Dockerfile</code>
 <pre>
 FROM milejko/php:8.2-fpm
+RUN echo "&lt;?php phpinfo();" > /app/index.php
 </pre>
 <p>
     Build your image and execute it, using:
@@ -77,10 +78,11 @@ docker run --env FPM_LOG_LEVEL=debug --publish 127.0.0.1:9000:9000 phpinfo-fpm
 <p>
     Now your PHP-FPM container is up and ready for connections, also take a note that in this example FPM_LOG_LEVEL is
     set to "debug".<br>
-    It is not very useful without a PHP application mounted inside /app directory, and nginx with
-    <code>fastcgi_pass 127.0.0.1:9000;</code> in front of it, but it definitely runs.
+    It is not very useful without a real PHP application mounted (or copied) inside the /app directory, and nginx with
+    <code>fastcgi_pass 127.0.0.1:9000;</code> as a http server, but it definitely runs.
 </p>
 
+<a name="modules"></a>
 <h2>PHP modules enabled by default</h2>
 <pre>
 bcmath
@@ -146,8 +148,9 @@ RUN apt update && apt install -y \
     php${PHP_VERSION}-redis
 </pre>
 
+<a name="env"></a>
 <h2>Available environmental values</h2>
-<p>To tweak those values just pass them by adding --env ENV=value during runtime.</p>
+<p>To tweak those values just pass them by adding --env ENV=value during runtime, or orchestrator configs (ie. docker-compose.yml).</p>
 <pre>
 APP_DIR=/app
 MAX_EXECUTION_TIME=30

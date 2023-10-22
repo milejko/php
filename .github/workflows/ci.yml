@@ -20,17 +20,14 @@ jobs:
         tags: php-cli-testing
         build-args: PHP_VERSION=8.3
     - 
-      name: Check CLI version
-      run: docker run php-cli-testing -v | grep "PHP 8.3"
-    - 
-      name: Check running PHP command
-      run: docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.3"
-    - 
-      name: Check Composer
-      run: docker run php-cli-testing composer | grep "Composer"
-    - 
-      name: Check interactive shell
-      run: docker run php-cli-testing | grep "Interactive shell"
+      name: Check PHP image \
+      run: |
+        docker run php-cli-testing -v | grep "PHP 8.3" &&
+        docker run php-cli-testing -r 'phpinfo();' | grep "PHP Version => 8.3" &&
+        docker run php-cli-testing -e UPLOAD_MAX_FILESIZE=1M -r 'phpinfo();' | grep "UPLOAD_MAX_FILESIZE => 1M" &&
+        docker run php-cli-testing -e OPCACHE_MEMORY_CONSUMPTION=1M -r 'phpinfo();' | grep "opcache.memory_consumption => 1M" &&
+        docker run php-cli-testing composer | grep "Composer" &&
+        docker run php-cli-testing | grep "Interactive shell"
 
   php83-fpm-image-test:
     runs-on: ubuntu-latest
