@@ -8,9 +8,6 @@ Debian-slim based, open source, Docker image with ease of configuration in the h
 * Composer out of the box
 * Other PHP modules can be easily installed with `_apt install phpX.Y-module_`
 
-For further details, instructions and examples visit:
-Dockerhub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)
-
 ### Example uses ###
 Displaying phpinfo() in the terminal
 ```
@@ -33,6 +30,8 @@ Build your image and execute it, using:
 docker build -t phpinfo-http .
 docker run --publish 127.0.0.1:8080:8080 phpinfo-http
 ```
+For further details, instructions and examples visit:
+Dockerhub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)
 
 Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3-RC
 Supported architectures: linux/amd64, linux/arm64
