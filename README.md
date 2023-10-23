@@ -3,17 +3,18 @@ PHP Docker image
 highly configurable, and extendable with apt
 --------------------------------------------
 Debian-slim based, open source, Docker image with ease of configuration in the heart.
-<br>
-Core features:
-    - Clean way of configuration: using ENVs during runtime (ie. MEMORY_LIMIT, UPLOAD_MAX_FILESIZE and more...(list below)
-    - PHP and default modules are installed from <a target="_blank" href="https://deb.sury.org">Debian packages</a>
-    - Composer out of the box
-    - Other PHP modules can be easily installed with <code>apt install</code>
-<br>
-For detailed instructions and examples visit:<br>
-Dockerhub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)<br>
-<br>
-Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3-RC<br>
-Supported architectures: linux/amd64, linux/arm64<br>
+
+### Core features ###
+* Clean way of configuration: using ENVs during runtime (ie. MEMORY_LIMIT, UPLOAD_MAX_FILESIZE and more...(list below)
+* PHP and default modules are installed from [https://deb.sury.org]>(Debian packages)
+* Composer out of the box
+* Other PHP modules can be easily installed with _apt install phpX.Y-module_
+
+For detailed instructions and examples visit:
+Dockerhub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)
+
+
+Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3-RC
+Supported architectures: linux/amd64, linux/arm64
 
 Enjoy! By [Mariusz Miłejko](https://github.com/milejko)
