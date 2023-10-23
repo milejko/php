@@ -13,10 +13,15 @@ Debian-slim based, open source, Docker image with ease of configuration in the h
 For further details, instructions and examples visit:
 Dockerhub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)
 
-### Example use ###
+### Example uses ###
 Displaying phpinfo() in the terminal
 ```
 docker run milejko/php:8.2-cli -r 'phpinfo();'
+```
+
+Running composer
+```
+docker run milejko/php:8.2-cli composer
 ```
 
 Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3-RC
