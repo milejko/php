@@ -24,6 +24,21 @@ Running composer
 docker run milejko/php:8.2-cli composer
 ```
 
+PHP provides a built-in webserver. In the following example we'll create such server.
+
+`Dockerfile`
+```
+FROM milejko/php:8.2-cli
+RUN echo "<?php phpinfo();" > /app/index.php
+EXPOSE 8080
+CMD [ "php", "-S", "0.0.0.0:8080" ]
+```
+Build your image and execute it, using:
+```
+docker build -t phpinfo-http .
+docker run --publish 127.0.0.1:8080:8080 phpinfo-http
+```
+
 Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3-RC
 Supported architectures: linux/amd64, linux/arm64
 
