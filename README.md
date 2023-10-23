@@ -36,7 +36,7 @@ docker build -t phpinfo-http .
 docker run --publish 127.0.0.1:8080:8080 phpinfo-http
 ```
 
-Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3-RC
-Supported architectures: linux/amd64, linux/arm64
+#### Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3-RC ####
+#### Supported architectures: linux/amd64, linux/arm64 ####
 
 Enjoy! By [Mariusz Miłejko](https://github.com/milejko)
