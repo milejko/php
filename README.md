@@ -8,7 +8,9 @@ Core features:
     - Composer out of the box
     - Other PHP modules can be easily installed with <code>apt install</code>
 <br>
-Dockerhub: [https://hub.docker.com/repository/docker/milejko/php/general](https://hub.docker.com/repository/docker/milejko/php)<br>
+For detailed instructions and examples visit:<br>
+Dockerhub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)<br>
+<br>
 Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3-RC<br>
 Supported architectures: linux/amd64, linux/arm64<br>
 
