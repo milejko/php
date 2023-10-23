@@ -8,7 +8,7 @@ Debian-slim based, open source, Docker image with ease of configuration in the h
 * Clean way of configuration: using ENVs during runtime (ie. MEMORY_LIMIT, UPLOAD_MAX_FILESIZE and more...
 * PHP and default modules are installed from [https://deb.sury.org]>(Debian packages)
 * Composer out of the box
-* Other PHP modules can be easily installed with `code(_apt install phpX.Y-module_)`
+* Other PHP modules can be easily installed with `_apt install phpX.Y-module_`
 
 For further details, instructions and examples visit:
 Dockerhub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)
