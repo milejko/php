@@ -30,8 +30,7 @@ Build your image and execute it, using:
 docker build -t phpinfo-http .
 docker run --publish 127.0.0.1:8080:8080 phpinfo-http
 ```
-For further details, instructions and examples visit:
-Dockerhub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)
+For further details, instructions and examples visit our Docker hub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)
 
 Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3-RC
 Supported architectures: linux/amd64, linux/arm64
