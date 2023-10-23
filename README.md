@@ -18,14 +18,11 @@ Displaying phpinfo() in the terminal
 ```
 docker run milejko/php:8.2-cli -r 'phpinfo();'
 ```
-
 Running composer
 ```
 docker run milejko/php:8.2-cli composer
 ```
-
-PHP provides a built-in webserver. In the following example we'll create such server.
-
+Running phpinfo() website using built-in PHP server
 `Dockerfile`
 ```
 FROM milejko/php:8.2-cli
