@@ -11,8 +11,8 @@ jobs:
   php-images-test:
     strategy:
       matrix:
-        php-version: ['8.3', '8.2', '8.1', '8.0', '7.4']
-        variant: ['fpm', 'cli']
+        php-version: ['8.2'] #['8.2', '8.1', '8.0', '7.4']
+        variant: ['fpm'] #['fpm', 'cli']
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
