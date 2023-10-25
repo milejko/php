@@ -33,3 +33,15 @@ jobs:
         export PHP_VERSION=${{ matrix.php-version }} &&
         export IMAGE_TAG=php-${{ matrix.php-version }}-${{ matrix.variant }}:test &&
         ./.github/workflows/test-image.sh
+    - name: "Check FPM binary"
+      if: ${{ matrix.variant == 'fpm' }}
+      run:
+        export PHP_VERSION=${{ matrix.php-version }} &&
+        export IMAGE_TAG=php-${{ matrix.php-version }}-${{ matrix.variant }}:test &&
+        ./.github/workflows/test-image-fpm.sh
+    - name: "Check CLI interactive shell"
+      if: ${{ matrix.variant == 'cli' }}
+      run:
+        export PHP_VERSION=${{ matrix.php-version }} &&
+        export IMAGE_TAG=php-${{ matrix.php-version }}-${{ matrix.variant }}:test &&
+        ./.github/workflows/test-image-cli.sh
