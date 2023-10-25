@@ -6,7 +6,6 @@ ARG DEBIAN_VERSION=bookworm-slim
 FROM debian:${DEBIAN_VERSION} as php-cli
 
 ARG PHP_VERSION=8.2
-ARG DEBIAN_FRONTEND=noninteractive
 
 ENV APP_DIR=/app \
 	PHP_VERSION=${PHP_VERSION} \
@@ -23,8 +22,8 @@ ENV APP_DIR=/app \
 	OPCACHE_JIT=off \
 	OPCACHE_JIT_BUFFER_SIZE=32M
 
-RUN apt update && \
-	apt install --no-install-recommends -yq \
+RUN apt-get update && \
+	apt-get install --no-install-recommends \
 		gettext-base \
 		lsb-release \
 		wget \
@@ -33,8 +32,8 @@ RUN apt update && \
 		zip && \
 	wget https://packages.sury.org/php/apt.gpg -O /usr/share/keyrings/deb.sury.org-php.gpg && \
 	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php-sury.list && \
-	apt update && \
-	apt install --no-install-recommends -yq \
+	apt-get update && \
+	apt-get install --no-install-recommends \
 		php${PHP_VERSION}-cli \
 		php${PHP_VERSION}-bcmath \
 		php${PHP_VERSION}-curl \
