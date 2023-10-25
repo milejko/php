@@ -25,23 +25,11 @@ jobs:
       with:
         push: false
         target: php-${{ matrix.variant }}
-        tags: test-image
+        tags: php-${{ matrix.php-version }}-${{ matrix.variant }}:test
         build-args: PHP_VERSION=${{ matrix.php-version }}
     - 
       name: Check image consistency
       run:
-        docker run test-image -v | grep "PHP ${{ matrix.php-version }}" &&
-        docker run test-image -r 'phpinfo();' | grep "PHP Version => ${{ matrix.php-version }}" &&
-        docker run test-image -m | grep "date" &&
-        docker run test-image -m | grep "exif" &&
-        docker run test-image -m | grep "json" &&
-        docker run test-image -m | grep "libxml" &&
-        docker run test-image -m | grep "mbstring" &&
-        docker run test-image -m | grep "PDO" &&
-        docker run test-image -m | grep "session" &&
-        docker run test-image -m | grep "tokenizer" &&
-        docker run test-image -m | grep "Zend OPcache" &&
-        docker run test-image composer -V | grep "Composer version" &&
-        docker run test-image -a | grep "Interactive" &&
-        docker run -e UPLOAD_MAX_FILESIZE=200M test-image -r 'phpinfo();' | grep "UPLOAD_MAX_FILESIZE => 200M" &&
-        docker run -e OPCACHE_MEMORY_CONSUMPTION=200M test-image -r 'phpinfo();' | grep "opcache.memory_consumption => 200M"
+        PHP_VERSION=${{ matrix.php-version }} \
+        IMAGE_TAG=php-${{ matrix.php-version }}-${{ matrix.variant }}:test \
+        ./ci-scripts/test-image.sh
