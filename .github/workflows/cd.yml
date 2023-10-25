@@ -32,6 +32,20 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - 
+      name: Build test Docker image
+      uses: docker/build-push-action@v5
+      with:
+        load: true
+        tags: php-${{ matrix.php-version }}-${{ matrix.variant }}:test
+        target: php-${{ matrix.variant }}
+        build-args: PHP_VERSION=${{ matrix.php-version }}
+    - 
+      name: Check image consistency
+      run:
+        export PHP_VERSION=${{ matrix.php-version }} &&
+        export IMAGE_TAG=php-${{ matrix.php-version }}-${{ matrix.variant }}:test &&
+        ./.github/workflows/test-image.sh
     -
       name: Preparing image meta
       id: meta
@@ -42,7 +56,7 @@ jobs:
           type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }}-{{date 'YYYYMMDD'}}
           type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }}
           type=raw,value=latest,enable=${{ matrix.php-version == '8.2' && matrix.variant == 'fpm' }}
-    - 
+    -
       name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
