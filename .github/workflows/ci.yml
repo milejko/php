@@ -30,4 +30,6 @@ jobs:
     - 
       name: Check image consistency
       run:
-        PHP_VERSION=${{ matrix.php-version }} IMAGE_TAG=php-${{ matrix.php-version }}-${{ matrix.variant }}:test ./ci-scripts/test-image.sh
+        export PHP_VERSION=${{ matrix.php-version }}
+        export IMAGE_TAG=php-${{ matrix.php-version }}-${{ matrix.variant }}:test
+        ./ci-scripts/test-image.sh
