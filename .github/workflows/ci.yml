@@ -8,12 +8,12 @@ on:
   push:
 
 jobs:
-  php-images-test:
+  php-image-test:
     strategy:
       matrix:
-        php-version: ['8.2', '8.1', '8.0', '7.4']
+        php-version: ['8.3', '8.2', '8.1', '8.0', '7.4']
         variant: ['fpm', 'cli']
-      fail-fast: false
+      fail-fast: true
     runs-on: ubuntu-latest
     steps:
     - 
@@ -32,4 +32,4 @@ jobs:
       run:
         export PHP_VERSION=${{ matrix.php-version }} &&
         export IMAGE_TAG=php-${{ matrix.php-version }}-${{ matrix.variant }}:test &&
-        ./ci-scripts/test-image.sh
+        ./.github/workflows/test-image.sh

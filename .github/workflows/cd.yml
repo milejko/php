@@ -1,0 +1,54 @@
+name: "PHP Docker Image delivery"
+
+on:
+  schedule:
+    # once per week
+    - cron: "30 4 * * 0"
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  php-image-deploy:
+    strategy:
+      matrix:
+        php-version: ['8.3', '8.2', '8.1', '8.0', '7.4']
+        variant: ['fpm', 'cli']
+      fail-fast: false
+    runs-on: ubuntu-latest
+    steps:
+    - 
+      name: Checkout code
+      uses: actions/checkout@v4
+    - 
+      name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+    - 
+      name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    - 
+      name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    -
+      name: Preparing image meta
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ secrets.DOCKERHUB_USERNAME }}/php
+        tags: |
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }}-{{date 'YYYYMMDD'}}
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }}
+          type=raw,value=latest,enable=${{ matrix.php-version == '8.2' && matrix.variant == 'fpm' }}
+    - 
+      name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        push: true
+        platforms: linux/amd64,linux/arm64
+        target: php-${{ matrix.variant }}
+        tags: ${{ steps.meta.outputs.tags }},
+        labels: ${{ steps.meta.outputs.labels }},
+        build-args: PHP_VERSION=${{ matrix.php-version }}
