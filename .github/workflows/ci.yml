@@ -31,7 +31,7 @@ jobs:
       name: Check image consistency
       run:
         docker run test-image -v | grep "PHP ${{ matrix.php-version }}" &&
-        docker run test-image -r 'phpinfo();' | grep "PHP Version => ${{ matrix.php-version }}"
+        docker run test-image -r 'phpinfo();' | grep "PHP Version => ${{ matrix.php-version }}" &&
         docker run test-image -m | grep "date" &&
         docker run test-image -m | grep "exif" &&
         docker run test-image -m | grep "json" &&
