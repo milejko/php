@@ -11,8 +11,8 @@ jobs:
   php-images-test:
     strategy:
       matrix:
-        php-version: ['8.2'] #['8.2', '8.1', '8.0', '7.4']
-        variant: ['fpm'] #['fpm', 'cli']
+        php-version: ['8.2', '8.1', '8.0', '7.4']
+        variant: ['fpm', 'cli']
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
@@ -30,6 +30,6 @@ jobs:
     - 
       name: Check image consistency
       run:
-        export PHP_VERSION=${{ matrix.php-version }}
-        export IMAGE_TAG=php-${{ matrix.php-version }}-${{ matrix.variant }}:test
+        export PHP_VERSION=${{ matrix.php-version }} &&
+        export IMAGE_TAG=php-${{ matrix.php-version }}-${{ matrix.variant }}:test &&
         ./ci-scripts/test-image.sh
