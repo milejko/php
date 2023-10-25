@@ -4,7 +4,7 @@ MODS_DIR="/etc/php/${PHP_VERSION}/mods-available"
 envsubst < /etc/php/mods-available/php-config.ini.tmpl > ${MODS_DIR}/php-config.ini
 
 CLI_CONF_DIR="/etc/php/${PHP_VERSION}/cli/conf.d"
-ln -sf ${MODS_DIR}/php-config.ini ${FPM_CONF_DIR}/99-php-config.ini
+ln -sf ${MODS_DIR}/php-config.ini ${CLI_CONF_DIR}/99-php-config.ini
 
 FPM_CONF_DIR="/etc/php/${PHP_VERSION}/fpm/conf.d"
 # link only if php-fpm installed
