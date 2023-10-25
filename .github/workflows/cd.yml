@@ -10,7 +10,7 @@ on:
 
 jobs:
   php-image-test:
-    uses: ./ci.yml
+    uses: ./ci.yml#php-image-test
 
   php-image-deploy:
     name: "Deployment of PHP Docker images"
@@ -46,7 +46,7 @@ jobs:
         tags: |
           type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }}-{{date 'YYYYMMDD'}}
           type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }}
-          type=raw,value=latest,enable=${{ matrix.php-version == '8.2' && matrix.variant == 'fpm' }}
+          type=raw,value=latest,enable=${{ matrix.php-version == '8.2' && matrix.variant == 'cli' }}
     -
       name: Build and push Docker image
       uses: docker/build-push-action@v5
