@@ -28,7 +28,7 @@ RUN apt update && \
 		gettext-base \
 		lsb-release \
 		wget \
-		ca-certificates  \
+		ca-certificates \
 		unzip \
 		zip && \
 	wget https://packages.sury.org/php/apt.gpg -O /usr/share/keyrings/deb.sury.org-php.gpg && \
