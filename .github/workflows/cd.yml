@@ -5,8 +5,8 @@ on:
     # once per week
     - cron: "30 4 * * 0"
   push:
-    tags:
-      - "v*.*.*"
+    #tags:
+    #  - "v*.*.*"
 
 jobs:
   php-image-test:
