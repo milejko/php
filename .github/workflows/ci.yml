@@ -6,6 +6,10 @@ on:
     - cron: "30 3 * * 0"
   pull_request:
   push:
+    branches:    
+      - '**'
+  workflow_call:
+  workflow_dispatch:
 
 jobs:
   php-image-test:
