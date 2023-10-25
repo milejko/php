@@ -1,0 +1,9 @@
+#!/bin/sh
+
+IMAGE_NAME=${DOCKERHUB_USERNAME}/php
+IMAGE_TAG_SUFFIX=-fpm
+IMAGE_TAG=${PHP_VERSION}${IMAGE_TAG_SUFFIX}
+
+docker build -t ${IMAGE_NAME}:${IMAGE_TAG} --build-arg PHP_VERSION=${PHP_VERSION} .
+
+docker save --output ${IMAGE_TAG}.tar ${IMAGE_NAME}:${IMAGE_TAG}
