@@ -11,7 +11,9 @@ jobs:
   php-security-check:
     strategy:
       matrix:
+        #only supported versions
         php-version: ['8.3', '8.2', '8.1']
+        #only fpm
         variant: ['fpm']
       fail-fast: false
     runs-on: ubuntu-latest
