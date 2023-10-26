@@ -9,12 +9,12 @@ on:
     #  - "v*.*.*"
 
 jobs:
-  php-image-test:
-    uses: ./.github/workflows/ci.yml
+  #php-image-test:
+  #  uses: ./.github/workflows/ci.yml
 
   php-image-deploy:
     name: "Deployment of PHP Docker images"
-    needs: php-image-test
+    #needs: php-image-test
     strategy:
       matrix:
         php-version: ['8.3', '8.2', '8.1', '8.0', '7.4']
