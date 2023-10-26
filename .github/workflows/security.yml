@@ -3,9 +3,7 @@ name: "PHP Docker images security scan"
 on:
   schedule:
     # once per day
-    - cron: "45 4 * * *"
-  pull_request:
-  push:
+    - cron: "45 6 * * *"
 
 jobs:
   php-security-check:

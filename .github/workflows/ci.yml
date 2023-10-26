@@ -30,23 +30,22 @@ jobs:
       with:
         push: false
         target: php-${{ matrix.variant }}
-        tags: php-${{ matrix.php-version }}-${{ matrix.variant }}:test
+        tags: php:test
         build-args: PHP_VERSION=${{ matrix.php-version }}
     - 
-      name: Check image consistency
-      run:
-        export PHP_VERSION=${{ matrix.php-version }} &&
-        export IMAGE_TAG=php-${{ matrix.php-version }}-${{ matrix.variant }}:test &&
-        ./.github/workflows/test-image.sh
-    - name: "Check FPM binary"
+      name: Check image version
+      run: docker run ${IMAGE_TAG} -v | grep "${{ matrix.php-version }}"
+    - 
+      name: "Check FPM binary"
       if: ${{ matrix.variant == 'fpm' }}
-      run:
-        export PHP_VERSION=${{ matrix.php-version }} &&
-        export IMAGE_TAG=php-${{ matrix.php-version }}-${{ matrix.variant }}:test &&
-        ./.github/workflows/test-image-fpm.sh
-    - name: "Check CLI interactive shell"
+      run: docker run php:test find /usr/bin/php-fpm
+    - 
+      name: "Check CLI interactive shell"
       if: ${{ matrix.variant == 'cli' }}
-      run:
-        export PHP_VERSION=${{ matrix.php-version }} &&
-        export IMAGE_TAG=php-${{ matrix.php-version }}-${{ matrix.variant }}:test &&
-        ./.github/workflows/test-image-cli.sh
+      run: docker run php:test | grep "Interactive"
+
+    - 
+      name: Check image consistency
+      run: |
+        export IMAGE_TAG=php:test
+        ./test-image.sh

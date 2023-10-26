@@ -5,8 +5,8 @@ on:
     # once per week
     - cron: "30 4 * * 0"
   push:
-    #tags:
-    #  - "v*.*.*"
+    tags:
+      - "v*.*.*"
 
 jobs:
   php-image-test:
@@ -26,7 +26,7 @@ jobs:
       name: Checkout code
       uses: actions/checkout@v4
     - 
-      name: Set up QEMU
+      name: Set up QEMU (multiplatform requirement)
       uses: docker/setup-qemu-action@v3
     - 
       name: Set up Docker Buildx
@@ -38,6 +38,12 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     -
+      name: Retrieve PHP version
+      run: |
+        docker build -t version-image --build-arg PHP_VERSION=${{ matrix.php-version }} .
+        env:
+          PHP_VERSION={{ (docker run version-image -v | grep -Eo -m 1 '[0-9]+\.[0-9]+\.[0-9]+') }}    
+    -
       name: Preparing image meta
       id: meta
       uses: docker/metadata-action@v4
@@ -46,7 +52,9 @@ jobs:
         tags: |
           type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }}-{{date 'YYYYMMDD'}}
           type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }}
+          type=raw,value=${{ matrix.php-version }},enable=${{ matrix.variant == 'cli' }}
           type=raw,value=latest,enable=${{ matrix.php-version == '8.2' && matrix.variant == 'cli' }}
+          type=raw,value={{ echo ${PHP_VERSION} }}-${{ matrix.variant }}
     -
       name: Build and push Docker image
       uses: docker/build-push-action@v5
