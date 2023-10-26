@@ -20,9 +20,7 @@ ENV APP_DIR=/app \
 	OPCACHE_MEMORY_CONSUMPTION=128M \
 	OPCACHE_INTERNED_STRINGS_BUFFER=16 \
 	OPCACHE_JIT=off \
-	OPCACHE_JIT_BUFFER_SIZE=32M \
-	\
-	XDEBUG_ENABLE=0
+	OPCACHE_JIT_BUFFER_SIZE=32M
 
 RUN apt-get update && \
 	apt-get install -yq --no-install-recommends \
@@ -43,7 +41,6 @@ RUN apt-get update && \
 		php${PHP_VERSION}-intl \
 		php${PHP_VERSION}-mbstring \
 		php${PHP_VERSION}-zip \
-		php${PHP_VERSION}-xdebug \
 		php${PHP_VERSION}-xml && \
 	wget https://getcomposer.org/installer -O composer-setup.php && \
 	php composer-setup.php && \
