@@ -1,6 +1,7 @@
 #!/bin/sh
 
-TEMPLATE_FILES=$(find ./etc/php -name "*.*.template")
+TEMPLATE_FILES=$(find /etc/php -name "*.*.template")
+
 for TEMPLATE_FILE_PATH in ${TEMPLATE_FILES}
 do
     TARGET_PATH=$(echo ${TEMPLATE_FILE_PATH} | sed -e "s/\/etc\/php/\/etc\/php\/${PHP_VERSION}/g" | sed -e "s/\.template//g")
