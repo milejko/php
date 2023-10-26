@@ -24,7 +24,6 @@ ENV APP_DIR=/app \
 
 RUN apt-get update && \
 	apt-get install -yq --no-install-recommends \
-		gettext-base \
 		lsb-release \
 		wget \
 		ca-certificates \
