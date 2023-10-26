@@ -1,7 +1,7 @@
 <h1>PHP Docker image, extendable with APT packages</h1>
 <p>
     Debian-slim based, open source, Docker image with ease of configuration in the heart.<br>
-    Dockerfile can be found here: <a target="blank"
+    The Dockerfile can be found here: <a target="blank"
     href="https://github.com/milejko/php/blob/main/Dockerfile">https://github.com/milejko/php</a>.<br>
     <br>
     Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3-RC<br>
@@ -11,6 +11,9 @@
 <ul>
     <li>
         A clean way of configuring: by passing ENVs during the runtime/orchestration (<a href="#env">ie. MEMORY_LIMIT, list below</a>)
+    </li>
+    <li>
+        Easily customizable entrypoint - implemented "/docker-entrypoint.d/" directory
     </li>
     <li>
         PHP and <a href="#modules">default modules</a> are installed from <a target="_blank" href="https://deb.sury.org">DEB packages</a>

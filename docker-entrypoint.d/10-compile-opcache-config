@@ -1,4 +1,0 @@
-#!/bin/sh
-
-# linked by default in Debian as /etc/php/${PHP_VERSION}/fpm|cli/conf.d/10-opcache.ini
-envsubst < /etc/php/mods-available/opcache.ini.tmpl > /etc/php/${PHP_VERSION}/mods-available/opcache.ini
