@@ -4,6 +4,7 @@ on:
   schedule:
     # once per day
     - cron: "45 6 * * *"
+  pull_request:
 
 jobs:
   php-security-check:
