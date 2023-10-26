@@ -1,5 +1,9 @@
 #!/bin/sh
 
+docker run -e UPLOAD_MAX_FILESIZE=200M ${IMAGE_TAG} -r 'phpinfo();' | grep "upload_max_filesize => 200M"
+docker run -e POST_MAX_SIZE=200M ${IMAGE_TAG} -r 'phpinfo();' | grep "post_max_size => 200M"
+docker run -e OPCACHE_MEMORY_CONSUMPTION=200M ${IMAGE_TAG} -r 'phpinfo();' | grep "opcache.memory_consumption => 200M"
+
 docker run ${IMAGE_TAG} -m | grep "bcmath"
 docker run ${IMAGE_TAG} -m | grep "calendar"
 docker run ${IMAGE_TAG} -m | grep "Core"
@@ -47,7 +51,4 @@ docker run ${IMAGE_TAG} -m | grep "zlib"
 docker run ${IMAGE_TAG} -a | grep "Interactive"
 
 docker run ${IMAGE_TAG} composer -V | grep "Composer version"
-
-docker run -e UPLOAD_MAX_FILESIZE=200M ${IMAGE_TAG} -r 'phpinfo();' | grep "upload_max_filesize => 200M"
-docker run -e POST_MAX_SIZE=200M ${IMAGE_TAG} -r 'phpinfo();' | grep "post_max_size => 200M"
-docker run -e OPCACHE_MEMORY_CONSUMPTION=200M ${IMAGE_TAG} -r 'phpinfo();' | grep "opcache.memory_consumption => 200M"
+docker run ${IMAGE_TAG} pwd | grep "/app"
