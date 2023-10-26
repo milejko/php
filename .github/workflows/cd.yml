@@ -5,8 +5,8 @@ on:
     # once per week
     - cron: "30 4 * * 0"
   push:
-    tags:
-      - "v*.*.*"
+    #tags:
+    #  - "v*.*.*"
 
 jobs:
   php-image-test:
@@ -55,6 +55,7 @@ jobs:
           type=raw,value=${{ matrix.php-version }},enable=${{ matrix.variant == 'cli' }}
           type=raw,value=latest,enable=${{ matrix.php-version == '8.2' && matrix.variant == 'cli' }}
           type=raw,value={{ echo ${PHP_VERSION} }}-${{ matrix.variant }}
+          type=raw,value={{ echo ${PHP_VERSION} }},enable=${{ matrix.variant == 'cli' }}
     -
       name: Build and push Docker image
       uses: docker/build-push-action@v5
