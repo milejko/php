@@ -19,7 +19,7 @@ jobs:
       matrix:
         php-version: ['8.3', '8.2', '8.1', '8.0', '7.4']
         variant: ['fpm', 'cli']
-      fail-fast: true
+      fail-fast: false
     runs-on: ubuntu-latest
     steps:
     - 
