@@ -34,18 +34,17 @@ jobs:
         build-args: PHP_VERSION=${{ matrix.php-version }}
     - 
       name: Check image version
-      run: docker run ${IMAGE_TAG} -v | grep "${{ matrix.php-version }}"
+      run: docker run php:test -v | grep "${{ matrix.php-version }}"
     - 
       name: "Check FPM binary"
       if: ${{ matrix.variant == 'fpm' }}
       run: docker run php:test find /usr/bin/php-fpm
     - 
-      name: "Check CLI interactive shell"
+      name: "Check CLI shell"
       if: ${{ matrix.variant == 'cli' }}
       run: docker run php:test | grep "Interactive"
-
     - 
-      name: Check image consistency
+      name: Perform image tests
       run: |
         export IMAGE_TAG=php:test
         ./test-image.sh
