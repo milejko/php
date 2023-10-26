@@ -13,7 +13,7 @@ jobs:
   #  uses: ./.github/workflows/ci.yml
 
   php-image-deploy:
-    name: "Docker image deployment"
+    name: "Image deployment"
     #needs: php-image-test
     strategy:
       matrix:
@@ -26,7 +26,7 @@ jobs:
       name: Checkout code
       uses: actions/checkout@v4
     - 
-      name: Set up QEMU (multiplatform requirement)
+      name: Set up QEMU (multiplatform)
       uses: docker/setup-qemu-action@v3
     - 
       name: Set up Docker Buildx
@@ -41,23 +41,22 @@ jobs:
       name: Export PHP version to ENV
       run: |
         docker build -t version-image --target=php-cli --build-arg PHP_VERSION=${{ matrix.php-version }} .
-        export PHP_VERSION=$(docker run version-image -v | grep -Eo -m 1 '[0-9]+\.[0-9]+\.[0-9]+')
-        echo "PHP_VERSION=${PHP_VERSION}" >> $GITHUB_ENV
+        echo "PHP_VERSION=$(docker run version-image -v | grep -Eo -m 1 '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
     -
-      name: Preparing image meta
+      name: Prepare image meta
       id: meta
       uses: docker/metadata-action@v4
       with:
         images: ${{ secrets.DOCKERHUB_USERNAME }}/php
         tags: |
-          type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }}-{{date 'YYYYMMDD'}}
           type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }}
           type=raw,value=${{ matrix.php-version }},enable=${{ matrix.variant == 'cli' }}
-          type=raw,value=latest,enable=${{ matrix.php-version == '8.2' && matrix.variant == 'cli' }}
           type=raw,value=${{ env.PHP_VERSION }}-${{ matrix.variant }}
+          type=raw,value=${{ env.PHP_VERSION }}-${{ matrix.variant }}-{{date 'YYYYMMDD'}}
           type=raw,value=${{ env.PHP_VERSION }},enable=${{ matrix.variant == 'cli' }}
+          type=raw,value=latest,enable=${{ matrix.php-version == '8.2' && matrix.variant == 'cli' }}
     -
-      name: Build and push Docker image
+      name: Build & push to Docker Hub
       uses: docker/build-push-action@v5
       with:
         push: true

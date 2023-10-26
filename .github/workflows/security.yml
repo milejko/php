@@ -1,4 +1,4 @@
-name: "Docker image security scan"
+name: "PHP Docker image security scan"
 
 on:
   schedule:
