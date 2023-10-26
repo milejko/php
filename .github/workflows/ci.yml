@@ -47,4 +47,4 @@ jobs:
       name: Perform image tests
       run: |
         export IMAGE_TAG=php:test
-        ./test-image.sh
+        ./.github/workflows/test-image.sh
