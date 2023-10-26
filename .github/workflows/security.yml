@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  php-security-check:
+  security-check:
     strategy:
       matrix:
         #only supported versions
