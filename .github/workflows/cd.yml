@@ -10,7 +10,7 @@ on:
 
 jobs:
   php-image-test:
-    uses: ./ci.yml#php-image-test
+    uses: ./ci.yml@php-image-test
 
   php-image-deploy:
     name: "Deployment of PHP Docker images"
