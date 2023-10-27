@@ -5,9 +5,6 @@ on:
     # once per week (external changes can break this images)
     - cron: "30 3 * * 0"
   pull_request:
-  push:
-    branches:    
-      - '**'
   #needed as workflow is reusable
   workflow_call:
   workflow_dispatch:
