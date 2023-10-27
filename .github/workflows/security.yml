@@ -11,26 +11,24 @@ jobs:
     name: "Security scan"
     strategy:
       matrix:
+        base-image: ['debian', 'alpine']
         #only supported versions
-        php-version: ['8.3', '8.2', '8.1']
+        php-version: ['8.2', '8.1']
         #only FPM (as FPM is based on CLI)
-        variant: ['fpm']
+        target: ['fpm']
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
-    - 
-      name: Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
-    - 
-      name: Build Docker image
+    - name: Build Docker image
       uses: docker/build-push-action@v5
       with:
         push: false
-        target: ${{ matrix.variant }}
+        target: ${{ matrix.target }}
         tags: testing
         build-args: PHP_VERSION=${{ matrix.php-version }}
-    -
-      name: Run Snyk to check Docker image for vulnerabilities
+    - name: Run Snyk to check Docker image for vulnerabilities
       continue-on-error: true
       uses: snyk/actions/docker@master
       env:
