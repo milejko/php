@@ -46,7 +46,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Export PHP version to ENV
       run: |
-        docker build -t version --target=${{ matrix.variant }} -f ./${{ matrix.base-image }}/Dockerfile --build-arg PHP_VERSION=${{ matrix.php-version }} ./${{ matrix.base-image }}
+        docker build -t version --target=${{ matrix.target }} -f ./${{ matrix.base-image }}/Dockerfile --build-arg PHP_VERSION=${{ matrix.php-version }} ./${{ matrix.base-image }}
         echo "PHP_PACKAGE_VERSION=$(docker run version -v | grep -Eo -m 1 '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
     - name: Prepare image metadata
       id: meta
@@ -55,20 +55,20 @@ jobs:
         images: ${{ secrets.DOCKERHUB_USERNAME }}/php
         # sample tag output: 8.2-cli, 8.2.11, latest, cli, 8.2.11-cli, 8.2.11-cli-20230712, 8.2.11
         tags: |
-          type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }},enable=${{ 'debian' == matrix.base-image }}
-          type=raw,value=${{ matrix.php-version }},enable=${{ 'cli' == matrix.variant && 'debian' == matrix.base-image }}
-          type=raw,value=latest,enable=${{ '8.2' == matrix.php-version && 'cli' == matrix.variant && 'debian' == matrix.base-image }}
-          type=raw,value=${{ matrix.variant }},enable=${{ '8.2' == matrix.php-version && 'debian' == matrix.base-image }}
-          type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.variant }},enable=${{ 'debian' == matrix.base-image }}
-          type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.variant }}-{{ date 'YYYYMMDD' }},enable=${{ 'debian' == matrix.base-image }}
-          type=raw,value=${{ env.PHP_PACKAGE_VERSION }},enable=${{ 'cli' == matrix.variant && 'debian' == matrix.base-image }}
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.target }},enable=${{ 'debian' == matrix.base-image }}
+          type=raw,value=${{ matrix.php-version }},enable=${{ 'cli' == matrix.target && 'debian' == matrix.base-image }}
+          type=raw,value=latest,enable=${{ '8.2' == matrix.php-version && 'cli' == matrix.target && 'debian' == matrix.base-image }}
+          type=raw,value=${{ matrix.target }},enable=${{ '8.2' == matrix.php-version && 'debian' == matrix.base-image }}
+          type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.target }},enable=${{ 'debian' == matrix.base-image }}
+          type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.target }}-{{ date 'YYYYMMDD' }},enable=${{ 'debian' == matrix.base-image }}
+          type=raw,value=${{ env.PHP_PACKAGE_VERSION }},enable=${{ 'cli' == matrix.target && 'debian' == matrix.base-image }}
 
-          type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }}-${{ matrix.base-image }}
-          type=raw,value=${{ matrix.php-version }}-${{ matrix.base-image }},enable=${{ 'cli' == matrix.variant }}
-          type=raw,value=${{ matrix.variant }}-${{ matrix.base-image }},enable=${{ '8.2' == matrix.php-version }}
-          type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.variant }}-${{ matrix.base-image }}
-          type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.variant }}-{{date 'YYYYMMDD'}}-${{ matrix.base-image }}
-          type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.base-image }},enable=${{ 'cli' == matrix.variant }}
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.target }}-${{ matrix.base-image }}
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.base-image }},enable=${{ 'cli' == matrix.target }}
+          type=raw,value=${{ matrix.target }}-${{ matrix.base-image }},enable=${{ '8.2' == matrix.php-version }}
+          type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.target }}-${{ matrix.base-image }}
+          type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.target }}-{{date 'YYYYMMDD'}}-${{ matrix.base-image }}
+          type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.base-image }},enable=${{ 'cli' == matrix.target }}
     - name: Build & push to Docker Hub
       uses: docker/build-push-action@v5
       with:
@@ -76,7 +76,7 @@ jobs:
         file: ./${{ matrix.base-image }}/Dockerfile
         context: ./${{ matrix.base-image }}/
         platforms: linux/amd64,linux/arm64,linux/arm/v7
-        target: ${{ matrix.variant }}
+        target: ${{ matrix.target }}
         tags: ${{ steps.meta.outputs.tags }},
         labels: ${{ steps.meta.outputs.labels }},
         build-args: PHP_VERSION=${{ matrix.php-version }}
