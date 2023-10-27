@@ -46,8 +46,8 @@ jobs:
         cd ${{ matrix.base-image }}
         docker build -t version --target=${{ matrix.variant }} --build-arg PHP_VERSION=${{ matrix.php-version }} .
         echo "PHP_PACKAGE_VERSION=$(docker run version -v | grep -Eo -m 1 '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
-    - name: Prepare image metadata (Debian)
-      id: meta-debian
+    - name: Prepare image metadata
+      id: meta
       if: ${{ 'debian' == matrix.base-image }}
       uses: docker/metadata-action@v4
       with:
@@ -61,14 +61,7 @@ jobs:
           type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.variant }}
           type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.variant }}-{{date 'YYYYMMDD'}}
           type=raw,value=${{ env.PHP_PACKAGE_VERSION }},enable=${{ 'cli' == matrix.variant }}
-    - name: Prepare image metadata (Alpine)
-      id: meta-alpine
-      if: ${{ 'alpine' == matrix.base-image }}
-      uses: docker/metadata-action@v4
-      with:
-        images: ${{ secrets.DOCKERHUB_USERNAME }}/php
-        # sample tag output: 8.2-cli-alpine, 8.2.11-alpine, cli-alpine, 8.2.11-cli-alpine, 8.2.11-cli-20230712-alpine, 8.2.11-alpine
-        tags: |
+
           type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }}-${{ matrix.base-image }}
           type=raw,value=${{ matrix.php-version }}-${{ matrix.base-image }},enable=${{ 'cli' == matrix.variant }}
           type=raw,value=${{ matrix.variant }}-${{ matrix.base-image }},enable=${{ '8.2' == matrix.php-version }}
