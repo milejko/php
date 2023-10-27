@@ -17,49 +17,64 @@ jobs:
     needs: Test
     strategy:
       matrix:
-        #TODO: include (for Alpine)
+        base-image: ['debian', 'alpine']
         php-version: ['8.2', '8.1', '8.0', '7.4', '8.3']
-        variant: ['cli', 'fpm']
+        target: ['cli', 'fpm']
+        exclude:
+          - base-image: alpine
+            php-version: '8.0'
+          - base-image: alpine
+            php-version: '7.4'
+          - base-image: alpine
+            php-version: '8.3'
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
-    -
-      name: Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
-    -
-      name: Set up QEMU (multiplatform)
+    - name: Set up QEMU (multiplatform)
       uses: docker/setup-qemu-action@v3
-    -
-      name: Set up Docker Buildx (multiplatform)
+    - name: Set up Docker Buildx (multiplatform)
       uses: docker/setup-buildx-action@v3
-    -
-      name: Login to Docker Hub
+    - name: Login to Docker Hub
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    -
-      name: Export PHP version to ENV
+    - name: Export PHP version to ENV
       run: |
         docker build -t version --target=${{ matrix.variant }} --build-arg PHP_VERSION=${{ matrix.php-version }} .
         echo "PHP_PACKAGE_VERSION=$(docker run version -v | grep -Eo -m 1 '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
-    -
-      name: Prepare image metadata
-      id: meta
+    - name: Prepare image metadata (Debian)
+      id: meta-debian
+      if: ${{ 'debian' == matrix.base-image }}
       uses: docker/metadata-action@v4
       with:
         images: ${{ secrets.DOCKERHUB_USERNAME }}/php
         # sample tag output: 8.2-cli, 8.2.11, latest, cli, 8.2.11-cli, 8.2.11-cli-20230712, 8.2.11
         tags: |
           type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }}
-          type=raw,value=${{ matrix.php-version }},enable=${{ matrix.variant == 'cli' }}
-          type=raw,value=latest,enable=${{ matrix.php-version == '8.2' && matrix.variant == 'cli' }}
-          type=raw,value=${{ matrix.variant }},enable=${{ matrix.php-version == '8.2' }}
+          type=raw,value=${{ matrix.php-version }},enable=${{ 'cli' == matrix.variant }}
+          type=raw,value=latest,enable=${{ '8.2' == matrix.php-version && 'cli' == matrix.variant }}
+          type=raw,value=${{ matrix.variant }},enable=${{ '8.2' == matrix.php-version }}
           type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.variant }}
           type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.variant }}-{{date 'YYYYMMDD'}}
-          type=raw,value=${{ env.PHP_PACKAGE_VERSION }},enable=${{ matrix.variant == 'cli' }}
-    -
-      name: Build & push to Docker Hub
+          type=raw,value=${{ env.PHP_PACKAGE_VERSION }},enable=${{ 'cli' == matrix.variant }}
+    - name: Prepare image metadata (Alpine)
+      id: meta-alpine
+      if: ${{ 'alpine' == matrix.base-image }}
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ secrets.DOCKERHUB_USERNAME }}/php
+        # sample tag output: 8.2-cli-alpine, 8.2.11-alpine, cli-alpine, 8.2.11-cli-alpine, 8.2.11-cli-20230712-alpine, 8.2.11-alpine
+        tags: |
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }}-${{ matrix.base-image }}
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.base-image }},enable=${{ 'cli' == matrix.variant }}
+          type=raw,value=${{ matrix.variant }}-${{ matrix.base-image }},enable=${{ '8.2' == matrix.php-version }}
+          type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.variant }}-${{ matrix.base-image }}
+          type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.variant }}-{{date 'YYYYMMDD'}}-${{ matrix.base-image }}
+          type=raw,value=${{ env.PHP_PACKAGE_VERSION }}-${{ matrix.base-image }},enable=${{ 'cli' == matrix.variant }}
+    - name: Build & push to Docker Hub
       uses: docker/build-push-action@v5
       with:
         push: true

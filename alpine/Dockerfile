@@ -33,6 +33,7 @@ ENV APP_DIR=/var/www/html \
 
 RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 	apk add --no-cache \
+		bash \
 		gettext \
 		wget \
 		ca-certificates \
@@ -75,7 +76,8 @@ RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 		php${PHP_PACKAGE_VERSION}-xsl \
 		php${PHP_PACKAGE_VERSION}-zip && \
 	rm -vf /usr/include/iconv.h && \
-	ln -s /usr/bin/php${PHP_PACKAGE_VERSION} /usr/bin/php && \
+	#fixing /usr/bin/php82 by linking to /usr/bin/php
+	if [ -f "/usr/bin/php${PHP_PACKAGE_VERSION}" ]; then ln -s /usr/bin/php${PHP_PACKAGE_VERSION} /usr/bin/php; fi && \
 	wget https://getcomposer.org/installer -O composer-setup.php && \
 	php composer-setup.php && \
 	mv composer.phar /usr/bin/composer && \
