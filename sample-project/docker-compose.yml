@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   php-fpm:
-    image: milejko/php:8.2-fpm
+    image: milejko/php:fpm
     environment:
       - MEMORY_LIMIT=256M
       - UPLOAD_MAX_FILESIZE=10M

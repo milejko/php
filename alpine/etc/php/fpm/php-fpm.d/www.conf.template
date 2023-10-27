@@ -20,7 +20,6 @@ decorate_workers_output = no
 
 ; https://github.com/docker-library/php/issues/878#issuecomment-938595965
 php_admin_flag[fastcgi.logging] = off
-php_flag[display_errors]        = off
 
 [global]
 daemonize = no

@@ -5,47 +5,46 @@ on:
     # once per week (external changes can break this images)
     - cron: "30 3 * * 0"
   pull_request:
-  push:
-    branches:    
-      - '**'
   #needed as workflow is reusable
   workflow_call:
   workflow_dispatch:
 
 jobs:
-  php-image-test:
+  Test:
     name: "Image test"
     strategy:
       matrix:
-        php-version: ['8.3', '8.2', '8.1', '8.0', '7.4']
-        variant: ['fpm', 'cli']
-      fail-fast: false
+        base-image: ['debian', 'alpine']
+        php-version: ['7.4', '8.0', '8.3', '8.1', '8.2']
+        target: ['cli', 'fpm']
+        exclude:
+          - base-image: alpine
+            php-version: '8.3'
+          - base-image: alpine
+            php-version: '8.0'
+          - base-image: alpine
+            php-version: '7.4'
+      fail-fast: true
     runs-on: ubuntu-latest
     steps:
-    - 
-      name: Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
-    - 
-      name: Build testing Docker image
+    - name: Build testing Docker image
       uses: docker/build-push-action@v5
       with:
         push: false
-        target: php-${{ matrix.variant }}
-        tags: php:test
+        file: ./${{ matrix.base-image }}/Dockerfile
+        context: ./${{ matrix.base-image }}/
+        target: ${{ matrix.target }}
+        tags: testing
         build-args: PHP_VERSION=${{ matrix.php-version }}
-    - 
-      name: Check image version
-      run: docker run php:test -v | grep "${{ matrix.php-version }}"
-    - 
-      name: "Check FPM binary"
-      if: ${{ matrix.variant == 'fpm' }}
-      run: docker run php:test find /usr/bin/php-fpm
-    - 
-      name: "Check CLI shell"
-      if: ${{ matrix.variant == 'cli' }}
-      run: docker run php:test | grep "Interactive"
-    - 
-      name: Perform image tests
-      run: |
-        export IMAGE_TAG=php:test
-        ./.github/workflows/test-image.sh
+    - name: Check image version
+      run: docker run testing -v | grep "${{ matrix.php-version }}"
+    - name: "Check FPM binary"
+      if: ${{ 'fpm' == matrix.target }}
+      run: docker run testing find /usr/bin/php-fpm
+    - name: "Check CLI shell"
+      if: ${{ 'cli' == matrix.target }}
+      run: docker run testing | grep "Interactive"
+    - name: Perform image tests
+      run: IMAGE_TAG=testing ./.github/workflows/test-image.sh

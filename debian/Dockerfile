@@ -3,15 +3,24 @@
 ARG OS_VERSION=bookworm-slim
 
 ## PHP-CLI stage
-FROM debian:${OS_VERSION} as php-cli
+FROM debian:${OS_VERSION} as cli
 
 ARG PHP_VERSION=8.2
 
 ENV APP_DIR=/app \
 	PHP_VERSION=${PHP_VERSION} \
 	\
-	MEMORY_LIMIT=-1 \
+	ALLOW_URL_FOPEN=1 \
+	ALLOW_URL_INCLUDE=1 \
+	\
+	DEFAULT_SOCKET_TIMEOUT=60 \
+	DISPLAY_ERRORS=0 \
+	DISPLAY_STARTUP_ERRORS=0 \
+	ERROR_REPORTING=E_ALL \
 	MAX_EXECUTION_TIME=30 \
+	MEMORY_LIMIT=-1 \
+	\
+	FILE_UPLOADS=1 \	
 	POST_MAX_SIZE=256M \
 	UPLOAD_MAX_FILESIZE=256M \
 	\
@@ -24,6 +33,7 @@ ENV APP_DIR=/app \
 
 RUN apt-get update && \
 	apt-get install -yq --no-install-recommends \
+		gettext-base \
 		lsb-release \
 		wget \
 		ca-certificates \
@@ -61,7 +71,7 @@ ENTRYPOINT [ "/docker-entrypoint" ]
 CMD [ "php", "-a" ]
 
 ## PHP-FPM stage
-FROM php-cli as php-fpm
+FROM cli as fpm
 
 ENV MEMORY_LIMIT=128M \
 	\
