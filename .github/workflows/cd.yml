@@ -5,8 +5,8 @@ on:
     # once per week
     - cron: "0 5 1,14 * *"
   push:
-    tags:
-      - "v*.*.*"
+    #tags:
+    #  - "v*.*.*"
 
 jobs:
   Test:
@@ -22,11 +22,11 @@ jobs:
         target: ['cli', 'fpm']
         exclude:
           - base-image: alpine
+            php-version: '8.3'
+          - base-image: alpine
             php-version: '8.0'
           - base-image: alpine
             php-version: '7.4'
-          - base-image: alpine
-            php-version: '8.3'
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
@@ -43,6 +43,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Export PHP version to ENV
       run: |
+        cd ${{ matrix.base-image }}
         docker build -t version --target=${{ matrix.variant }} --build-arg PHP_VERSION=${{ matrix.php-version }} .
         echo "PHP_PACKAGE_VERSION=$(docker run version -v | grep -Eo -m 1 '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
     - name: Prepare image metadata (Debian)
@@ -78,6 +79,8 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         push: true
+        file: ./${{ matrix.base-image }}/Dockerfile
+        context: ./${{ matrix.base-image }}/
         platforms: linux/amd64,linux/arm64,linux/arm/v7
         target: ${{ matrix.variant }}
         tags: ${{ steps.meta.outputs.tags }},
