@@ -37,6 +37,7 @@ RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 		gettext \
 		wget \
 		ca-certificates \
+		#fixed iconv
 		gnu-libiconv-dev \
 		unzip \
 		zip \
@@ -75,13 +76,20 @@ RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 		php${PHP_PACKAGE_VERSION}-xmlwriter \
 		php${PHP_PACKAGE_VERSION}-xsl \
 		php${PHP_PACKAGE_VERSION}-zip && \
-	rm -vf /usr/include/iconv.h && \
-	#fixing /usr/bin/php82 by linking to /usr/bin/php
-	if [ -f "/usr/bin/php${PHP_PACKAGE_VERSION}" ]; then ln -s /usr/bin/php${PHP_PACKAGE_VERSION} /usr/bin/php; fi && \
-	wget https://getcomposer.org/installer -O composer-setup.php && \
-	php composer-setup.php && \
-	mv composer.phar /usr/bin/composer && \
-	rm composer-setup.php
+	#fixing built-in iconv translit problem
+	rm -vf /usr/include/iconv.h
+
+#fixing /usr/bin/php82 by linking to /usr/bin/php
+RUN	export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
+	if [ -f "/usr/bin/php" ]; \
+		then echo "PHP BIN exist"; \
+		else cp "/usr/bin/php${PHP_PACKAGE_VERSION}" "/usr/bin/php"; \
+	fi;
+
+RUN	wget https://getcomposer.org/installer -O composer-setup.php && \
+ 	php composer-setup.php && \
+ 	mv composer.phar /usr/bin/composer && \
+ 	rm composer-setup.php
 
 # https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
 STOPSIGNAL SIGQUIT
