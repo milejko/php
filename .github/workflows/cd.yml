@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         base-image: ['debian', 'alpine']
-        php-version: ['8.2', '8.1', '8.0', '7.4', '8.3']
+        php-version: ['7.4', '8.0', '8.3', '8.1', '8.2']
         target: ['cli', 'fpm']
         exclude:
           - base-image: alpine
@@ -48,7 +48,6 @@ jobs:
         echo "PHP_PACKAGE_VERSION=$(docker run version -v | grep -Eo -m 1 '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
     - name: Prepare image metadata
       id: meta
-      if: ${{ 'debian' == matrix.base-image }}
       uses: docker/metadata-action@v4
       with:
         images: ${{ secrets.DOCKERHUB_USERNAME }}/php
