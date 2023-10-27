@@ -1,9 +1,22 @@
 #!/bin/sh
 
 PHP_INFO=$(docker run \
-    -e UPLOAD_MAX_FILESIZE=200M \
-    -e MAX_EXECUTION_TIME=60 \
+    \
+    -e ALLOW_URL_FOPEN=0 \
+    -e ALLOW_URL_INCLUDE=1 \
+    \
+    -e DEFAULT_SOCKET_TIMEOUT=15 \
+    -e DISPLAY_ERRORS=1 \
+    -e DISPLAY_STARTUP_ERRORS=1 \
+    -e ERROR_REPORTING=E_NONE \
+    -e MAX_EXECUTION_TIME=0 \
+    \
+    -e MEMORY_LIMIT=200M \
+    \
+    -e FILE_UPLOADS=0 \
     -e POST_MAX_SIZE=200M \
+    -e UPLOAD_MAX_FILESIZE=200M \
+    \
     -e OPCACHE_ENABLE=0 \
     -e OPCACHE_ENABLE_CLI=1 \
     -e OPCACHE_MEMORY_CONSUMPTION=200M \
@@ -12,9 +25,20 @@ PHP_INFO=$(docker run \
     -e OPCACHE_JIT_BUFFER_SIZE=16M \
 ${IMAGE_TAG} -r 'phpinfo();')
 
-echo "${PHP_INFO}" | grep "upload_max_filesize => 200M"
-echo "${PHP_INFO}" | grep "max_execution_time =>"
+echo "${PHP_INFO}" | grep "allow_url_fopen => Off"
+echo "${PHP_INFO}" | grep "allow_url_include => On"
+echo "${PHP_INFO}" | grep "default_socket_timeout => 15"
+echo "${PHP_INFO}" | grep "display_errors => STDOUT"
+echo "${PHP_INFO}" | grep "display_startup_errors => On"
+echo "${PHP_INFO}" | grep "error_reporting => E_NONE"
+echo "${PHP_INFO}" | grep "max_execution_time => 0"
+
+echo "${PHP_INFO}" | grep "memory_limit => 200M"
+
+echo "${PHP_INFO}" | grep "file_uploads => Off"
 echo "${PHP_INFO}" | grep "post_max_size => 200M"
+echo "${PHP_INFO}" | grep "upload_max_filesize => 200M"
+
 echo "${PHP_INFO}" | grep "opcache.enable => Off"
 echo "${PHP_INFO}" | grep "opcache.enable_cli => On"
 echo "${PHP_INFO}" | grep "opcache.memory_consumption => 200M"

@@ -7,12 +7,13 @@ on:
   pull_request:
 
 jobs:
-  php-security-check:
+  Security:
+    name: "Security scan"
     strategy:
       matrix:
         #only supported versions
         php-version: ['8.3', '8.2', '8.1']
-        #only fpm
+        #only FPM (as FPM is based on CLI)
         variant: ['fpm']
       fail-fast: false
     runs-on: ubuntu-latest
@@ -25,7 +26,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         push: false
-        target: php-${{ matrix.variant }}
+        target: ${{ matrix.variant }}
         tags: testing
         build-args: PHP_VERSION=${{ matrix.php-version }}
     -
