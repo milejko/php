@@ -1,0 +1,15 @@
+[PHP]
+
+allow_url_fopen         = ${ALLOW_URL_FOPEN}
+allow_url_include       = ${ALLOW_URL_INCLUDE}
+
+default_socket_timeout  = ${DEFAULT_SOCKET_TIMEOUT}
+display_errors          = ${DISPLAY_ERRORS}
+display_startup_errors  = ${DISPLAY_STARTUP_ERRORS}
+error_reporting         = ${ERROR_REPORTING}
+max_execution_time      = ${MAX_EXECUTION_TIME}
+memory_limit            = ${MEMORY_LIMIT}
+
+file_uploads            = ${FILE_UPLOADS}
+post_max_size           = ${POST_MAX_SIZE}
+upload_max_filesize     = ${UPLOAD_MAX_FILESIZE}

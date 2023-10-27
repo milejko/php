@@ -1,0 +1,12 @@
+zend_extension=opcache.so
+
+opcache.enable                  = ${OPCACHE_ENABLE}
+opcache.enable_cli              = ${OPCACHE_ENABLE_CLI}
+opcache.memory_consumption      = ${OPCACHE_MEMORY_CONSUMPTION}
+opcache.interned_strings_buffer = ${OPCACHE_INTERNED_STRINGS_BUFFER}
+
+opcache.jit                     = ${OPCACHE_JIT}
+opcache.jit_buffer_size         = ${OPCACHE_JIT_BUFFER_SIZE}
+opcache.max_accelerated_files   = 65000
+opcache.max_wasted_percentage   = 10
+opcache.validate_timestamps     = 0

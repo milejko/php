@@ -34,7 +34,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         push: false
-        dockerfile: ./${{ matrix.base-image }}/Dockerfile
+        file: ./${{ matrix.base-image }}/Dockerfile
         context: ./${{ matrix.base-image }}/
         target: ${{ matrix.target }}
         tags: testing
