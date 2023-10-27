@@ -31,50 +31,51 @@ ENV APP_DIR=/var/www/html \
 	OPCACHE_JIT=off \
 	OPCACHE_JIT_BUFFER_SIZE=32M
 
-RUN apk add --no-cache \
+RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
+	apk add --no-cache \
 		gettext \
 		wget \
 		ca-certificates \
 		gnu-libiconv-dev \
 		unzip \
 		zip \
-		php${PHP_VERSION} \
-		php${PHP_VERSION}-common \
-		php${PHP_VERSION}-bcmath \
-		php${PHP_VERSION}-calendar \
-		php${PHP_VERSION}-ctype \
-		php${PHP_VERSION}-curl \
-		php${PHP_VERSION}-dom \
-		php${PHP_VERSION}-exif \
-		php${PHP_VERSION}-ffi \
-		php${PHP_VERSION}-fileinfo \
-		php${PHP_VERSION}-gettext \
-		php${PHP_VERSION}-iconv \
-		php${PHP_VERSION}-intl \
-		php${PHP_VERSION}-mbstring \
-		php${PHP_VERSION}-openssl \
-		php${PHP_VERSION}-opcache \
-		php${PHP_VERSION}-pdo_sqlite \
-		php${PHP_VERSION}-pcntl \
-		php${PHP_VERSION}-phar \
-		php${PHP_VERSION}-posix \
-		php${PHP_VERSION}-session \
-		php${PHP_VERSION}-shmop \
-		php${PHP_VERSION}-simplexml \
-		php${PHP_VERSION}-sqlite3 \
-		php${PHP_VERSION}-sockets \
-		php${PHP_VERSION}-sodium \
-		php${PHP_VERSION}-sysvmsg \
-		php${PHP_VERSION}-sysvsem \
-		php${PHP_VERSION}-sysvshm \
-		php${PHP_VERSION}-tokenizer \
-		php${PHP_VERSION}-xml \
-		php${PHP_VERSION}-xmlreader \
-		php${PHP_VERSION}-xmlwriter \
-		php${PHP_VERSION}-xsl \
-		php${PHP_VERSION}-zip && \
+		php${PHP_PACKAGE_VERSION} \
+		php${PHP_PACKAGE_VERSION}-common \
+		php${PHP_PACKAGE_VERSION}-bcmath \
+		php${PHP_PACKAGE_VERSION}-calendar \
+		php${PHP_PACKAGE_VERSION}-ctype \
+		php${PHP_PACKAGE_VERSION}-curl \
+		php${PHP_PACKAGE_VERSION}-dom \
+		php${PHP_PACKAGE_VERSION}-exif \
+		php${PHP_PACKAGE_VERSION}-ffi \
+		php${PHP_PACKAGE_VERSION}-fileinfo \
+		php${PHP_PACKAGE_VERSION}-gettext \
+		php${PHP_PACKAGE_VERSION}-iconv \
+		php${PHP_PACKAGE_VERSION}-intl \
+		php${PHP_PACKAGE_VERSION}-mbstring \
+		php${PHP_PACKAGE_VERSION}-openssl \
+		php${PHP_PACKAGE_VERSION}-opcache \
+		php${PHP_PACKAGE_VERSION}-pdo_sqlite \
+		php${PHP_PACKAGE_VERSION}-pcntl \
+		php${PHP_PACKAGE_VERSION}-phar \
+		php${PHP_PACKAGE_VERSION}-posix \
+		php${PHP_PACKAGE_VERSION}-session \
+		php${PHP_PACKAGE_VERSION}-shmop \
+		php${PHP_PACKAGE_VERSION}-simplexml \
+		php${PHP_PACKAGE_VERSION}-sqlite3 \
+		php${PHP_PACKAGE_VERSION}-sockets \
+		php${PHP_PACKAGE_VERSION}-sodium \
+		php${PHP_PACKAGE_VERSION}-sysvmsg \
+		php${PHP_PACKAGE_VERSION}-sysvsem \
+		php${PHP_PACKAGE_VERSION}-sysvshm \
+		php${PHP_PACKAGE_VERSION}-tokenizer \
+		php${PHP_PACKAGE_VERSION}-xml \
+		php${PHP_PACKAGE_VERSION}-xmlreader \
+		php${PHP_PACKAGE_VERSION}-xmlwriter \
+		php${PHP_PACKAGE_VERSION}-xsl \
+		php${PHP_PACKAGE_VERSION}-zip && \
 	rm -vf /usr/include/iconv.h && \
-	ln -s /usr/bin/php${PHP_VERSION} /usr/bin/php && \
+	ln -s /usr/bin/php${PHP_PACKAGE_VERSION} /usr/bin/php && \
 	wget https://getcomposer.org/installer -O composer-setup.php && \
 	php composer-setup.php && \
 	mv composer.phar /usr/bin/composer && \
@@ -106,12 +107,14 @@ ENV MEMORY_LIMIT=128M \
 	FPM_PM_MAX_SPARE_SERVERS=16 \
 	FPM_PM_MAX_REQUEST=0
 
-RUN apk add --no-cache \
-		php${PHP_VERSION}-fpm && \
-	ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/bin/php-fpm
+RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
+	apk add --no-cache \
+		php${PHP_PACKAGE_VERSION}-fpm && \
+	echo "/usr/sbin/php-fpm${PHP_PACKAGE_VERSION} --nodaemonize" > /usr/bin/php-fpm && \
+	chmod +x /usr/bin/php-fpm
 
 COPY --link ./etc/php/fpm /etc/php/fpm
 
 EXPOSE ${FPM_LISTEN_PORT}
 
-CMD [ "/usr/bin/php-fpm", "--nodaemonize" ]
+CMD [ "/usr/bin/php-fpm" ]

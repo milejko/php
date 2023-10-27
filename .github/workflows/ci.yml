@@ -22,9 +22,9 @@ jobs:
         target: ['cli', 'fpm']
         include:
           - base-image: alpine
-            php-version: 81
+            php-version: '8.1'
           - base-image: alpine
-            php-version: 82
+            php-version: '8.2'
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
