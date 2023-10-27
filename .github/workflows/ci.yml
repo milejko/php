@@ -17,7 +17,7 @@ jobs:
     name: "Image test"
     strategy:
       matrix:
-        php-version: ['8.3', '8.2', '8.1', '8.0', '7.4']
+        php-version: ['8.2', '8.1', '8.0', '8.3', '7.4']
         variant: ['fpm', 'cli']
       fail-fast: false
     runs-on: ubuntu-latest
@@ -31,21 +31,19 @@ jobs:
       with:
         push: false
         target: php-${{ matrix.variant }}
-        tags: php:test
+        tags: php-test
         build-args: PHP_VERSION=${{ matrix.php-version }}
     - 
       name: Check image version
-      run: docker run php:test -v | grep "${{ matrix.php-version }}"
+      run: docker run php-test -v | grep "${{ matrix.php-version }}"
     - 
       name: "Check FPM binary"
       if: ${{ matrix.variant == 'fpm' }}
-      run: docker run php:test find /usr/bin/php-fpm
+      run: docker run php-test find /usr/bin/php-fpm
     - 
       name: "Check CLI shell"
       if: ${{ matrix.variant == 'cli' }}
-      run: docker run php:test | grep "Interactive"
+      run: docker run php-test | grep "Interactive"
     - 
       name: Perform image tests
-      run: |
-        export IMAGE_TAG=php:test
-        ./.github/workflows/test-image.sh
+      run: IMAGE_TAG=php-test ./.github/workflows/test-image.sh

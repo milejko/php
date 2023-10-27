@@ -48,13 +48,15 @@ jobs:
       uses: docker/metadata-action@v4
       with:
         images: ${{ secrets.DOCKERHUB_USERNAME }}/php
+        # sample tag output: 8.2-cli, 8.2.11, latest, cli, 8.2.11-cli, 8.2.11-cli-20230712, 8.2.11
         tags: |
           type=raw,value=${{ matrix.php-version }}-${{ matrix.variant }}
           type=raw,value=${{ matrix.php-version }},enable=${{ matrix.variant == 'cli' }}
+          type=raw,value=latest,enable=${{ matrix.php-version == '8.2' && matrix.variant == 'cli' }}
+          type=raw,value=${{ matrix.variant }},enable=${{ matrix.php-version == '8.2' }}
           type=raw,value=${{ env.PHP_VERSION }}-${{ matrix.variant }}
           type=raw,value=${{ env.PHP_VERSION }}-${{ matrix.variant }}-{{date 'YYYYMMDD'}}
           type=raw,value=${{ env.PHP_VERSION }},enable=${{ matrix.variant == 'cli' }}
-          type=raw,value=latest,enable=${{ matrix.php-version == '8.2' && matrix.variant == 'cli' }}
     -
       name: Build & push to Docker Hub
       uses: docker/build-push-action@v5
