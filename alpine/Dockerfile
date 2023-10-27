@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1.6
 
-ARG OS_VERSION=bookworm-slim
+ARG OS_VERSION=3.18
 
 ## PHP-CLI stage
-FROM debian:${OS_VERSION} as cli
+FROM alpine:${OS_VERSION} as cli
 
-ARG PHP_VERSION=8.2
+ARG PHP_VERSION=82
 
-ENV APP_DIR=/app \
+ENV APP_DIR=/var/www/html \
 	PHP_VERSION=${PHP_VERSION} \
 	\
 	ALLOW_URL_FOPEN=1 \
@@ -31,25 +31,50 @@ ENV APP_DIR=/app \
 	OPCACHE_JIT=off \
 	OPCACHE_JIT_BUFFER_SIZE=32M
 
-RUN apt-get update && \
-	apt-get install -yq --no-install-recommends \
-		lsb-release \
+RUN apk add --no-cache \
+		gettext \
 		wget \
 		ca-certificates \
+		gnu-libiconv-dev \
 		unzip \
-		zip && \
-	wget https://packages.sury.org/php/apt.gpg -O /usr/share/keyrings/deb.sury.org-php.gpg && \
-	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php-sury.list && \
-	apt-get update && \
-	apt-get install -yq --no-install-recommends \
-		php${PHP_VERSION}-cli \
+		zip \
+		php${PHP_VERSION} \
+		php${PHP_VERSION}-common \
 		php${PHP_VERSION}-bcmath \
+		php${PHP_VERSION}-calendar \
+		php${PHP_VERSION}-ctype \
 		php${PHP_VERSION}-curl \
 		php${PHP_VERSION}-dom \
+		php${PHP_VERSION}-exif \
+		php${PHP_VERSION}-ffi \
+		php${PHP_VERSION}-fileinfo \
+		php${PHP_VERSION}-gettext \
+		php${PHP_VERSION}-iconv \
 		php${PHP_VERSION}-intl \
 		php${PHP_VERSION}-mbstring \
-		php${PHP_VERSION}-zip \
-		php${PHP_VERSION}-xml && \
+		php${PHP_VERSION}-openssl \
+		php${PHP_VERSION}-opcache \
+		php${PHP_VERSION}-pdo_sqlite \
+		php${PHP_VERSION}-pcntl \
+		php${PHP_VERSION}-phar \
+		php${PHP_VERSION}-posix \
+		php${PHP_VERSION}-session \
+		php${PHP_VERSION}-shmop \
+		php${PHP_VERSION}-simplexml \
+		php${PHP_VERSION}-sqlite3 \
+		php${PHP_VERSION}-sockets \
+		php${PHP_VERSION}-sodium \
+		php${PHP_VERSION}-sysvmsg \
+		php${PHP_VERSION}-sysvsem \
+		php${PHP_VERSION}-sysvshm \
+		php${PHP_VERSION}-tokenizer \
+		php${PHP_VERSION}-xml \
+		php${PHP_VERSION}-xmlreader \
+		php${PHP_VERSION}-xmlwriter \
+		php${PHP_VERSION}-xsl \
+		php${PHP_VERSION}-zip && \
+	rm -vf /usr/include/iconv.h && \
+	ln -s /usr/bin/php${PHP_VERSION} /usr/bin/php && \
 	wget https://getcomposer.org/installer -O composer-setup.php && \
 	php composer-setup.php && \
 	mv composer.phar /usr/bin/composer && \
@@ -58,8 +83,7 @@ RUN apt-get update && \
 # https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
 STOPSIGNAL SIGQUIT
 
-COPY --link ./etc/php/cli /etc/php/${PHP_VERSION}/cli
-COPY --link ./etc/php/mods-available /etc/php/${PHP_VERSION}/mods-available
+COPY --link ./etc/php/cli /etc/php/cli
 COPY --link --chmod=755 ./docker-entrypoint.d /docker-entrypoint.d
 COPY --link --chmod=755 ./docker-entrypoint /docker-entrypoint
 
@@ -82,12 +106,12 @@ ENV MEMORY_LIMIT=128M \
 	FPM_PM_MAX_SPARE_SERVERS=16 \
 	FPM_PM_MAX_REQUEST=0
 
-RUN apt-get install -yq --no-install-recommends \
-	php${PHP_VERSION}-fpm && \
+RUN apk add --no-cache \
+		php${PHP_VERSION}-fpm && \
 	ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/bin/php-fpm
 
-COPY --link ./etc/php/fpm /etc/php/${PHP_VERSION}/fpm
+COPY --link ./etc/php/fpm /etc/php/fpm
 
 EXPOSE ${FPM_LISTEN_PORT}
 
-CMD [ "/usr/bin/php-fpm" ]
+CMD [ "/usr/bin/php-fpm", "--nodaemonize" ]

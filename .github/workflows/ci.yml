@@ -17,33 +17,35 @@ jobs:
     name: "Image test"
     strategy:
       matrix:
+        base-image: ['debian', 'alpine']
         php-version: ['8.2', '8.1', '8.0', '7.4', '8.3']
-        variant: ['cli', 'fpm']
+        target: ['cli', 'fpm']
+        include:
+          - base-image: alpine
+            php-version: 81
+          - base-image: alpine
+            php-version: 82
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
-    -
-      name: Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
-    -
-      name: Build testing Docker image
+    - name: Build testing Docker image
       uses: docker/build-push-action@v5
       with:
         push: false
-        target: php-${{ matrix.variant }}
+        dockerfile: ./${{ matrix.base-image }}/Dockerfile
+        context: ./${{ matrix.base-image }}/
+        target: ${{ matrix.target }}
         tags: testing
         build-args: PHP_VERSION=${{ matrix.php-version }}
-    -
-      name: Check image version
+    - name: Check image version
       run: docker run testing -v | grep "${{ matrix.php-version }}"
-    -
-      name: "Check FPM binary"
-      if: ${{ 'fpm' == matrix.variant }}
+    - name: "Check FPM binary"
+      if: ${{ 'fpm' == matrix.target }}
       run: docker run testing find /usr/bin/php-fpm
-    -
-      name: "Check CLI shell"
-      if: ${{ 'cli' == matrix.variant }}
+    - name: "Check CLI shell"
+      if: ${{ 'cli' == matrix.target }}
       run: docker run testing | grep "Interactive"
-    -
-      name: Perform image tests
+    - name: Perform image tests
       run: IMAGE_TAG=testing ./.github/workflows/test-image.sh
