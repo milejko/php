@@ -23,10 +23,13 @@ jobs:
         exclude:
           - base-image: alpine
             php-version: '8.3'
+            target: ['cli', 'fpm']
           - base-image: alpine
             php-version: '8.0'
+            target: ['cli', 'fpm']
           - base-image: alpine
             php-version: '7.4'
+            target: ['cli', 'fpm']
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
@@ -43,8 +46,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Export PHP version to ENV
       run: |
-        cd ${{ matrix.base-image }}
-        docker build -t version --target=${{ matrix.variant }} --build-arg PHP_VERSION=${{ matrix.php-version }} .
+        docker build -t version --target=${{ matrix.variant }} -f ./${{ matrix.base-image }}/Dockerfile --build-arg PHP_VERSION=${{ matrix.php-version }} ./${{ matrix.base-image }}
         echo "PHP_PACKAGE_VERSION=$(docker run version -v | grep -Eo -m 1 '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
     - name: Prepare image metadata
       id: meta
