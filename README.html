@@ -1,11 +1,13 @@
-<h1>PHP Docker image, extendable with APT packages</h1>
+<h1>PHP Docker image</h1>
 <p>
-    Debian-slim based, open source, Docker image with ease of configuration in the heart.<br>
-    The Dockerfile can be found here: <a target="blank"
-    href="https://github.com/milejko/php/blob/main/Dockerfile">https://github.com/milejko/php</a>.<br>
+    PHP-FPM, CLI Docker image with ease of configuration in the heart.<br>
+    Offering both convenient Debian base, as well as minimalistic Alpine.<br>
+    The Dockerfiles can be found here: <a target="blank"
+    href="https://github.com/milejko/php">https://github.com/milejko/php</a>.<br>
     <br>
+    Supported base images: Debian Slim, Alpine<br>
     Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3-RC<br>
-    Supported architectures: linux/amd64, linux/arm64
+    Supported architectures: linux/amd64, linux/arm64, linux/arm/v7
 </p>
 <h2>Core features</h2>
 <ul>
@@ -13,16 +15,16 @@
         A clean way of configuring: by passing ENVs during the runtime/orchestration (<a href="#env">ie. MEMORY_LIMIT, list below</a>)
     </li>
     <li>
-        Easily customizable entrypoint - implemented "/docker-entrypoint.d/" directory
+        PHP and <a href="#modules">default modules</a> are installed from stable Debian/Alpine packages</a>
     </li>
     <li>
-        PHP and <a href="#modules">default modules</a> are installed from <a target="_blank" href="https://deb.sury.org">DEB packages</a>
+        Easily customizable entrypoint - implemented "/docker-entrypoint.d/" directory
     </li>
     <li>
         Composer tool out of the box
     </li>
     <li>
-        Other PHP modules easily installed with <code>apt install phpX.Y-module</code>
+        Other PHP modules can be easily installed with <code>apt install phpX.Y-module`</code> or <code>`apk add phpXY-module`</code> (Alpine)
     </li>
 </ul>
 
