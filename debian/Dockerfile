@@ -7,7 +7,7 @@ FROM debian:${OS_VERSION} as cli
 
 ARG PHP_VERSION=8.2
 
-ENV APP_DIR=/app \
+ENV WORKDIR=/var/www/html \
 	PHP_VERSION=${PHP_VERSION} \
 	\
 	ALLOW_URL_FOPEN=1 \
@@ -63,7 +63,7 @@ COPY --link ./etc/php/mods-available /etc/php/cli/mods-available
 COPY --link --chmod=755 ./docker-entrypoint.d /docker-entrypoint.d
 COPY --link --chmod=755 ./docker-entrypoint /docker-entrypoint
 
-WORKDIR ${APP_DIR}
+WORKDIR ${WORKDIR}
 
 ENTRYPOINT [ "/docker-entrypoint" ]
 

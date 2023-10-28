@@ -7,7 +7,7 @@ FROM alpine:${OS_VERSION} as cli
 
 ARG PHP_VERSION=82
 
-ENV APP_DIR=/var/www/html \
+ENV WORKDIR=/var/www/html \
 	PHP_VERSION=${PHP_VERSION} \
 	\
 	ALLOW_URL_FOPEN=1 \
@@ -96,7 +96,7 @@ COPY --link ./etc/php/cli /etc/php/cli
 COPY --link --chmod=755 ./docker-entrypoint.d /docker-entrypoint.d
 COPY --link --chmod=755 ./docker-entrypoint /docker-entrypoint
 
-WORKDIR ${APP_DIR}
+WORKDIR ${WORKDIR}
 
 ENTRYPOINT [ "/docker-entrypoint" ]
 

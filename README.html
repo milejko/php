@@ -157,7 +157,14 @@ RUN apt update && apt install -y \
 <h2>Available environmental values</h2>
 <p>To tweak those values just pass them by adding --env ENV=value during runtime, or orchestrator configs (ie. docker-compose.yml).</p>
 <pre>
-APP_DIR=/app
+WORKDIR=/var/www/html
+ALLOW_URL_FOPEN=1
+DEFAULT_SOCKET_TIMEOUT=60
+DISPLAY_ERRORS=0
+DISPLAY_STARTUP_ERRORS=0
+ERROR_REPORTING=E_ALL
+</pre>
+<pre>
 MAX_EXECUTION_TIME=30
 MEMORY_LIMIT=128M
 POST_MAX_SIZE=256M
