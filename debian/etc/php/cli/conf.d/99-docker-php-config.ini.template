@@ -1,7 +1,6 @@
 [PHP]
 
 allow_url_fopen         = ${ALLOW_URL_FOPEN}
-allow_url_include       = ${ALLOW_URL_INCLUDE}
 
 default_socket_timeout  = ${DEFAULT_SOCKET_TIMEOUT}
 display_errors          = ${DISPLAY_ERRORS}

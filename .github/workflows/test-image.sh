@@ -3,8 +3,6 @@
 PHP_INFO=$(docker run \
     \
     -e ALLOW_URL_FOPEN=0 \
-    -e ALLOW_URL_INCLUDE=1 \
-    \
     -e DEFAULT_SOCKET_TIMEOUT=15 \
     -e DISPLAY_ERRORS=1 \
     -e DISPLAY_STARTUP_ERRORS=1 \
@@ -26,7 +24,6 @@ PHP_INFO=$(docker run \
 ${IMAGE_TAG} -r 'phpinfo();')
 
 echo "${PHP_INFO}" | grep "allow_url_fopen => Off"
-echo "${PHP_INFO}" | grep "allow_url_include => On"
 echo "${PHP_INFO}" | grep "default_socket_timeout => 15"
 echo "${PHP_INFO}" | grep "display_errors => STDOUT"
 echo "${PHP_INFO}" | grep "display_startup_errors => On"
