@@ -118,11 +118,10 @@ ENV MEMORY_LIMIT=128M \
 RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 	apk add --no-cache \
 		php${PHP_PACKAGE_VERSION}-fpm && \
-	echo "/usr/sbin/php-fpm${PHP_PACKAGE_VERSION} --nodaemonize" > /usr/bin/php-fpm && \
-	chmod +x /usr/bin/php-fpm
+	ln -s /usr/sbin/php-fpm${PHP_PACKAGE_VERSION} /usr/bin/php-fpm
 
 COPY --link ./etc/php/fpm /etc/php/fpm
 
 EXPOSE ${FPM_LISTEN_PORT}
 
-CMD [ "/usr/bin/php-fpm" ]
+CMD [ "/usr/bin/php-fpm", "--nodaemonize" ]
