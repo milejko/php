@@ -48,6 +48,8 @@ docker run ${IMAGE_TAG} -a | grep "Interactive"
 docker run ${IMAGE_TAG} composer -V | grep "Composer version"
 docker run ${IMAGE_TAG} pwd | grep "/app"
 
+docker run ${IMAGE_TAG} /usr/bin/php-fpm --daemonize | grep "fpm is running, pid"
+
 INSTALLED_MODULES=$(docker run ${IMAGE_TAG} -m)
 
 echo "${INSTALLED_MODULES}" | grep "bcmath"

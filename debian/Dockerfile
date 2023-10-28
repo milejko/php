@@ -58,7 +58,8 @@ RUN apt-get update && \
 # https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
 STOPSIGNAL SIGQUIT
 
-COPY --link ./etc/php /etc/php
+COPY --link ./etc/php/cli /etc/php/cli
+COPY --link ./etc/php/mods-available /etc/php/cli/mods-available
 COPY --link --chmod=755 ./docker-entrypoint.d /docker-entrypoint.d
 COPY --link --chmod=755 ./docker-entrypoint /docker-entrypoint
 
@@ -84,6 +85,8 @@ ENV MEMORY_LIMIT=128M \
 RUN apt-get install -yq --no-install-recommends \
 	php${PHP_VERSION}-fpm && \
 	ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/bin/php-fpm
+
+COPY --link ./etc/php/fpm /etc/php/fpm
 
 EXPOSE ${FPM_LISTEN_PORT}
 
