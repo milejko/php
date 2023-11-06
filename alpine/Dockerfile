@@ -5,7 +5,7 @@ ARG OS_VERSION=3.18
 ## PHP-CLI stage
 FROM alpine:${OS_VERSION} as cli
 
-ARG PHP_VERSION=82
+ARG PHP_VERSION=8.2
 
 ENV WORKDIR=/var/www/html \
 	PHP_VERSION=${PHP_VERSION} \
@@ -32,6 +32,7 @@ ENV WORKDIR=/var/www/html \
 RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 	apk add --no-cache \
 		bash \
+		shadow \
 		gettext \
 		wget \
 		ca-certificates \
@@ -92,7 +93,7 @@ RUN	wget https://getcomposer.org/installer -O composer-setup.php && \
 # https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
 STOPSIGNAL SIGQUIT
 
-COPY --link ./etc/php/cli /etc/php/cli
+COPY --link ./etc/php /etc/php
 COPY --link --chmod=755 ./docker-entrypoint.d /docker-entrypoint.d
 COPY --link --chmod=755 ./docker-entrypoint /docker-entrypoint
 
@@ -119,8 +120,6 @@ RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 	apk add --no-cache \
 		php${PHP_PACKAGE_VERSION}-fpm && \
 	ln -s /usr/sbin/php-fpm${PHP_PACKAGE_VERSION} /usr/bin/php-fpm
-
-COPY --link ./etc/php/fpm /etc/php/fpm
 
 EXPOSE ${FPM_LISTEN_PORT}
 

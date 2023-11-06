@@ -1,5 +1,6 @@
 #!/bin/sh
 
+export PHP_PACKAGE_VERSION=${PHP_VERSION/./}
 TEMPLATE_FILES=$(find /etc/php -name "*.*.template")
 
 for TEMPLATE_FILE_PATH in ${TEMPLATE_FILES}
