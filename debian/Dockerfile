@@ -59,7 +59,7 @@ RUN apt-get update && \
 STOPSIGNAL SIGQUIT
 
 COPY --link ./etc/php/cli /etc/php/cli
-COPY --link ./etc/php/mods-available /etc/php/cli/mods-available
+COPY --link ./etc/php/mods-available /etc/php/mods-available
 COPY --link --chmod=755 ./docker-entrypoint.d /docker-entrypoint.d
 COPY --link --chmod=755 ./docker-entrypoint /docker-entrypoint
 
