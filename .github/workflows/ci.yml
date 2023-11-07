@@ -4,6 +4,7 @@ on:
   schedule:
     # once per week (external changes can break this images)
     - cron: "30 3 * * 0"
+  push:
   pull_request:
   #needed as workflow is reusable
   workflow_call:
