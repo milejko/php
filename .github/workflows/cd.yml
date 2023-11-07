@@ -84,7 +84,7 @@ jobs:
     - name: Tag & push to Docker Hub
       uses: docker/build-push-action@v5
       with:
-        push: false
+        push: true
         file: ./${{ matrix.base-image }}/Dockerfile
         context: ./${{ matrix.base-image }}/
         platforms: linux/amd64,linux/arm64,linux/arm/v7
