@@ -85,7 +85,7 @@ jobs:
         push: true
         file: ./${{ matrix.base-image }}/Dockerfile
         context: ./${{ matrix.base-image }}/
-        platforms: linux/amd64,linux/arm64
+        platforms: linux/amd64,linux/arm64/v8
         target: ${{ matrix.target }}
         tags: ${{ steps.meta.outputs.tags }},
         labels: ${{ steps.meta.outputs.labels }},
