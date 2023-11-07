@@ -23,8 +23,7 @@ PHP_INFO=$(docker run \
     -e OPCACHE_INTERNED_STRINGS_BUFFER=22 \
     -e OPCACHE_VALIDATE_TIMESTAMPS=0 \
     -e OPCACHE_REVALIDATE_FREQ=15 \
-    -e OPCACHE_JIT=0 \
-    -e OPCACHE_JIT_BUFFER_SIZE=12M \
+    -e OPCACHE_PRELOAD="test.php" \
 ${IMAGE_TAG} -r 'phpinfo();')
 
 echo "${PHP_INFO}" | grep "allow_url_fopen => Off"
@@ -46,8 +45,7 @@ echo "${PHP_INFO}" | grep "opcache.memory_consumption => 200M"
 echo "${PHP_INFO}" | grep "opcache.validate_timestamps => Off"
 echo "${PHP_INFO}" | grep "opcache.revalidate_freq => 15"
 echo "${PHP_INFO}" | grep "opcache.max_accelerated_files => 65000"
-echo "${PHP_INFO}" | grep "opcache.jit => 0"
-echo "${PHP_INFO}" | grep "opcache.jit_buffer_size => 12M"
+echo "${PHP_INFO}" | grep "opcache.preload => test.php"
 
 docker run ${IMAGE_TAG} -a | grep "Interactive"
 
