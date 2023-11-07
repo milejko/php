@@ -5,8 +5,8 @@ on:
     # once per week
     - cron: "0 5 1,14 * *"
   push:
-    #tags:
-    #  - "v*.*.*"
+    tags:
+      - "v*.*.*"
 
 jobs:
   Deploy:
