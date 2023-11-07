@@ -9,12 +9,8 @@ on:
       - "v*.*.*"
 
 jobs:
-  Test:
-    uses: ./.github/workflows/ci.yml
-
   Deploy:
     name: "Image deployment"
-    needs: Test
     strategy:
       matrix:
         base-image: ['debian', 'alpine']
@@ -30,6 +26,29 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+    - name: Build testing Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        push: false
+        file: ./${{ matrix.base-image }}/Dockerfile
+        context: ./${{ matrix.base-image }}/
+        target: ${{ matrix.target }}
+        tags: testing
+        build-args: PHP_VERSION=${{ matrix.php-version }}
+    - name: Dump installed PHP version
+      run: echo "PHP_REAL_VERSION=$(docker run testing -v | grep -Eo -m 1 '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
+    - name: Check PHP version
+      run: echo "${{ env.PHP_REAL_VERSION }}" | grep "${{ matrix.php-version }}"
+    - name: Perform image tests
+      run: IMAGE_TAG=testing ./.github/workflows/test-image.sh
+    - name: "Check FPM"
+      if: ${{ 'fpm' == matrix.target }}
+      run: |
+        docker run testing find /usr/bin/php-fpm
+        docker run testing /usr/bin/php-fpm --daemonize
+    - name: "Check CLI"
+      if: ${{ 'cli' == matrix.target }}
+      run: docker run testing | grep "Interactive"
     - name: Set up QEMU (multiplatform)
       uses: docker/setup-qemu-action@v3
     - name: Set up Docker Buildx (multiplatform)
@@ -39,10 +58,6 @@ jobs:
       with:
         username: ${{ secrets.NE_DOCKERHUB_USERNAME }}
         password: ${{ secrets.NE_DOCKERHUB_TOKEN }}
-    - name: Export PHP version to ENV
-      run: |
-        docker build -t version --target=${{ matrix.target }} -f ./${{ matrix.base-image }}/Dockerfile --build-arg PHP_VERSION=${{ matrix.php-version }} ./${{ matrix.base-image }}
-        echo "PHP_REAL_VERSION=$(docker run version -v | grep -Eo -m 1 '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
     - name: Prepare image metadata
       id: meta
       uses: docker/metadata-action@v4
@@ -70,7 +85,7 @@ jobs:
         push: true
         file: ./${{ matrix.base-image }}/Dockerfile
         context: ./${{ matrix.base-image }}/
-        platforms: linux/amd64,linux/arm64,linux/arm/v7
+        platforms: linux/amd64,linux/arm64
         target: ${{ matrix.target }}
         tags: ${{ steps.meta.outputs.tags }},
         labels: ${{ steps.meta.outputs.labels }},
