@@ -42,8 +42,8 @@ jobs:
         build-args: PHP_VERSION=${{ matrix.php-version }}
     - name: Check & dump PHP version
       run: |
-        echo "PHP_REAL_VERSION=$(docker run testing -v | grep -Eo -m 1 '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
-        echo ${PHP_REAL_VERSION}
+        echo "$(docker run testing -v | grep -Eo -m 1 '[0-9]+\.[0-9]+\.[0-9]+')"
+        
     - name: Perform image tests
       run: IMAGE_TAG=testing ./.github/workflows/test-image.sh
     - name: "Check FPM"
