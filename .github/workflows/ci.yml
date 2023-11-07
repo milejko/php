@@ -4,10 +4,10 @@ on:
   schedule:
     # once per week (external changes can break this images)
     - cron: "30 3 * * 0"
+  push:
   pull_request:
-  #needed as workflow is reusable
+  # workflow can be called directly
   workflow_call:
-  workflow_dispatch:
 
 jobs:
   Test:
@@ -38,13 +38,17 @@ jobs:
         target: ${{ matrix.target }}
         tags: testing
         build-args: PHP_VERSION=${{ matrix.php-version }}
-    - name: Check image version
-      run: docker run testing -v | grep "${{ matrix.php-version }}"
-    - name: "Check FPM binary"
-      if: ${{ 'fpm' == matrix.target }}
-      run: docker run testing find /usr/bin/php-fpm
-    - name: "Check CLI shell"
-      if: ${{ 'cli' == matrix.target }}
-      run: docker run testing | grep "Interactive"
+    - name: Dump installed PHP version
+      run: echo "PHP_REAL_VERSION=$(docker run testing -v | grep -Eo -m 1 '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
+    - name: Check PHP version
+      run: echo "${{ env.PHP_REAL_VERSION }}" | grep "${{ matrix.php-version }}"
     - name: Perform image tests
       run: IMAGE_TAG=testing ./.github/workflows/test-image.sh
+    - name: "Check FPM"
+      if: ${{ 'fpm' == matrix.target }}
+      run: |
+        docker run testing find /usr/bin/php-fpm
+        docker run testing /usr/bin/php-fpm --daemonize
+    - name: "Check CLI"
+      if: ${{ 'cli' == matrix.target }}
+      run: docker run testing | grep "Interactive"

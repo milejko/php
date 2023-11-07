@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eu;
+
 PHP_INFO=$(docker run \
     \
     -e ALLOW_URL_FOPEN=0 \
@@ -19,8 +21,9 @@ PHP_INFO=$(docker run \
     -e OPCACHE_ENABLE_CLI=1 \
     -e OPCACHE_MEMORY_CONSUMPTION=200M \
     -e OPCACHE_INTERNED_STRINGS_BUFFER=22 \
-    -e OPCACHE_JIT=1 \
-    -e OPCACHE_JIT_BUFFER_SIZE=16M \
+    -e OPCACHE_VALIDATE_TIMESTAMPS=0 \
+    -e OPCACHE_REVALIDATE_FREQ=15 \
+    -e OPCACHE_PRELOAD="test.php" \
 ${IMAGE_TAG} -r 'phpinfo();')
 
 echo "${PHP_INFO}" | grep "allow_url_fopen => Off"
@@ -39,16 +42,15 @@ echo "${PHP_INFO}" | grep "upload_max_filesize => 200M"
 echo "${PHP_INFO}" | grep "opcache.enable => Off"
 echo "${PHP_INFO}" | grep "opcache.enable_cli => On"
 echo "${PHP_INFO}" | grep "opcache.memory_consumption => 200M"
-echo "${PHP_INFO}" | grep "opcache.interned_strings_buffer => 22"
-echo "${PHP_INFO}" | grep "opcache.jit => 1"
-echo "${PHP_INFO}" | grep "opcache.jit_buffer_size => 16M"
+echo "${PHP_INFO}" | grep "opcache.validate_timestamps => Off"
+echo "${PHP_INFO}" | grep "opcache.revalidate_freq => 15"
+echo "${PHP_INFO}" | grep "opcache.max_accelerated_files => 65000"
+echo "${PHP_INFO}" | grep "opcache.preload => test.php"
 
 docker run ${IMAGE_TAG} -a | grep "Interactive"
 
 docker run ${IMAGE_TAG} composer -V | grep "Composer version"
-docker run ${IMAGE_TAG} pwd | grep "/app"
-
-docker run ${IMAGE_TAG} /usr/bin/php-fpm --daemonize | grep "fpm is running, pid"
+docker run ${IMAGE_TAG} pwd | grep "/var/www/html"
 
 INSTALLED_MODULES=$(docker run ${IMAGE_TAG} -m)
 
