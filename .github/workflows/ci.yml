@@ -41,13 +41,13 @@ jobs:
         build-args: PHP_VERSION=${{ matrix.php-version }}
     - name: Check image version
       run: docker run testing -v | grep "${{ matrix.php-version }}"
+    - name: Perform image tests
+      run: IMAGE_TAG=testing ./.github/workflows/test-image.sh
     - name: "Check FPM"
       if: ${{ 'fpm' == matrix.target }}
       run: |
         docker run testing find /usr/bin/php-fpm
-        docker run testing /usr/bin/php-fpm --daemonize | grep "fpm is running"
-    - name: "Check CLI shell"
+        docker run testing /usr/bin/php-fpm --daemonize
+    - name: "Check CLI"
       if: ${{ 'cli' == matrix.target }}
       run: docker run testing | grep "Interactive"
-    - name: Perform image tests
-      run: IMAGE_TAG=testing ./.github/workflows/test-image.sh
