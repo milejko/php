@@ -6,7 +6,7 @@ on:
     - cron: "30 3 * * 0"
   push:
   pull_request:
-  #needed as workflow is reusable
+  # workflow is reusable (for CD process)
   workflow_call:
   workflow_dispatch:
 
@@ -45,7 +45,7 @@ jobs:
       if: ${{ 'fpm' == matrix.target }}
       run: |
         docker run testing find /usr/bin/php-fpm
-        docker run testing /usr/bin/php-fpm --daemonize | grep "php"
+        docker run testing /usr/bin/php-fpm --daemonize | grep "fpm is running"
     - name: "Check CLI shell"
       if: ${{ 'cli' == matrix.target }}
       run: docker run testing | grep "Interactive"
