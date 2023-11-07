@@ -9,12 +9,8 @@ on:
     #  - "v*.*.*"
 
 jobs:
-  Test:
-    uses: ./.github/workflows/ci.yml
-
   Deploy:
     name: "Image deployment"
-    needs: Test
     strategy:
       matrix:
         base-image: ['debian', 'alpine']
