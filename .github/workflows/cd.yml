@@ -43,7 +43,6 @@ jobs:
         push: false
         file: ./${{ matrix.base-image }}/Dockerfile
         context: ./${{ matrix.base-image }}/
-        platforms: linux/amd64,linux/arm64,linux/arm/v7
         target: ${{ matrix.target }}
         tags: testing
         build-args: PHP_VERSION=${{ matrix.php-version }}
