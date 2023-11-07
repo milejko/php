@@ -6,9 +6,8 @@ on:
     - cron: "30 3 * * 0"
   push:
   pull_request:
-  # workflow is reusable (for CD process)
+  # workflow can be called directly
   workflow_call:
-  workflow_dispatch:
 
 jobs:
   Test:
