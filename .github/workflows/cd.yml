@@ -45,13 +45,13 @@ jobs:
         context: ./${{ matrix.base-image }}/
         platforms: linux/amd64,linux/arm64,linux/arm/v7
         target: ${{ matrix.target }}
-        tags: testing,
+        tags: testing
         build-args: PHP_VERSION=${{ matrix.php-version }}
     - name: Dump installed PHP version
       run: |
         echo "PHP_REAL_VERSION=$(docker run testing -v | grep -Eo -m 1 '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
-        echo ${PHP_REAL_VERSION} | grep "${{ matrix.php-version }}"
-    - name: Test Image
+        echo "${PHP_REAL_VERSION}" | grep "${{ matrix.php-version }}"
+    - name: Test image
       run: IMAGE_TAG=testing ./.github/workflows/test-image.sh
     - name: Prepare image metadata
       id: meta
@@ -78,7 +78,6 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         push: true
-        pull: true
         file: ./${{ matrix.base-image }}/Dockerfile
         context: ./${{ matrix.base-image }}/
         platforms: linux/amd64,linux/arm64,linux/arm/v7
