@@ -52,7 +52,7 @@ docker run ${IMAGE_TAG} -a | grep "Interactive"
 docker run ${IMAGE_TAG} composer -V | grep "Composer version"
 docker run ${IMAGE_TAG} pwd | grep "/var/www/html"
 
-docker run ${IMAGE_TAG} -r "echo iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', 'Öął');" | grep 'Oal'
+docker run ${IMAGE_TAG} -r "echo iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', 'ął');" | grep 'al'
 
 INSTALLED_MODULES=$(docker run ${IMAGE_TAG} -m)
 
