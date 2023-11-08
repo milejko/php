@@ -30,6 +30,7 @@ ENV WORKDIR=/var/www/html \
 	OPCACHE_VALIDATE_TIMESTAMPS=1 \
 	OPCACHE_REVALIDATE_FREQ=2 \
 	OPCACHE_PRELOAD= \
+	OPCACHE_PRELOAD_USER= \
 	OPCACHE_JIT=tracing \
 	OPCACHE_JIT_BUFFER_SIZE=0
 
@@ -57,9 +58,6 @@ RUN apt-get update && \
 	php composer-setup.php && \
 	mv composer.phar /usr/bin/composer && \
 	rm composer-setup.php
-
-# https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
-STOPSIGNAL SIGQUIT
 
 COPY --link ./etc/php/cli /etc/php/cli
 COPY --link ./etc/php/mods-available /etc/php/mods-available
@@ -90,6 +88,9 @@ RUN apt-get install -yq --no-install-recommends \
 	ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/bin/php-fpm
 
 COPY --link ./etc/php/fpm /etc/php/fpm
+
+# https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
+STOPSIGNAL SIGQUIT
 
 EXPOSE ${FPM_LISTEN_PORT}
 

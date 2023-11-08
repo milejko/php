@@ -29,6 +29,7 @@ ENV WORKDIR=/var/www/html \
 	OPCACHE_VALIDATE_TIMESTAMPS=1 \
 	OPCACHE_REVALIDATE_FREQ=2 \
 	OPCACHE_PRELOAD= \
+	OPCACHE_PRELOAD_USER= \
 	OPCACHE_JIT=tracing \
 	OPCACHE_JIT_BUFFER_SIZE=0
 
@@ -39,7 +40,6 @@ RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 		gettext \
 		wget \
 		ca-certificates \
-		#fixed iconv
 		gnu-libiconv-dev \
 		unzip \
 		zip \
@@ -77,24 +77,25 @@ RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 		php${PHP_PACKAGE_VERSION}-xmlreader \
 		php${PHP_PACKAGE_VERSION}-xmlwriter \
 		php${PHP_PACKAGE_VERSION}-xsl \
-		php${PHP_PACKAGE_VERSION}-zip && \
-	#fixing built-in iconv translit problem
-	rm -vf /usr/include/iconv.h
+		php${PHP_PACKAGE_VERSION}-zip
 
-#fixing /usr/bin/php82 by linking to /usr/bin/php
+# fixing built-in iconv translit problem
+# https://github.com/docker-library/php/issues/1121
+RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community/ gnu-libiconv=1.15-r3
+
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
+
+# fixing variable PHP binary name ie. linking /usr/bin/php82 to /usr/bin/php
 RUN	export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 	if [ -f "/usr/bin/php" ]; \
 		then echo "PHP BIN exist"; \
-		else cp "/usr/bin/php${PHP_PACKAGE_VERSION}" "/usr/bin/php"; \
+		else ln -s "/usr/bin/php${PHP_PACKAGE_VERSION}" "/usr/bin/php"; \
 	fi;
 
 RUN	wget https://getcomposer.org/installer -O composer-setup.php && \
  	php composer-setup.php && \
  	mv composer.phar /usr/bin/composer && \
  	rm composer-setup.php
-
-# https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
-STOPSIGNAL SIGQUIT
 
 COPY --link ./etc/php /etc/php
 COPY --link --chmod=755 ./docker-entrypoint.d /docker-entrypoint.d
@@ -123,6 +124,9 @@ RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 	apk add --no-cache \
 		php${PHP_PACKAGE_VERSION}-fpm && \
 	ln -s /usr/sbin/php-fpm${PHP_PACKAGE_VERSION} /usr/bin/php-fpm
+
+# https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
+STOPSIGNAL SIGQUIT
 
 EXPOSE ${FPM_LISTEN_PORT}
 
