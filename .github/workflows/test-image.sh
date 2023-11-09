@@ -2,6 +2,7 @@
 
 set -eu;
 
+# test ENV config modifications
 PHP_INFO=$(docker run \
     \
     -e ALLOW_URL_FOPEN=0 \
@@ -24,6 +25,9 @@ PHP_INFO=$(docker run \
     -e OPCACHE_VALIDATE_TIMESTAMPS=0 \
     -e OPCACHE_REVALIDATE_FREQ=15 \
     -e OPCACHE_PRELOAD="test.php" \
+    -e OPCACHE_PRELOAD_USER="someuser" \
+    -e OPCACHE_JIT=1 \
+    -e OPCACHE_JIT_BUFFER_SIZE=8M \
 ${IMAGE_TAG} -r 'phpinfo();')
 
 echo "${PHP_INFO}" | grep "allow_url_fopen => Off"
@@ -32,7 +36,6 @@ echo "${PHP_INFO}" | grep "display_errors => STDOUT"
 echo "${PHP_INFO}" | grep "display_startup_errors => On"
 echo "${PHP_INFO}" | grep "error_reporting => E_NONE"
 echo "${PHP_INFO}" | grep "max_execution_time => 0"
-
 echo "${PHP_INFO}" | grep "memory_limit => 200M"
 
 echo "${PHP_INFO}" | grep "file_uploads => Off"
@@ -46,14 +49,23 @@ echo "${PHP_INFO}" | grep "opcache.validate_timestamps => Off"
 echo "${PHP_INFO}" | grep "opcache.revalidate_freq => 15"
 echo "${PHP_INFO}" | grep "opcache.max_accelerated_files => 65000"
 echo "${PHP_INFO}" | grep "opcache.preload => test.php"
+echo "${PHP_INFO}" | grep "opcache.preload_user => someuser"
+echo "${PHP_INFO}" | grep "opcache.jit => 1"
+echo "${PHP_INFO}" | grep "opcache.jit_buffer_size => 8M"
 
+# test php interactive mode
 docker run ${IMAGE_TAG} -a | grep "Interactive"
 
+# test composer
 docker run ${IMAGE_TAG} composer -V | grep "Composer version"
+
+# test WORKDIR
 docker run ${IMAGE_TAG} pwd | grep "/var/www/html"
 
+# test ICONV
 docker run ${IMAGE_TAG} -r "echo iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', 'abc');" | grep 'abc';
 
+# test installed modules
 INSTALLED_MODULES=$(docker run ${IMAGE_TAG} -m)
 
 echo "${INSTALLED_MODULES}" | grep "bcmath"
