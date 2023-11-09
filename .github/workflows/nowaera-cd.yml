@@ -14,8 +14,8 @@ jobs:
     name: "Image deployment"
     strategy:
       matrix:
-        base-image: ['debian', 'ubuntu']
-        php-version: ['8.3', '8.0', '8.1', '8.2']
+        base-image: ['ubuntu', 'debian']
+        php-version: ['7.4', '8.3', '8.0', '8.1', '8.2']
         target: ['cli', 'fpm']
       fail-fast: false
     runs-on: ubuntu-latest

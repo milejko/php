@@ -51,11 +51,13 @@ RUN apt-get update && \
 		php${PHP_VERSION}-mbstring \
 		php${PHP_VERSION}-zip \
 		php${PHP_VERSION}-xml && \
-	apt-get purge --autoremove software-properties-common -y && \
 	wget https://getcomposer.org/installer -O composer-setup.php && \
 	php composer-setup.php && \
 	mv composer.phar /usr/bin/composer && \
-	rm composer-setup.php
+	rm composer-setup.php && \
+	apt-get purge --autoremove -yq \
+		software-properties-common \
+		wget 
 
 COPY --link ./etc/php/cli /etc/php/cli
 COPY --link ./etc/php/mods-available /etc/php/mods-available
