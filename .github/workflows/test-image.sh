@@ -50,8 +50,9 @@ echo "${PHP_INFO}" | grep "opcache.revalidate_freq => 15"
 echo "${PHP_INFO}" | grep "opcache.max_accelerated_files => 65000"
 echo "${PHP_INFO}" | grep "opcache.preload => test.php"
 echo "${PHP_INFO}" | grep "opcache.preload_user => someuser"
-echo "${PHP_INFO}" | grep "opcache.jit => 1"
-echo "${PHP_INFO}" | grep "opcache.jit_buffer_size => 8M"
+#not compatible with PHP 7.x
+#echo "${PHP_INFO}" | grep "opcache.jit => 1"
+#echo "${PHP_INFO}" | grep "opcache.jit_buffer_size => 8M"
 
 # test php interactive mode
 docker run ${IMAGE_TAG} -a | grep "Interactive"
