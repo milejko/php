@@ -13,4 +13,3 @@ opcache.jit                     = ${OPCACHE_JIT}
 opcache.jit_buffer_size         = ${OPCACHE_JIT_BUFFER_SIZE}
 opcache.max_accelerated_files   = 65000
 opcache.max_wasted_percentage   = 10
-opcache.validate_timestamps     = 0
