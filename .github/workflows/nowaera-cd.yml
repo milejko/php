@@ -73,13 +73,21 @@ jobs:
         images: ${{ secrets.NE_DOCKERHUB_USERNAME }}/php
         # sample tag output: 8.2-cli, 8.2, latest, cli, 8.2.11-cli, 8.2.11-cli-20230712, 8.2.11
         tags: |
-          type=raw,value=${{ matrix.php-version }}-${{ matrix.target }}
-          type=raw,value=${{ matrix.php-version }},enable=${{ 'cli' == matrix.target }}
-          type=raw,value=latest,enable=${{ '8.2' == matrix.php-version && 'cli' == matrix.target }}
-          type=raw,value=${{ matrix.target }},enable=${{ '8.2' == matrix.php-version }}
-          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}
-          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-{{ date 'YYYYMMDD' }}
-          type=raw,value=${{ env.PHP_REAL_VERSION }},enable=${{ 'cli' == matrix.target }}
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.target }},enable=${{ 'debian' == matrix.base-image }}
+          type=raw,value=${{ matrix.php-version }},enable=${{ 'cli' == matrix.target && 'debian' == matrix.base-image }}
+          type=raw,value=latest,enable=${{ '8.2' == matrix.php-version && 'cli' == matrix.target && 'debian' == matrix.base-image }}
+          type=raw,value=${{ matrix.target }},enable=${{ '8.2' == matrix.php-version && 'debian' == matrix.base-image }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }},enable=${{ 'debian' == matrix.base-image }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-{{ date 'YYYYMMDD' }},enable=${{ 'debian' == matrix.base-image }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }},enable=${{ 'cli' == matrix.target && 'debian' == matrix.base-image }}
+
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.target }}-${{ matrix.base-image }}
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.base-image }},enable=${{ 'cli' == matrix.target }}
+          type=raw,value=${{ matrix.target }}-${{ matrix.base-image }},enable=${{ '8.2' == matrix.php-version }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-${{ matrix.base-image }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-{{date 'YYYYMMDD'}}-${{ matrix.base-image }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.base-image }},enable=${{ 'cli' == matrix.target }}
+
     - 
       name: Build & push to Docker Hub
       uses: docker/build-push-action@v5
