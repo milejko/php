@@ -1,11 +1,11 @@
 <h1>PHP Docker image</h1>
 <p>
     PHP-FPM, CLI Docker image with ease of configuration in the heart.<br>
-    Offering both convenient Debian base, as well as minimalistic Alpine.<br>
+    Offering Debian base, Ubuntu, as well as minimalistic Alpine.<br>
     The Dockerfiles can be found here: <a target="blank"
     href="https://github.com/milejko/php">https://github.com/milejko/php</a>.<br>
     <br>
-    Supported base images: Debian Slim, Alpine<br>
+    Supported base images: Debian Slim Bookworm, Ubuntu Jammy, Alpine<br>
     Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3-RC<br>
     Supported architectures: linux/amd64, linux/arm64, linux/arm/v7
 </p>
@@ -167,8 +167,8 @@ ERROR_REPORTING=E_ALL
 <pre>
 MAX_EXECUTION_TIME=30
 MEMORY_LIMIT=128M
-POST_MAX_SIZE=256M
-UPLOAD_MAX_FILESIZE=256M
+POST_MAX_SIZE=128M
+UPLOAD_MAX_FILESIZE=128M
 </pre>
 <pre>
 FPM_LISTEN_PORT=9000
