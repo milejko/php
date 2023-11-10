@@ -14,7 +14,7 @@ jobs:
     name: "Image deployment"
     strategy:
       matrix:
-        base-image: ['ubuntu', 'debian']
+        base-image: ['jammy', 'bookworm']
         php-version: ['7.4', '8.3', '8.0', '8.1', '8.2']
         target: ['cli', 'fpm']
       fail-fast: false
@@ -73,13 +73,13 @@ jobs:
         images: ${{ secrets.NE_DOCKERHUB_USERNAME }}/php
         # sample tag output: 8.2-cli, 8.2, latest, cli, 8.2.11-cli, 8.2.11-cli-20230712, 8.2.11
         tags: |
-          type=raw,value=${{ matrix.php-version }}-${{ matrix.target }},enable=${{ 'debian' == matrix.base-image }}
-          type=raw,value=${{ matrix.php-version }},enable=${{ 'cli' == matrix.target && 'debian' == matrix.base-image }}
-          type=raw,value=latest,enable=${{ '8.2' == matrix.php-version && 'cli' == matrix.target && 'debian' == matrix.base-image }}
-          type=raw,value=${{ matrix.target }},enable=${{ '8.2' == matrix.php-version && 'debian' == matrix.base-image }}
-          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }},enable=${{ 'debian' == matrix.base-image }}
-          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-{{ date 'YYYYMMDD' }},enable=${{ 'debian' == matrix.base-image }}
-          type=raw,value=${{ env.PHP_REAL_VERSION }},enable=${{ 'cli' == matrix.target && 'debian' == matrix.base-image }}
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.target }},enable=${{ 'bookworm' == matrix.base-image }}
+          type=raw,value=${{ matrix.php-version }},enable=${{ 'cli' == matrix.target && 'bookworm' == matrix.base-image }}
+          type=raw,value=latest,enable=${{ '8.2' == matrix.php-version && 'cli' == matrix.target && 'bookworm' == matrix.base-image }}
+          type=raw,value=${{ matrix.target }},enable=${{ '8.2' == matrix.php-version && 'bookworm' == matrix.base-image }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }},enable=${{ 'bookworm' == matrix.base-image }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-{{ date 'YYYYMMDD' }},enable=${{ 'bookworm' == matrix.base-image }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }},enable=${{ 'cli' == matrix.target && 'bookworm' == matrix.base-image }}
 
           type=raw,value=${{ matrix.php-version }}-${{ matrix.target }}-${{ matrix.base-image }}
           type=raw,value=${{ matrix.php-version }}-${{ matrix.base-image }},enable=${{ 'cli' == matrix.target }}
