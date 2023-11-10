@@ -85,7 +85,7 @@ jobs:
           type=raw,value=${{ matrix.php-version }}-${{ matrix.base-image }},enable=${{ 'cli' == matrix.target }}
           type=raw,value=${{ matrix.target }}-${{ matrix.base-image }},enable=${{ '8.2' == matrix.php-version }}
           type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-${{ matrix.base-image }}
-          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-{{date 'YYYYMMDD'}}-${{ matrix.base-image }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-${{ matrix.base-image }}-{{date 'YYYYMMDD'}}
           type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.base-image }},enable=${{ 'cli' == matrix.target }}
 
     - 
