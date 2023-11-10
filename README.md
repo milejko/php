@@ -1,12 +1,12 @@
 PHP Docker image
 ================
 PHP-FPM, CLI Docker image with ease of configuration in the heart.
-Offering both convenient Debian base, as well as minimalistic Alpine.
+Offering Debian Slim base, Ubuntu, as well as minimalistic Alpine.
 
 ### Core features ###
 * Clean way of configuration: using ENVs during runtime (ie. MEMORY_LIMIT, UPLOAD_MAX_FILESIZE and more...)
-* PHP and default modules are installed from stable Debian/Alpine packages
-* Easily customizable entrypoint - implemented "/docker-entrypoint.d/" directory
+* PHP and default modules are installed from stable Debian/Ubuntu/Alpine packages
+* Easily customizable entrypoint - implemented "/docker-entrypoint.d/" pattern
 * Composer tool out of the box
 * Other PHP modules can be easily installed with `apt install phpX.Y-module` or `apk add phpXY-module` (Alpine)
 
@@ -37,7 +37,7 @@ docker run --publish 127.0.0.1:8080:8080 phpinfo-http
 
 For further details, instructions and examples visit our Docker hub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)
 
-Supported base images: Debian Slim, Alpine<br>
+Supported base images: Debian Slim Bookworm, Ubuntu Jammy, Alpine<br>
 Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3-RC<br>
 Supported architectures: linux/amd64, linux/arm64, linux/arm/v7
 
