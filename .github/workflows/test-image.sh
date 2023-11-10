@@ -2,7 +2,31 @@
 
 set -eu;
 
-# test ENV config modifications
+# test default configuration
+PHP_INFO_DEFAULT=$(docker run ${IMAGE_TAG} -r 'phpinfo();')
+
+echo "${PHP_INFO_DEFAULT}" | grep "allow_url_fopen => On"
+echo "${PHP_INFO_DEFAULT}" | grep "default_socket_timeout => 60"
+echo "${PHP_INFO_DEFAULT}" | grep "display_errors => Off"
+echo "${PHP_INFO_DEFAULT}" | grep "display_startup_errors => Off"
+echo "${PHP_INFO_DEFAULT}" | grep "error_reporting => 32767"
+echo "${PHP_INFO_DEFAULT}" | grep "max_execution_time => 0"
+echo "${PHP_INFO_DEFAULT}" | grep "memory_limit => -1"
+
+echo "${PHP_INFO_DEFAULT}" | grep "file_uploads => On"
+echo "${PHP_INFO_DEFAULT}" | grep "post_max_size => 256M"
+echo "${PHP_INFO_DEFAULT}" | grep "upload_max_filesize => 256M"
+
+echo "${PHP_INFO_DEFAULT}" | grep "opcache.enable => On"
+echo "${PHP_INFO_DEFAULT}" | grep "opcache.enable_cli => Off"
+echo "${PHP_INFO_DEFAULT}" | grep "opcache.memory_consumption => 128M"
+echo "${PHP_INFO_DEFAULT}" | grep "opcache.validate_timestamps => On"
+echo "${PHP_INFO_DEFAULT}" | grep "opcache.revalidate_freq => 2"
+echo "${PHP_INFO_DEFAULT}" | grep "opcache.max_accelerated_files => 65000"
+echo "${PHP_INFO_DEFAULT}" | grep "opcache.preload => no value"
+echo "${PHP_INFO_DEFAULT}" | grep "opcache.preload_user => no value"
+
+# test altered configuration (ENV)
 PHP_INFO=$(docker run \
     \
     -e ALLOW_URL_FOPEN=0 \

@@ -35,9 +35,10 @@ ENV WORKDIR=/var/www/html \
 	OPCACHE_JIT_BUFFER_SIZE=0
 
 RUN apt-get update && \
-	apt-get install -yq \
+	apt-get install -yq --no-install-recommends \
 		gettext-base \
 		software-properties-common \
+		gnupg \
 		wget \
 		unzip \
 		zip && \
@@ -57,6 +58,7 @@ RUN apt-get update && \
 	rm composer-setup.php && \
 	apt-get purge --autoremove -yq \
 		software-properties-common \
+		gnupg \
 		wget 
 
 COPY --link ./etc/php/cli /etc/php/cli
