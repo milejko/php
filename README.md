@@ -2,6 +2,7 @@ PHP Docker image
 ================
 PHP-FPM, CLI Docker image with ease of configuration in the heart.
 Offering Debian Slim base, Ubuntu, as well as minimalistic Alpine.
+New images are deployed to Docker Hub twice per month.
 
 ### Core features ###
 * Clean way of configuration: using ENVs during runtime (ie. MEMORY_LIMIT, UPLOAD_MAX_FILESIZE and more...)

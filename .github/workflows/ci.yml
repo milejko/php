@@ -1,10 +1,9 @@
 name: "PHP Docker images CI"
 
 on:
-  schedule:
-    # once per week (external changes can break this images)
-    - cron: "30 3 * * 0"
   push:
+    branches:
+      - '**'
   pull_request:
   # workflow can be called directly
   workflow_call:

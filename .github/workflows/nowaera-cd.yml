@@ -2,8 +2,8 @@ name: "PHP Docker NE images delivery"
 
 on:
   schedule:
-    # once per week
-    - cron: "15 5 * * 1"
+    # twice per month
+    - cron: "15 5 1,14 * *"
   push:
     tags:
       - "v*.*.*"
