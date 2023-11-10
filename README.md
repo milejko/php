@@ -38,8 +38,6 @@ docker run --publish 127.0.0.1:8080:8080 phpinfo-http
 
 For further details, instructions and examples visit our Docker hub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)
 
-Supported base images: Debian Slim Bookworm, Ubuntu Jammy, Alpine<br>
+Supported base images: Debian Bookworm (Slim), Ubuntu Jammy, Alpine 3<br>
 Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3-RC<br>
 Supported architectures: linux/amd64, linux/arm64, linux/arm/v7
-
-Enjoy! By [Mariusz Miłejko](https://github.com/milejko)
