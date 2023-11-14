@@ -2,7 +2,7 @@
 user        = nobody
 group       = nobody
 listen      = ${FPM_LISTEN_PORT}
-clear_env   = yes
+clear_env   = no
 
 access.log  = /dev/null
 
