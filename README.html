@@ -152,17 +152,14 @@ zlib
 
 <h2>Adding more PHP modules</h2>
 <p>
-    In this example popular PDO-MYSQL, REDIS and AMQP modules will be added.<br>
+    In this example Imagick module will be added.<br>
     First create your own Dockerfile, with this code:
 </p>
 <code>Dockerfile</code>
 <pre>
 ARG PHP_VERSION=8.2
 FROM milejko/php:${PHP_VERSION}-fpm
-RUN apt update && apt install -y \
-    php${PHP_VERSION}-amqp \
-    php${PHP_VERSION}-pdo-mysql \
-    php${PHP_VERSION}-redis
+RUN apt update && apt install -y php${PHP_VERSION}-imagick
 </pre>
 
 <a name="env"></a>
