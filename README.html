@@ -88,7 +88,7 @@ docker run --env FPM_LOG_LEVEL=debug --publish 127.0.0.1:9000:9000 phpinfo-fpm
 </p>
 
 <a name="modules"></a>
-<h2>PHP modules enabled by default</h2>
+<h2>Installed PHP modules</h2>
 <pre>
 amqp
 apcu
@@ -140,6 +140,7 @@ sysvmsg
 sysvsem
 sysvshm
 tokenizer
+xdebug (disabled, see <a href="#env">ENV</a>)
 xml
 xmlreader
 xmlwriter
@@ -201,6 +202,10 @@ OPCACHE_PRELOAD=
 OPCACHE_PRELOAD_USER=
 OPCACHE_JIT=off
 OPCACHE_JIT_BUFFER_SIZE=0
+</pre>
+<pre>
+XDEBUG_ENABLE=0
+XDEBUG_MODE=off
 </pre>
 <br>
 By <a href="https://github.com/milejko">Mariusz Miłejko</a>, enjoy!
