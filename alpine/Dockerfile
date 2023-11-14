@@ -31,7 +31,10 @@ ENV WORKDIR=/var/www/html \
 	OPCACHE_PRELOAD= \
 	OPCACHE_PRELOAD_USER= \
 	OPCACHE_JIT=tracing \
-	OPCACHE_JIT_BUFFER_SIZE=0
+	OPCACHE_JIT_BUFFER_SIZE=0 \
+	\
+	XDEBUG_ENABLE=0 \
+	XDEBUG_MODE=off
 
 RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 	apk add --no-cache \
@@ -59,10 +62,13 @@ RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 		php${PHP_PACKAGE_VERSION}-intl \
 		php${PHP_PACKAGE_VERSION}-ldap \
 		php${PHP_PACKAGE_VERSION}-mbstring \
+		php${PHP_PACKAGE_VERSION}-mysqli \
+		php${PHP_PACKAGE_VERSION}-mysqlnd \
 		php${PHP_PACKAGE_VERSION}-openssl \
 		php${PHP_PACKAGE_VERSION}-opcache \
 		php${PHP_PACKAGE_VERSION}-pdo_sqlite \
 		php${PHP_PACKAGE_VERSION}-pdo_mysql \
+		php${PHP_PACKAGE_VERSION}-pecl-amqp \
 		php${PHP_PACKAGE_VERSION}-pecl-apcu \
 		php${PHP_PACKAGE_VERSION}-pecl-redis \
 		php${PHP_PACKAGE_VERSION}-pcntl \
@@ -78,6 +84,7 @@ RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 		php${PHP_PACKAGE_VERSION}-sysvsem \
 		php${PHP_PACKAGE_VERSION}-sysvshm \
 		php${PHP_PACKAGE_VERSION}-tokenizer \
+		php${PHP_PACKAGE_VERSION}-xdebug \
 		php${PHP_PACKAGE_VERSION}-xml \
 		php${PHP_PACKAGE_VERSION}-xmlreader \
 		php${PHP_PACKAGE_VERSION}-xmlwriter \

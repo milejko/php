@@ -2,7 +2,7 @@
 user        = www-data
 group       = www-data
 listen      = ${FPM_LISTEN_PORT}
-clear_env   = no
+clear_env   = yes
 
 access.log  = /dev/null
 

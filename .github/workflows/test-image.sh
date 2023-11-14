@@ -25,6 +25,13 @@ echo "${PHP_INFO_DEFAULT}" | grep "opcache.revalidate_freq => 2"
 echo "${PHP_INFO_DEFAULT}" | grep "opcache.max_accelerated_files => 65000"
 echo "${PHP_INFO_DEFAULT}" | grep "opcache.preload => no value"
 echo "${PHP_INFO_DEFAULT}" | grep "opcache.preload_user => no value"
+echo "${PHP_INFO_DEFAULT}" | grep "xdebug.ini"
+
+# test if XDEBUG module is disabled
+if echo "${PHP_INFO_DEFAULT}" | grep "xdebug.mode" ; then
+    echo "XDEBUG enabled!"
+    exit 1
+fi
 
 # test altered configuration (ENV)
 PHP_INFO=$(docker run \
@@ -52,6 +59,9 @@ PHP_INFO=$(docker run \
     -e OPCACHE_PRELOAD_USER="someuser" \
     -e OPCACHE_JIT=1 \
     -e OPCACHE_JIT_BUFFER_SIZE=8M \
+    \
+    -e XDEBUG_ENABLE=1 \
+    -e XDEBUG_MODE=develop \
 ${IMAGE_TAG} -r 'phpinfo();')
 
 echo "${PHP_INFO}" | grep "allow_url_fopen => Off"
@@ -77,6 +87,13 @@ echo "${PHP_INFO}" | grep "opcache.preload_user => someuser"
 #not compatible with PHP 7.x
 #echo "${PHP_INFO}" | grep "opcache.jit => 1"
 #echo "${PHP_INFO}" | grep "opcache.jit_buffer_size => 8M"
+echo "${PHP_INFO}" | grep "xdebug.mode => develop"
+
+# test docker-entrypoint.d scripts
+docker run ${IMAGE_TAG} -v | grep "config.ini"
+docker run ${IMAGE_TAG} -v | grep "xdebug.ini"
+docker run ${IMAGE_TAG} -v | grep "opcache.ini"
+docker run ${IMAGE_TAG} -v | grep "XDEBUG disabled"
 
 # test php interactive mode
 docker run ${IMAGE_TAG} -a | grep "Interactive"
@@ -93,6 +110,7 @@ docker run ${IMAGE_TAG} -r "echo iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', 'abc'
 # test installed modules
 INSTALLED_MODULES=$(docker run ${IMAGE_TAG} -m)
 
+echo "${INSTALLED_MODULES}" | grep "amqp"
 echo "${INSTALLED_MODULES}" | grep "apcu"
 echo "${INSTALLED_MODULES}" | grep "bcmath"
 echo "${INSTALLED_MODULES}" | grep "calendar"
@@ -108,10 +126,14 @@ echo "${INSTALLED_MODULES}" | grep "gd"
 echo "${INSTALLED_MODULES}" | grep "gettext"
 echo "${INSTALLED_MODULES}" | grep "hash"
 echo "${INSTALLED_MODULES}" | grep "iconv"
+echo "${INSTALLED_MODULES}" | grep "igbinary"
 echo "${INSTALLED_MODULES}" | grep "intl"
 echo "${INSTALLED_MODULES}" | grep "json"
+echo "${INSTALLED_MODULES}" | grep "ldap"
 echo "${INSTALLED_MODULES}" | grep "libxml"
 echo "${INSTALLED_MODULES}" | grep "mbstring"
+echo "${INSTALLED_MODULES}" | grep "mysqli"
+echo "${INSTALLED_MODULES}" | grep "mysqlnd"
 echo "${INSTALLED_MODULES}" | grep "openssl"
 echo "${INSTALLED_MODULES}" | grep "pcntl"
 echo "${INSTALLED_MODULES}" | grep "pcre"
