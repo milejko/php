@@ -44,22 +44,27 @@ RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 		unzip \
 		zip \
 		php${PHP_PACKAGE_VERSION} \
-		php${PHP_PACKAGE_VERSION}-common \
 		php${PHP_PACKAGE_VERSION}-bcmath \
 		php${PHP_PACKAGE_VERSION}-calendar \
+		php${PHP_PACKAGE_VERSION}-common \
 		php${PHP_PACKAGE_VERSION}-ctype \
 		php${PHP_PACKAGE_VERSION}-curl \
 		php${PHP_PACKAGE_VERSION}-dom \
 		php${PHP_PACKAGE_VERSION}-exif \
 		php${PHP_PACKAGE_VERSION}-ffi \
 		php${PHP_PACKAGE_VERSION}-fileinfo \
+		php${PHP_PACKAGE_VERSION}-gd \
 		php${PHP_PACKAGE_VERSION}-gettext \
 		php${PHP_PACKAGE_VERSION}-iconv \
 		php${PHP_PACKAGE_VERSION}-intl \
+		php${PHP_PACKAGE_VERSION}-ldap \
 		php${PHP_PACKAGE_VERSION}-mbstring \
 		php${PHP_PACKAGE_VERSION}-openssl \
 		php${PHP_PACKAGE_VERSION}-opcache \
 		php${PHP_PACKAGE_VERSION}-pdo_sqlite \
+		php${PHP_PACKAGE_VERSION}-pdo_mysql \
+		php${PHP_PACKAGE_VERSION}-pecl-apcu \
+		php${PHP_PACKAGE_VERSION}-pecl-redis \
 		php${PHP_PACKAGE_VERSION}-pcntl \
 		php${PHP_PACKAGE_VERSION}-phar \
 		php${PHP_PACKAGE_VERSION}-posix \

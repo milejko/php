@@ -46,12 +46,19 @@ RUN apt-get update && \
 	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php-sury.list && \
 	apt-get update && \
 	apt-get install -yq --no-install-recommends \
-		php${PHP_VERSION}-cli \
+		php${PHP_VERSION}-amqp \
+		php${PHP_VERSION}-apcu \
 		php${PHP_VERSION}-bcmath \
+		php${PHP_VERSION}-cli \
 		php${PHP_VERSION}-curl \
 		php${PHP_VERSION}-dom \
+		php${PHP_VERSION}-gd \
 		php${PHP_VERSION}-intl \
+		php${PHP_VERSION}-ldap \
 		php${PHP_VERSION}-mbstring \
+		php${PHP_VERSION}-pdo-mysql \
+    	php${PHP_VERSION}-pdo-sqlite \
+		php${PHP_VERSION}-redis \
 		php${PHP_VERSION}-zip \
 		php${PHP_VERSION}-xml && \
 	wget https://getcomposer.org/installer -O composer-setup.php && \
@@ -60,7 +67,9 @@ RUN apt-get update && \
 	rm composer-setup.php && \
 	apt-get purge --autoremove -yq \
 		lsb-release \
-		wget
+		perl \
+		wget && \
+	rm -rf /var/lib/apt/lists
 
 COPY --link ./etc/php/cli /etc/php/cli
 COPY --link ./etc/php/mods-available /etc/php/mods-available
@@ -84,8 +93,10 @@ ENV FPM_LISTEN_PORT=9000 \
 	FPM_PM_MAX_SPARE_SERVERS=16 \
 	FPM_PM_MAX_REQUEST=0
 
-RUN apt-get install -yq --no-install-recommends \
+RUN apt-get update && \
+	apt-get install -yq --no-install-recommends \
 	php${PHP_VERSION}-fpm && \
+	rm -rf /var/lib/apt/lists && \
 	ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/bin/php-fpm
 
 COPY --link ./etc/php/fpm /etc/php/fpm
