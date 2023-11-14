@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eu;
+
 run-parts /docker-entrypoint.d
 
 # first arg is `-f` or `--some-option`

@@ -32,7 +32,10 @@ ENV WORKDIR=/var/www/html \
 	OPCACHE_PRELOAD= \
 	OPCACHE_PRELOAD_USER= \
 	OPCACHE_JIT=tracing \
-	OPCACHE_JIT_BUFFER_SIZE=0
+	OPCACHE_JIT_BUFFER_SIZE=0 \
+	\
+	XDEBUG_ENABLE=0 \
+	XDEBUG_MODE=off
 
 RUN apt-get update && \
 	apt-get install -yq --no-install-recommends \
@@ -58,6 +61,7 @@ RUN apt-get update && \
     	php${PHP_VERSION}-pdo-sqlite \
 		php${PHP_VERSION}-redis \
 		php${PHP_VERSION}-zip \
+		php${PHP_VERSION}-xdebug \
 		php${PHP_VERSION}-xml && \
 	wget https://getcomposer.org/installer -O composer-setup.php && \
 	php composer-setup.php && \
