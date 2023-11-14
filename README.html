@@ -24,7 +24,7 @@
         Composer tool out of the box
     </li>
     <li>
-        Other PHP modules can be easily installed with <code>apt install phpX.Y-module`</code> or <code>`apk add phpXY-module`</code> (Alpine)
+        Other PHP modules can be easily installed with <code>apt-get install phpX.Y-module`</code> or <code>`apk add phpXY-module`</code> (Alpine)
     </li>
 </ul>
 
@@ -159,7 +159,19 @@ zlib
 <pre>
 ARG PHP_VERSION=8.2
 FROM milejko/php:${PHP_VERSION}-fpm
-RUN apt update && apt install -y php${PHP_VERSION}-imagick
+RUN apt-get update && \
+    apt-get install -y php${PHP_VERSION}-imagick
+</pre>
+<code>Dockerfile.alpine</code>
+<pre>
+FROM milejko/php:8.2-fpm-alpine
+RUN apk update && \
+    apk add --no-cache php82-pecl-imagick
+</pre>
+<p>Note that Alpine uses "no-dot" notation for PHP version, and "pecl" prefix for some modules, see the list here: <a target="_blank" href="https://pkgs.alpinelinux.org/packages">pkgs.alpinelinux.org/packages</a></p>
+<p>After that just build and run your image:</p>
+<pre>
+docker build -t fpm-with-imagick .
 </pre>
 
 <a name="env"></a>
