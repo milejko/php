@@ -90,10 +90,14 @@ echo "${PHP_INFO}" | grep "opcache.preload_user => someuser"
 echo "${PHP_INFO}" | grep "xdebug.mode => develop"
 
 # test docker-entrypoint.d scripts
-docker run ${IMAGE_TAG} -v | grep "config.ini"
-docker run ${IMAGE_TAG} -v | grep "xdebug.ini"
-docker run ${IMAGE_TAG} -v | grep "opcache.ini"
-docker run ${IMAGE_TAG} -v | grep "XDEBUG disabled"
+STARTUP_MESSAGES=$(docker run ${IMAGE_TAG} bash)
+echo "${STARTUP_MESSAGES}" | grep "Running docker-entrypoint.d scripts:"
+echo "${STARTUP_MESSAGES}" | grep "00-compile-templates"
+echo "${STARTUP_MESSAGES}" | grep "05-configure-xdebug"
+echo "${STARTUP_MESSAGES}" | grep "config.ini"
+echo "${STARTUP_MESSAGES}" | grep "xdebug.ini"
+echo "${STARTUP_MESSAGES}" | grep "opcache.ini"
+echo "${STARTUP_MESSAGES}" | grep "XDEBUG disabled"
 
 # test php interactive mode
 docker run ${IMAGE_TAG} -a | grep "Interactive"

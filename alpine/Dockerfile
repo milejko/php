@@ -36,14 +36,20 @@ ENV WORKDIR=/var/www/html \
 	XDEBUG_ENABLE=0 \
 	XDEBUG_MODE=off
 
-RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
+# Debian compatible user (www-data)
+RUN set -x; \
+	addgroup -g 82 -S www-data; \
+	adduser -u 82 -D -S -G www-data www-data && exit 0; exit 1
+
+# Create ENV with PHP version without a dot (ie. 8.2 -> 82)
+RUN	set -eux; \
+	export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 	apk add --no-cache \
 		bash \
 		shadow \
 		gettext \
 		wget \
 		ca-certificates \
-		gnu-libiconv-dev \
 		unzip \
 		zip \
 		php${PHP_PACKAGE_VERSION} \
@@ -90,7 +96,7 @@ RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 		php${PHP_PACKAGE_VERSION}-xmlwriter \
 		php${PHP_PACKAGE_VERSION}-xsl \
 		php${PHP_PACKAGE_VERSION}-zip
-
+	
 # fixing built-in iconv translit problem
 # https://github.com/docker-library/php/issues/1121
 RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community/ gnu-libiconv=1.15-r3
@@ -107,7 +113,8 @@ RUN	export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
 RUN	wget https://getcomposer.org/installer -O composer-setup.php && \
  	php composer-setup.php && \
  	mv composer.phar /usr/bin/composer && \
- 	rm composer-setup.php
+ 	rm composer-setup.php && \
+	apk del wget
 
 COPY --link ./etc/php /etc/php
 COPY --link --chmod=755 ./docker-entrypoint.d /docker-entrypoint.d
