@@ -1,6 +1,6 @@
 [www]
-user        = nobody
-group       = nobody
+user        = www-data
+group       = www-data
 listen      = ${FPM_LISTEN_PORT}
 clear_env   = no
 

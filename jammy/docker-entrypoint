@@ -2,6 +2,7 @@
 
 set -eu;
 
+echo "Running docker-entrypoint.d scripts:"
 run-parts /docker-entrypoint.d
 
 # first arg is `-f` or `--some-option`

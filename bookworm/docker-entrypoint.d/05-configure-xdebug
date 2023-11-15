@@ -1,7 +1,7 @@
 #!/bin/bash
 
-PHP_PACKAGE_VERSION=${PHP_VERSION/./}
-XDEBUG_CONFIG_FILE=/etc/php${PHP_PACKAGE_VERSION}/conf.d/xdebug.ini
+SCRIPT_NAME=05-configure-xdebug
+XDEBUG_CONFIG_FILE=/etc/php/${PHP_VERSION}/mods-available/xdebug.ini
 
 if [ ${XDEBUG_ENABLE} == '1' ] || [ ${XDEBUG_ENABLE} == 'On' ]
 then 
@@ -9,7 +9,7 @@ then
 		echo 'zend_extension=xdebug.so'; \
 		echo "xdebug.mode=${XDEBUG_MODE}"; \
 	} > ${XDEBUG_CONFIG_FILE}
-    echo "XDEBUG configured & enabled"
+    echo "${SCRIPT_NAME}: XDEBUG configured & enabled"
 else
-    echo "XDEBUG disabled" 
+    echo "${SCRIPT_NAME}: XDEBUG disabled"
 fi;
