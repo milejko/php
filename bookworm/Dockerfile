@@ -140,6 +140,7 @@ RUN set -eux; \
 		libapache2-mod-php${PHP_VERSION} \
 	; \
 	a2enmod rewrite;\
+	a2enmod headers;\
 	rm -rf /etc/apache2/envvars; \
 	rm -rf /etc/apache2/conf-enabled; \
 	rm -rf /etc/apache2/sites-enabled; \
