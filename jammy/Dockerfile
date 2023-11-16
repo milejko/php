@@ -125,13 +125,7 @@ CMD [ "/usr/bin/php-fpm" ]
 ######################
 FROM cli as apache
 
-ENV APACHE_RUN_USER=www-data
-ENV APACHE_RUN_GROUP=www-data
-ENV APACHE_LOG_DIR=/var/log/apache2
-ENV APACHE_PID_FILE=/run/apache2.pid
-
-ENV APACHE_LISTEN_PORT=80 \
-	APACHE_RUN_DIR=${WORKDIR}
+ENV APACHE_LISTEN_PORT=80
 
 RUN set -eux; \
 	apt-get update; \
@@ -145,9 +139,19 @@ RUN set -eux; \
 		apache2-bin \
 		libapache2-mod-php${PHP_VERSION} \
 	; \
-	a2enmod rewrite
+	a2enmod rewrite;\
+	rm -rf /etc/apache2/envvars; \
+	rm -rf /etc/apache2/conf-enabled; \
+	rm -rf /etc/apache2/sites-enabled; \
+	rm -rf /var/www/html/*; \
+	echo "<?php phpinfo();" > ${WORKDIR}/index.php; \
+	rm -rf /var/lib/apt/lists
 
 COPY --link ./etc/apache2 /etc/apache2
+COPY --link ./etc/php/apache2 /etc/php/apache2
+
+# https://httpd.apache.org/docs/2.4/stopping.html#gracefulstop
+STOPSIGNAL SIGWINCH
 
 EXPOSE ${APACHE_LISTEN_PORT}
 
