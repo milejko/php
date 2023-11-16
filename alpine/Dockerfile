@@ -46,6 +46,7 @@ RUN set -x; \
 # Create ENV with PHP version without a dot (ie. 8.2 -> 82)
 RUN	set -eux; \
 	export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
+	apk update; \
 	apk add --no-cache \
 		bash \
 		shadow \
@@ -153,3 +154,30 @@ STOPSIGNAL SIGQUIT
 EXPOSE ${FPM_LISTEN_PORT}
 
 CMD [ "/usr/bin/php-fpm", "--nodaemonize" ]
+
+######################
+## PHP Apache stage ##
+######################
+FROM cli as apache
+
+ENV APACHE_LISTEN_PORT=80
+
+RUN set -eux; \
+	export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
+	apk add --no-cache \
+		apache2 \
+		php${PHP_PACKAGE_VERSION}-apache2 \
+	; \
+	rm -rf ${WORKDIR}/*; \
+	rm -rf /etc/apache2/conf.d/default.conf; \
+	rm -rf /etc/apache2/conf.d/userdir.conf; \
+	echo "<?php phpinfo();" > ${WORKDIR}/index.php
+
+COPY --link ./etc/apache2 /etc/apache2
+
+# https://httpd.apache.org/docs/2.4/stopping.html#gracefulstop
+STOPSIGNAL SIGWINCH
+
+EXPOSE ${APACHE_LISTEN_PORT}
+
+CMD [ "httpd", "-DFOREGROUND" ]
