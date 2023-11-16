@@ -2,7 +2,9 @@
 
 ARG OS_VERSION=jammy
 
-## PHP-CLI stage
+###################
+## PHP-CLI stage ##
+###################
 FROM ubuntu:${OS_VERSION} as cli
 
 ARG PHP_VERSION=8.2
@@ -37,15 +39,17 @@ ENV WORKDIR=/var/www/html \
 	XDEBUG_ENABLE=0 \
 	XDEBUG_MODE=off
 
-RUN apt-get update && \
+RUN set eux;\
+	apt-get update; \
 	apt-get install -yq --no-install-recommends \
 		gettext-base \
 		software-properties-common \
 		gnupg \
 		wget \
 		unzip \
-		zip && \
-	add-apt-repository ppa:ondrej/php -y && \
+		zip \
+	; \
+	add-apt-repository ppa:ondrej/php -y; \
 	apt-get install -yq --no-install-recommends \
 		php${PHP_VERSION}-amqp \
 		php${PHP_VERSION}-apcu \
@@ -62,16 +66,18 @@ RUN apt-get update && \
 		php${PHP_VERSION}-redis \
 		php${PHP_VERSION}-zip \
 		php${PHP_VERSION}-xdebug \
-		php${PHP_VERSION}-xml && \
-	wget https://getcomposer.org/installer -O composer-setup.php && \
-	php composer-setup.php && \
-	mv composer.phar /usr/bin/composer && \
-	rm composer-setup.php && \
+		php${PHP_VERSION}-xml \
+	; \
+	wget https://getcomposer.org/installer -O composer-setup.php; \
+	php composer-setup.php; \
+	mv composer.phar /usr/bin/composer; \
+	rm composer-setup.php; \
 	apt-get purge --autoremove -yq \
 		software-properties-common \
 		gnupg \
 		perl \
-		wget && \
+		wget \
+	; \
 	rm -rf /var/lib/apt/lists
 
 COPY --link ./etc/php/cli /etc/php/cli
@@ -85,7 +91,9 @@ ENTRYPOINT [ "/docker-entrypoint" ]
 
 CMD [ "php", "-a" ]
 
-## PHP-FPM stage
+###################
+## PHP-FPM stage ##
+###################
 FROM cli as fpm
 
 ENV FPM_LISTEN_PORT=9000 \
@@ -96,10 +104,11 @@ ENV FPM_LISTEN_PORT=9000 \
 	FPM_PM_MAX_SPARE_SERVERS=16 \
 	FPM_PM_MAX_REQUEST=0
 
-RUN apt-get update && \
+RUN apt-get update; \
 	apt-get install -yq --no-install-recommends \
-	php${PHP_VERSION}-fpm && \
-	rm -rf /var/lib/apt/lists && \
+		php${PHP_VERSION}-fpm \
+	; \
+	rm -rf /var/lib/apt/lists; \
 	ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/bin/php-fpm
 
 COPY --link ./etc/php/fpm /etc/php/fpm
@@ -110,3 +119,36 @@ STOPSIGNAL SIGQUIT
 EXPOSE ${FPM_LISTEN_PORT}
 
 CMD [ "/usr/bin/php-fpm" ]
+
+######################
+## PHP Apache stage ##
+######################
+FROM cli as apache
+
+ENV APACHE_RUN_USER=www-data
+ENV APACHE_RUN_GROUP=www-data
+ENV APACHE_LOG_DIR=/var/log/apache2
+ENV APACHE_PID_FILE=/run/apache2.pid
+
+ENV APACHE_LISTEN_PORT=80 \
+	APACHE_RUN_DIR=${WORKDIR}
+
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		# https://github.com/docker-library/httpd/issues/214
+		ca-certificates \
+		libaprutil1-ldap \
+		# https://github.com/docker-library/httpd/issues/209
+		libldap-common \
+		apache2 \
+		apache2-bin \
+		libapache2-mod-php${PHP_VERSION} \
+	; \
+	a2enmod rewrite
+
+COPY --link ./etc/apache2 /etc/apache2
+
+EXPOSE ${APACHE_LISTEN_PORT}
+
+CMD [ "apache2", "-DFOREGROUND" ]

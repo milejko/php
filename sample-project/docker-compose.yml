@@ -8,6 +8,7 @@ services:
       - UPLOAD_MAX_FILESIZE=10M
       - POST_MAX_SIZE=10M
       - MAX_EXECUTION_TIME=10
+      - OPCACHE_REVALIDATE_TIMESTAMPS=0
       - FPM_LOG_LEVEL=warning
     restart: always
     volumes:
