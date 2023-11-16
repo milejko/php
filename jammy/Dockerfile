@@ -104,7 +104,8 @@ ENV FPM_LISTEN_PORT=9000 \
 	FPM_PM_MAX_SPARE_SERVERS=16 \
 	FPM_PM_MAX_REQUEST=0
 
-RUN apt-get update; \
+RUN set -eux; \
+	apt-get update; \
 	apt-get install -yq --no-install-recommends \
 		php${PHP_VERSION}-fpm \
 	; \
@@ -136,7 +137,6 @@ RUN set -eux; \
 		# https://github.com/docker-library/httpd/issues/209
 		libldap-common \
 		apache2 \
-		apache2-bin \
 		libapache2-mod-php${PHP_VERSION} \
 	; \
 	a2enmod rewrite;\

@@ -39,7 +39,8 @@ ENV WORKDIR=/var/www/html \
 	XDEBUG_ENABLE=0 \
 	XDEBUG_MODE=off
 
-RUN apt-get update; \
+RUN set -eux; \
+	apt-get update; \
 	apt-get install -yq --no-install-recommends \
 		gettext-base \
 		lsb-release \
@@ -104,7 +105,8 @@ ENV FPM_LISTEN_PORT=9000 \
 	FPM_PM_MAX_SPARE_SERVERS=16 \
 	FPM_PM_MAX_REQUEST=0
 
-RUN apt-get update; \
+RUN set -eux; \
+	apt-get update; \
 	apt-get install -yq --no-install-recommends \
 		php${PHP_VERSION}-fpm; \
 	rm -rf /var/lib/apt/lists; \
@@ -118,3 +120,39 @@ STOPSIGNAL SIGQUIT
 EXPOSE ${FPM_LISTEN_PORT}
 
 CMD [ "/usr/bin/php-fpm" ]
+
+######################
+## PHP Apache stage ##
+######################
+FROM cli as apache
+
+ENV APACHE_LISTEN_PORT=80
+
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		# https://github.com/docker-library/httpd/issues/214
+		ca-certificates \
+		libaprutil1-ldap \
+		# https://github.com/docker-library/httpd/issues/209
+		libldap-common \
+		apache2 \
+		libapache2-mod-php${PHP_VERSION} \
+	; \
+	a2enmod rewrite;\
+	rm -rf /etc/apache2/envvars; \
+	rm -rf /etc/apache2/conf-enabled; \
+	rm -rf /etc/apache2/sites-enabled; \
+	rm -rf /var/www/html/*; \
+	echo "<?php phpinfo();" > ${WORKDIR}/index.php; \
+	rm -rf /var/lib/apt/lists
+
+COPY --link ./etc/apache2 /etc/apache2
+COPY --link ./etc/php/apache2 /etc/php/apache2
+
+# https://httpd.apache.org/docs/2.4/stopping.html#gracefulstop
+STOPSIGNAL SIGWINCH
+
+EXPOSE ${APACHE_LISTEN_PORT}
+
+CMD [ "apache2", "-DFOREGROUND" ]
