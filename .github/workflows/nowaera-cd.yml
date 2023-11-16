@@ -15,8 +15,8 @@ jobs:
     strategy:
       matrix:
         base-image: ['jammy', 'bookworm']
-        php-version: ['7.4', '8.0', '8.1', '8.2']
-        target: ['fpm']
+        php-version: ['7.4', '8.1', '8.2']
+        target: ['fpm', 'apache']
       fail-fast: false
     runs-on: ubuntu-latest
 
