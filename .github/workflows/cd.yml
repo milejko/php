@@ -16,7 +16,7 @@ jobs:
       matrix:
         base-image: ['jammy', 'alpine', 'bookworm']
         php-version: ['7.4', '8.0', '8.1', '8.2']
-        target: ['cli', 'fpm', 'alpine']
+        target: ['cli', 'fpm', 'apache']
         exclude:
           - base-image: alpine
             php-version: '7.4'
