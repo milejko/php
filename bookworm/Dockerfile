@@ -2,7 +2,9 @@
 
 ARG OS_VERSION=bookworm-slim
 
-## PHP-CLI stage
+###################
+## PHP-CLI stage ##
+###################
 FROM debian:${OS_VERSION} as cli
 
 ARG PHP_VERSION=8.2
@@ -37,17 +39,19 @@ ENV WORKDIR=/var/www/html \
 	XDEBUG_ENABLE=0 \
 	XDEBUG_MODE=off
 
-RUN apt-get update && \
+RUN set -eux; \
+	apt-get update; \
 	apt-get install -yq --no-install-recommends \
 		gettext-base \
 		lsb-release \
 		wget \
 		ca-certificates \
 		unzip \
-		zip && \
-	wget https://packages.sury.org/php/apt.gpg -O /usr/share/keyrings/deb.sury.org-php.gpg && \
-	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php-sury.list && \
-	apt-get update && \
+		zip \
+	; \
+	wget https://packages.sury.org/php/apt.gpg -O /usr/share/keyrings/deb.sury.org-php.gpg; \
+	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php-sury.list; \
+	apt-get update; \
 	apt-get install -yq --no-install-recommends \
 		php${PHP_VERSION}-amqp \
 		php${PHP_VERSION}-apcu \
@@ -64,15 +68,17 @@ RUN apt-get update && \
 		php${PHP_VERSION}-redis \
 		php${PHP_VERSION}-zip \
 		php${PHP_VERSION}-xdebug \
-		php${PHP_VERSION}-xml && \
-	wget https://getcomposer.org/installer -O composer-setup.php && \
-	php composer-setup.php && \
-	mv composer.phar /usr/bin/composer && \
-	rm composer-setup.php && \
+		php${PHP_VERSION}-xml \
+	; \
+	wget https://getcomposer.org/installer -O composer-setup.php; \
+	php composer-setup.php; \
+	mv composer.phar /usr/bin/composer; \
+	rm composer-setup.php; \
 	apt-get purge --autoremove -yq \
 		lsb-release \
 		perl \
-		wget && \
+		wget \
+	; \
 	rm -rf /var/lib/apt/lists
 
 COPY --link ./etc/php/cli /etc/php/cli
@@ -86,7 +92,9 @@ ENTRYPOINT [ "/docker-entrypoint" ]
 
 CMD [ "php", "-a" ]
 
-## PHP-FPM stage
+###################
+## PHP-CLI stage ##
+###################
 FROM cli as fpm
 
 ENV FPM_LISTEN_PORT=9000 \
@@ -97,10 +105,11 @@ ENV FPM_LISTEN_PORT=9000 \
 	FPM_PM_MAX_SPARE_SERVERS=16 \
 	FPM_PM_MAX_REQUEST=0
 
-RUN apt-get update && \
+RUN set -eux; \
+	apt-get update; \
 	apt-get install -yq --no-install-recommends \
-	php${PHP_VERSION}-fpm && \
-	rm -rf /var/lib/apt/lists && \
+		php${PHP_VERSION}-fpm; \
+	rm -rf /var/lib/apt/lists; \
 	ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/bin/php-fpm
 
 COPY --link ./etc/php/fpm /etc/php/fpm
@@ -111,3 +120,39 @@ STOPSIGNAL SIGQUIT
 EXPOSE ${FPM_LISTEN_PORT}
 
 CMD [ "/usr/bin/php-fpm" ]
+
+######################
+## PHP Apache stage ##
+######################
+FROM cli as apache
+
+ENV APACHE_LISTEN_PORT=80
+
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		# https://github.com/docker-library/httpd/issues/214
+		ca-certificates \
+		libaprutil1-ldap \
+		# https://github.com/docker-library/httpd/issues/209
+		libldap-common \
+		apache2 \
+		libapache2-mod-php${PHP_VERSION} \
+	; \
+	a2enmod rewrite;\
+	rm -rf /etc/apache2/envvars; \
+	rm -rf /etc/apache2/conf-enabled; \
+	rm -rf /etc/apache2/sites-enabled; \
+	rm -rf /var/www/html/*; \
+	echo "<?php phpinfo();" > ${WORKDIR}/index.php; \
+	rm -rf /var/lib/apt/lists
+
+COPY --link ./etc/apache2 /etc/apache2
+COPY --link ./etc/php/apache2 /etc/php/apache2
+
+# https://httpd.apache.org/docs/2.4/stopping.html#gracefulstop
+STOPSIGNAL SIGWINCH
+
+EXPOSE ${APACHE_LISTEN_PORT}
+
+CMD [ "apache2", "-DFOREGROUND" ]

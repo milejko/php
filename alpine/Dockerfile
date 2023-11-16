@@ -2,7 +2,9 @@
 
 ARG OS_VERSION=3.18
 
-## PHP-CLI stage
+###################
+## PHP-CLI stage ##
+###################
 FROM alpine:${OS_VERSION} as cli
 
 ARG PHP_VERSION=8.2
@@ -43,7 +45,8 @@ RUN set -x; \
 
 # Create ENV with PHP version without a dot (ie. 8.2 -> 82)
 RUN	set -eux; \
-	export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
+	export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
+	apk update; \
 	apk add --no-cache \
 		bash \
 		shadow \
@@ -104,16 +107,16 @@ RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/c
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 # fixing variable PHP binary name ie. linking /usr/bin/php82 to /usr/bin/php
-RUN	export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
+RUN	export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
 	if [ -f "/usr/bin/php" ]; \
 		then echo "PHP BIN exist"; \
 		else ln -s "/usr/bin/php${PHP_PACKAGE_VERSION}" "/usr/bin/php"; \
 	fi;
 
-RUN	wget https://getcomposer.org/installer -O composer-setup.php && \
- 	php composer-setup.php && \
- 	mv composer.phar /usr/bin/composer && \
- 	rm composer-setup.php && \
+RUN	wget https://getcomposer.org/installer -O composer-setup.php; \
+ 	php composer-setup.php; \
+ 	mv composer.phar /usr/bin/composer; \
+ 	rm composer-setup.php; \
 	apk del wget
 
 COPY --link ./etc/php /etc/php
@@ -126,7 +129,9 @@ ENTRYPOINT [ "/docker-entrypoint" ]
 
 CMD [ "php", "-a" ]
 
-## PHP-FPM stage
+###################
+## PHP-FPM stage ##
+###################
 FROM cli as fpm
 
 ENV FPM_LISTEN_PORT=9000 \
@@ -137,9 +142,10 @@ ENV FPM_LISTEN_PORT=9000 \
 	FPM_PM_MAX_SPARE_SERVERS=16 \
 	FPM_PM_MAX_REQUEST=0
 
-RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./} && \
+RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
 	apk add --no-cache \
-		php${PHP_PACKAGE_VERSION}-fpm && \
+		php${PHP_PACKAGE_VERSION}-fpm \
+	; \
 	ln -s /usr/sbin/php-fpm${PHP_PACKAGE_VERSION} /usr/bin/php-fpm
 
 # https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
@@ -148,3 +154,30 @@ STOPSIGNAL SIGQUIT
 EXPOSE ${FPM_LISTEN_PORT}
 
 CMD [ "/usr/bin/php-fpm", "--nodaemonize" ]
+
+######################
+## PHP Apache stage ##
+######################
+FROM cli as apache
+
+ENV APACHE_LISTEN_PORT=80
+
+RUN set -eux; \
+	export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
+	apk add --no-cache \
+		apache2 \
+		php${PHP_PACKAGE_VERSION}-apache2 \
+	; \
+	rm -rf ${WORKDIR}/*; \
+	rm -rf /etc/apache2/conf.d/default.conf; \
+	rm -rf /etc/apache2/conf.d/userdir.conf; \
+	echo "<?php phpinfo();" > ${WORKDIR}/index.php
+
+COPY --link ./etc/apache2 /etc/apache2
+
+# https://httpd.apache.org/docs/2.4/stopping.html#gracefulstop
+STOPSIGNAL SIGWINCH
+
+EXPOSE ${APACHE_LISTEN_PORT}
+
+CMD [ "httpd", "-DFOREGROUND" ]
