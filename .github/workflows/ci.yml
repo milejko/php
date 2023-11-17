@@ -10,15 +10,13 @@ on:
 
 jobs:
   Test:
-    name: "Image test"
+    name: "Test"
     strategy:
       matrix:
         base-image: ['jammy', 'alpine', 'bookworm']
         php-version: ['7.4', '8.0', '8.1', '8.2']
         target: ['cli', 'fpm', 'apache']
         exclude:
-          - base-image: alpine
-            php-version: '8.3'
           - base-image: alpine
             php-version: '8.0'
           - base-image: alpine

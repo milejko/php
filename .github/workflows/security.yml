@@ -2,13 +2,13 @@ name: "PHP Docker image security scan"
 
 on:
   schedule:
-    # once per day
-    - cron: "45 6 * * *"
+    # once per week
+    - cron: "45 6 * * 1"
   pull_request:
 
 jobs:
   Security:
-    name: "Security scan"
+    name: "Scan"
     strategy:
       matrix:
         base-image: ['debian', 'alpine']

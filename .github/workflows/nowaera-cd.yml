@@ -11,7 +11,7 @@ on:
 jobs:
 
   Deploy:
-    name: "Image deployment"
+    name: "Deploy NE"
     strategy:
       matrix:
         base-image: ['jammy', 'bookworm']
