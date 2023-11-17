@@ -60,7 +60,7 @@ jobs:
       run: docker run testing | grep "Interactive"
     - name: "Check Apache"
       if: ${{ 'apache' == matrix.target }}
-      run: docker run testing apachectl configtest | grep "Syntax OK"
+      run: docker run testing apachectl configtest
     - 
       name: Set up QEMU (multiplatform)
       uses: docker/setup-qemu-action@v3
