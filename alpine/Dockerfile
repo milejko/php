@@ -172,6 +172,7 @@ RUN set -eux; \
 	export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
 	apk add --no-cache \
 		apache2 \
+		apache2-ctl \
 		php${PHP_PACKAGE_VERSION}-apache2 \
 	; \
 	rm -rf ${WORKDIR}/*; \
