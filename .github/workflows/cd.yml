@@ -14,9 +14,9 @@ jobs:
     name: "Image deployment"
     strategy:
       matrix:
-        base-image: ['jammy', 'alpine', 'bookworm']
+        base-image: ['jammy', 'bookworm', 'alpine']
         php-version: ['7.4', '8.0', '8.1', '8.2']
-        target: ['cli', 'fpm', 'apache']
+        target: ['apache', 'fpm', 'cli']
         exclude:
           - base-image: alpine
             php-version: '7.4'
