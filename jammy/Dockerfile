@@ -126,7 +126,13 @@ CMD [ "/usr/bin/php-fpm" ]
 ######################
 FROM cli as apache
 
-ENV APACHE_LISTEN_PORT=80
+ENV APACHE_LISTEN_PORT=80 \
+	APACHE_SERVER_NAME=localhost \
+	APACHE_TIMEOUT=300 \
+	APACHE_KEEPALIVE=On \
+	APACHE_MAX_KEEPALIVE_REQUESTS=100 \
+	APACHE_KEEPALIVE_TIMEOUT=5 \
+	APACHE_LOG_LEVEL=warn
 
 RUN set -eux; \
 	apt-get update; \
@@ -145,7 +151,6 @@ RUN set -eux; \
 	rm -rf /etc/apache2/conf-enabled; \
 	rm -rf /etc/apache2/sites-enabled; \
 	rm -rf /var/www/html/*; \
-	echo "<?php phpinfo();" > ${WORKDIR}/index.php; \
 	rm -rf /var/lib/apt/lists
 
 COPY --link ./etc/apache2 /etc/apache2

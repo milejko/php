@@ -42,7 +42,7 @@ jobs:
     - name: Check PHP version
       run: echo "${{ env.PHP_REAL_VERSION }}" | grep "${{ matrix.php-version }}"
     - name: Perform image tests
-      run: IMAGE_TAG=testing ./.github/workflows/test-image.sh
+      run: IMAGE_TAG=testing ./scripts/test-image.sh
     - name: "Check FPM"
       if: ${{ 'fpm' == matrix.target }}
       run: |
@@ -51,3 +51,6 @@ jobs:
     - name: "Check CLI"
       if: ${{ 'cli' == matrix.target }}
       run: docker run testing | grep "Interactive"
+    - name: "Check Apache"
+      if: ${{ 'apache' == matrix.target }}
+      run: docker run testing apachectl configtest | grep "Syntax OK"

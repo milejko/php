@@ -160,7 +160,13 @@ CMD [ "/usr/bin/php-fpm", "--nodaemonize" ]
 ######################
 FROM cli as apache
 
-ENV APACHE_LISTEN_PORT=80
+ENV APACHE_LISTEN_PORT=80 \
+	APACHE_SERVER_NAME=localhost \
+	APACHE_TIMEOUT=300 \
+	APACHE_KEEPALIVE=On \
+	APACHE_MAX_KEEPALIVE_REQUESTS=100 \
+	APACHE_KEEPALIVE_TIMEOUT=5 \
+	APACHE_LOG_LEVEL=warn
 
 RUN set -eux; \
 	export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
@@ -170,8 +176,7 @@ RUN set -eux; \
 	; \
 	rm -rf ${WORKDIR}/*; \
 	rm -rf /etc/apache2/conf.d/default.conf; \
-	rm -rf /etc/apache2/conf.d/userdir.conf; \
-	echo "<?php phpinfo();" > ${WORKDIR}/index.php
+	rm -rf /etc/apache2/conf.d/userdir.conf;
 
 COPY --link ./etc/apache2 /etc/apache2
 

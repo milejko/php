@@ -42,17 +42,7 @@ jobs:
       run: echo "${{ env.PHP_REAL_VERSION }}" | grep "${{ matrix.php-version }}"
     - 
       name: Perform image tests
-      run: IMAGE_TAG=testing ./.github/workflows/test-image.sh
-    - 
-      name: "Check FPM"
-      if: ${{ 'fpm' == matrix.target }}
-      run: |
-        docker run testing find /usr/bin/php-fpm
-        docker run testing /usr/bin/php-fpm --daemonize
-    - 
-      name: "Check CLI"
-      if: ${{ 'cli' == matrix.target }}
-      run: docker run testing | grep "Interactive"
+      run: IMAGE_TAG=testing ./scripts/test-image.sh
     - 
       name: Set up QEMU (multiplatform)
       uses: docker/setup-qemu-action@v3
