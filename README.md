@@ -49,8 +49,8 @@ docker build -t phpinfo-apache .
 docker run --publish 127.0.0.1:8080:80 phpinfo-apache
 ```
 
-Now you can visit: [http://127.0.0.1:8080/](127.0.0.1:8080) in your favorite browser.
-================
+Now you can visit: [http://127.0.0.1:8080](127.0.0.1:8080) in your favorite browser.
+<br>
 For further details, instructions and more examples, visit our Docker hub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)
 
 OS choice: Debian Bookworm (Slim), Ubuntu Jammy, Alpine 3<br>
