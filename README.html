@@ -1,11 +1,11 @@
 <h1>PHP Docker image</h1>
 <p>
-    PHP Docker image with ease of configuration in the heart.<br>
-    Offering Debian base, Ubuntu, as well as minimalistic Alpine.<br>
+    PHP Docker image with flexibility, and easy configuration in the heart.<br>
+    Offering Debian Slim, Ubuntu, as well as minimalistic Alpine base, each with three PHP modes: CLI, FPM and Apache.<br>
     The Dockerfiles can be found here: <a target="blank"
     href="https://github.com/milejko/php">https://github.com/milejko/php</a>.<br>
     <br>
-    OS choice: Debian Slim Bookworm, Ubuntu Jammy, Alpine<br>
+    OS choice: Debian Slim Bookworm, Ubuntu Jammy, Alpine 3<br>
     Image variants: CLI, PHP-FPM, Apache2<br>
     Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3-RC<br>
     Platforms: linux/amd64, linux/arm64, linux/arm/v7
@@ -51,7 +51,7 @@ docker run milejko/php:8.2-cli composer
 <code>Dockerfile</code>
 <pre>
 FROM milejko/php:8.2-cli
-RUN echo "&lt;?php phpinfo();" > /app/index.php
+RUN echo "&lt;?php phpinfo();" > /var/www/html/index.php
 EXPOSE 8080
 CMD [ "php", "-S", "0.0.0.0:8080" ]
 </pre>
@@ -72,7 +72,30 @@ docker run --publish 127.0.0.1:8080:8080 phpinfo-http
 <code>Dockerfile</code>
 <pre>
 FROM milejko/php:8.2-fpm
-RUN echo "&lt;?php phpinfo();" > /app/index.php
+RUN echo "&lt;?php phpinfo();" > /var/www/html/index.php
+</pre>
+<p>
+    Build your image and execute it, using:
+</p>
+<pre>
+docker build -t phpinfo-fpm .
+docker run --env FPM_LOG_LEVEL=debug --publish 127.0.0.1:9000:9000 phpinfo-fpm
+</pre>
+<p>
+    Now your PHP-FPM container is up and ready for connections, also take a note that in this example FPM_LOG_LEVEL is
+    set to "debug".<br>
+    It is not very useful without a real PHP application mounted (or copied) inside the /var/www/html directory, and nginx with
+    <code>fastcgi_pass 127.0.0.1:9000;</code> as a http server, but it definitely runs.
+</p>
+
+<h2>Example #4: Running an Apache server</h2>
+<p>
+    The example below shows a typical php:8.2-apache image usage.
+</p>
+<code>Dockerfile</code>
+<pre>
+FROM milejko/php:8.2-apache
+RUN echo "&lt;?php phpinfo();" > /var/www/html/index.php
 </pre>
 <p>
     Build your image and execute it, using:

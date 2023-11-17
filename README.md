@@ -1,8 +1,7 @@
 PHP Docker image
 ================
-PHP Docker image with ease of configuration in the heart.
-Offering Debian Slim base, Ubuntu, as well as minimalistic Alpine.
-Images are delivered in 3 variants: CLI, FPM and Apache.
+PHP Docker image with flexibility, and easy configuration in the heart.
+Offering Debian Slim, Ubuntu, as well as minimalistic Alpine 3 base, each with three PHP modes: CLI, FPM and Apache.
 New images are deployed to Docker Hub twice per month.
 
 ### Core features ###
@@ -13,20 +12,20 @@ New images are deployed to Docker Hub twice per month.
 * Other PHP modules can be easily installed with `apt install phpX.Y-module` or `apk add phpXY-module` (Alpine)
 
 ### Example uses ###
-Displaying phpinfo() in the terminal
+Display PHP version in the terminal
 ```
-docker run milejko/php:8.2-cli -r 'phpinfo();'
+docker run milejko/php:8.2-cli -v
 ```
-Running composer
+Execute composer command (version info)
 ```
-docker run milejko/php:8.2-cli composer
+docker run milejko/php:8.2-cli composer -V
 ```
 
-Running phpinfo() website using built-in PHP server
+Show phpinfo() using built-in PHP server
 `Dockerfile`
 ```
 FROM milejko/php:8.2-cli
-RUN echo "<?php phpinfo();" > /app/index.php
+RUN echo "<?php phpinfo();" > /var/www/html/index.php
 EXPOSE 8080
 CMD [ "php", "-S", "0.0.0.0:8080" ]
 ```
@@ -37,7 +36,22 @@ docker build -t phpinfo-http .
 docker run --publish 127.0.0.1:8080:8080 phpinfo-http
 ```
 
-For further details, instructions and examples visit our Docker hub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)
+Show phpinfo() using Apache server
+`Dockerfile`
+```
+FROM milejko/php:8.2-apache
+RUN echo "<?php phpinfo();" > /var/www/html/index.php
+```
+
+Build your image and execute it, using:
+```
+docker build -t phpinfo-apache .
+docker run --publish 127.0.0.1:8080:80 phpinfo-apache
+```
+
+Now you can visit [http://127.0.0.1:8080/](127.0.0.1:8080) in your favorite browser.
+
+For further details, instructions and more examples, visit our Docker hub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)
 
 OS choice: Debian Bookworm (Slim), Ubuntu Jammy, Alpine 3<br>
 Image variants: CLI, PHP-FPM, Apache<br>
