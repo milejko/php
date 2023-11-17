@@ -1,7 +1,7 @@
 PHP Docker image
 ================
-PHP Docker image with flexibility, and easy configuration in the heart.
-Offering Debian Slim, Ubuntu, as well as minimalistic Alpine 3 base, each with three PHP modes: CLI, FPM and Apache.
+PHP Docker image with flexibility, and easy configuration in the heart.<br>
+Offering Debian Slim, Ubuntu, as well as minimalistic Alpine 3 base, each with three PHP modes: CLI, FPM and Apache.<br>
 New images are deployed to Docker Hub twice per month.
 
 ### Core features ###
