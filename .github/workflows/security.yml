@@ -10,11 +10,10 @@ jobs:
   Security:
     name: "Scan"
     strategy:
+      #only supported versions (8.1, 8.2) targets - Apache and FPM (as FPM is based on CLI)
       matrix:
         base-image: ['jammy', 'bookworm', 'alpine']
-        #only supported versions
         php-version: ['8.2', '8.1']
-        #only Apache and FPM (as FPM is based on CLI)
         target: ['fpm', 'apache']
       fail-fast: false
     runs-on: ubuntu-latest
@@ -25,6 +24,8 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         push: false
+        file: ./${{ matrix.base-image }}/Dockerfile
+        context: ./${{ matrix.base-image }}/
         target: ${{ matrix.target }}
         tags: testing
         build-args: PHP_VERSION=${{ matrix.php-version }}
