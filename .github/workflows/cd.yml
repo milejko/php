@@ -1,4 +1,4 @@
-name: "PHP Docker images delivery"
+name: "Delivery"
 
 on:
   schedule:
