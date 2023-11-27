@@ -35,5 +35,5 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-        args: --file=Dockerfile --severity-threshold=high
+        args: --file=./${{ matrix.base-image }}/Dockerfile --severity-threshold=high
         image: testing
