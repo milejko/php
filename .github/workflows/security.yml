@@ -11,11 +11,11 @@ jobs:
     name: "Scan"
     strategy:
       matrix:
-        base-image: ['debian', 'alpine']
+        base-image: ['jammy', 'bookworm', 'alpine']
         #only supported versions
         php-version: ['8.2', '8.1']
-        #only FPM (as FPM is based on CLI)
-        target: ['fpm']
+        #only Apache and FPM (as FPM is based on CLI)
+        target: ['fpm', 'apache']
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
