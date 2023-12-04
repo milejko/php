@@ -158,7 +158,7 @@ COPY --link ./etc/apache2 /etc/apache2
 COPY --link ./etc/php/apache2 /etc/php/apache2
 
 # https://httpd.apache.org/docs/2.4/stopping.html#gracefulstop
-STOPSIGNAL SIGWINCH
+STOPSIGNAL SIGTERM
 
 EXPOSE ${APACHE_LISTEN_PORT}
 
@@ -167,4 +167,4 @@ EXPOSE ${APACHE_LISTEN_PORT}
 # https://httpd.apache.org/docs/2.4/stopping.html#gracefulstop
 # https://stackoverflow.com/questions/780853/what-is-in-apache-2-a-caught-sigwinch-error
 # https://github.com/docker-library/php/issues/64
-CMD [ "sh", "-c", "dumb-init --rewrite 28:13 apache2 -DFOREGROUND" ]
+CMD [ "sh", "-c", "dumb-init -v --rewrite 28:13 apache2 -DFOREGROUND" ]
