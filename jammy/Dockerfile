@@ -139,6 +139,7 @@ RUN set -eux; \
 	apt-get install -y --no-install-recommends \
 		# https://github.com/docker-library/httpd/issues/214
 		ca-certificates \
+		dumb-init \
 		libaprutil1-ldap \
 		# https://github.com/docker-library/httpd/issues/209
 		libldap-common \
@@ -161,4 +162,9 @@ STOPSIGNAL SIGWINCH
 
 EXPOSE ${APACHE_LISTEN_PORT}
 
-CMD [ "apache2", "-DFOREGROUND" ]
+# Apache uses SIGWINCH to gracefulstop - the very same signal as window resize and docker attach
+# SIGWINCH=28 - replace by dumb-init with sig 13 which does nothing
+# https://httpd.apache.org/docs/2.4/stopping.html#gracefulstop
+# https://stackoverflow.com/questions/780853/what-is-in-apache-2-a-caught-sigwinch-error
+# https://github.com/docker-library/php/issues/64
+CMD [ "sh", "-c", "dumb-init --rewrite 28:13 apache2 -DFOREGROUND" ]
