@@ -44,6 +44,7 @@ jobs:
       if: ${{ 'fpm' == matrix.target }}
       run: |
         docker run testing find /usr/bin/php-fpm
+        docker run testing find /usr/bin/cgi-fcgi
         docker run testing /usr/bin/php-fpm --daemonize
     - name: "Check CLI"
       if: ${{ 'cli' == matrix.target }}
