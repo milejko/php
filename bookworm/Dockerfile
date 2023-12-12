@@ -107,8 +107,8 @@ ENV FPM_LISTEN_PORT=9000 \
 RUN set -eux; \
 	apt-get update; \
 	apt-get install -yq --no-install-recommends \
-		php${PHP_VERSION}-fpm; \
-		libfcgi-bin \
+		php${PHP_VERSION}-fpm \
+		libfcgi-bin; \
 	rm -rf /var/lib/apt/lists; \
 	ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/bin/php-fpm
 
