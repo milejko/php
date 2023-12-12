@@ -49,9 +49,9 @@ RUN	set -eux; \
 	apk update; \
 	apk add --no-cache \
 		bash \
+		curl \
 		shadow \
 		gettext \
-		wget \
 		ca-certificates \
 		unzip \
 		zip \
@@ -113,11 +113,10 @@ RUN	export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
 		else ln -s "/usr/bin/php${PHP_PACKAGE_VERSION}" "/usr/bin/php"; \
 	fi;
 
-RUN	wget https://getcomposer.org/installer -O composer-setup.php; \
+RUN	curl https://getcomposer.org/installer > composer-setup.php; \
  	php composer-setup.php; \
  	mv composer.phar /usr/bin/composer; \
- 	rm composer-setup.php; \
-	apk del wget
+ 	rm composer-setup.php
 
 COPY --link ./etc/php /etc/php
 COPY --link --chmod=755 ./docker-entrypoint.d /docker-entrypoint.d
@@ -145,6 +144,7 @@ ENV FPM_LISTEN_PORT=9000 \
 RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
 	apk add --no-cache \
 		php${PHP_PACKAGE_VERSION}-fpm \
+		fcgi \
 	; \
 	ln -s /usr/sbin/php-fpm${PHP_PACKAGE_VERSION} /usr/bin/php-fpm
 

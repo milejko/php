@@ -42,10 +42,10 @@ ENV WORKDIR=/var/www/html \
 RUN set eux;\
 	apt-get update; \
 	apt-get install -yq --no-install-recommends \
+		curl \
 		gettext-base \
 		software-properties-common \
 		gnupg \
-		wget \
 		unzip \
 		zip \
 	; \
@@ -68,7 +68,7 @@ RUN set eux;\
 		php${PHP_VERSION}-xdebug \
 		php${PHP_VERSION}-xml \
 	; \
-	wget https://getcomposer.org/installer -O composer-setup.php; \
+	curl https://getcomposer.org/installer > composer-setup.php; \
 	php composer-setup.php; \
 	mv composer.phar /usr/bin/composer; \
 	rm composer-setup.php; \
@@ -76,7 +76,6 @@ RUN set eux;\
 		software-properties-common \
 		gnupg \
 		perl \
-		wget \
 	; \
 	rm -rf /var/lib/apt/lists
 
@@ -108,6 +107,7 @@ RUN set -eux; \
 	apt-get update; \
 	apt-get install -yq --no-install-recommends \
 		php${PHP_VERSION}-fpm \
+		libfcgi-bin \
 	; \
 	rm -rf /var/lib/apt/lists; \
 	ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/bin/php-fpm
