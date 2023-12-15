@@ -12,7 +12,7 @@ pm.max_children         = ${FPM_PM_MAX_CHILDREN}
 pm.start_servers        = ${FPM_PM_START_SERVERS}
 pm.min_spare_servers    = ${FPM_PM_MIN_SPARE_SERVERS}
 pm.max_spare_servers    = ${FPM_PM_MAX_SPARE_SERVERS}
-pm.max_requests         = ${FPM_PM_MAX_REQUEST}
+pm.max_requests         = ${FPM_PM_MAX_REQUESTS}
 
 ; Ensure worker stdout and stderr are sent to the main error log.
 catch_workers_output    = yes
