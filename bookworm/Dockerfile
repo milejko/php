@@ -139,7 +139,6 @@ RUN set -eux; \
 	apt-get install -y --no-install-recommends \
 		# https://github.com/docker-library/httpd/issues/214
 		ca-certificates \
-		dumb-init \
 		libaprutil1-ldap \
 		# https://github.com/docker-library/httpd/issues/209
 		libldap-common \
@@ -155,16 +154,17 @@ RUN set -eux; \
 	rm -rf /var/lib/apt/lists
 
 COPY --link ./etc/apache2 /etc/apache2
-COPY --link ./etc/php/apache2 /etc/php/apache2
+COPY --link --chmod=755 ./usr/sbin/apache2-foreground /usr/sbin/apache2-foreground
 
 # https://httpd.apache.org/docs/2.4/stopping.html#gracefulstop
 STOPSIGNAL SIGTERM
 
 EXPOSE ${APACHE_LISTEN_PORT}
 
-# Apache uses SIGWINCH to gracefulstop - the very same signal as window resize and docker attach
-# SIGWINCH=28 - replace by dumb-init with sig 13 which does nothing
+# This script specifies filters out all stop signals except of TERM, KILL, STOP, HUP, QUIT, INT
+# The one needs filtering is: SIGWINCH - terminal window change ie.: resize and docker attach
+# K8s uses attach, causing containers running the default httpd command instant quit
 # https://httpd.apache.org/docs/2.4/stopping.html#gracefulstop
 # https://stackoverflow.com/questions/780853/what-is-in-apache-2-a-caught-sigwinch-error
 # https://github.com/docker-library/php/issues/64
-CMD [ "sh", "-c", "dumb-init -v --rewrite 28:13 apache2 -DFOREGROUND" ]
+CMD [ "/usr/sbin/apache2-foreground" ]

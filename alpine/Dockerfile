@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.6
 
-ARG OS_VERSION=3.18
+ARG OS_VERSION=3
 
 ###################
 ## PHP-CLI stage ##
@@ -172,7 +172,6 @@ RUN set -eux; \
 	export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
 	apk add --no-cache \
 		apache2 \
-		dumb-init \
 		apache2-ctl \
 		php${PHP_PACKAGE_VERSION}-apache2 \
 	; \
@@ -181,15 +180,16 @@ RUN set -eux; \
 	rm -rf /etc/apache2/conf.d/userdir.conf;
 
 COPY --link ./etc/apache2 /etc/apache2
+COPY --link --chmod=755 ./usr/sbin/apache2-foreground /usr/sbin/apache2-foreground
 
-# https://httpd.apache.org/docs/2.4/stopping.html#gracefulstop
 STOPSIGNAL SIGTERM
 
 EXPOSE ${APACHE_LISTEN_PORT}
 
-# Apache uses SIGWINCH to gracefulstop - the very same signal as window resize and docker attach
-# SIGWINCH=28 - replace by dumb-init with sig 19 which does nothing
+# This script specifies filters out all stop signals except of TERM, KILL, STOP, HUP, QUIT, INT
+# The one needs filtering is: SIGWINCH - terminal window change ie.: resize and docker attach
+# K8s uses attach, causing containers running the default httpd command instant quit
 # https://httpd.apache.org/docs/2.4/stopping.html#gracefulstop
 # https://stackoverflow.com/questions/780853/what-is-in-apache-2-a-caught-sigwinch-error
 # https://github.com/docker-library/php/issues/64
-CMD [ "sh", "-c", "dumb-init -v --rewrite 28:19 httpd -DFOREGROUND" ]
+CMD [ "/usr/sbin/apache2-foreground" ]

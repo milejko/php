@@ -1,0 +1,9 @@
+#!/bin/bash 
+
+trap 'echo "Caught termination signal, quitting..."' TERM KILL STOP HUP QUIT INT
+
+echo "Starting HTTPD server";
+/usr/sbin/httpd -DFOREGROUND &
+
+child=$!
+wait "$child"
