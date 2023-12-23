@@ -154,6 +154,7 @@ RUN set -eux; \
 	rm -rf /var/www/html/*; \
 	rm -rf /var/lib/apt/lists
 
+COPY --link ./etc/php/apache2 /etc/php/apache2
 COPY --link ./etc/apache2 /etc/apache2
 COPY --link --chmod=755 ./usr/sbin/apache2-foreground /usr/sbin/apache2-foreground
 
