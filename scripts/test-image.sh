@@ -12,6 +12,8 @@ echo "${PHP_INFO_DEFAULT}" | grep "display_startup_errors => Off"
 echo "${PHP_INFO_DEFAULT}" | grep "error_reporting => 32767"
 echo "${PHP_INFO_DEFAULT}" | grep "max_execution_time => 0"
 echo "${PHP_INFO_DEFAULT}" | grep "memory_limit => 128M"
+echo "${PHP_INFO_DEFAULT}" | grep "realpath_cache_size => 4096K"
+echo "${PHP_INFO_DEFAULT}" | grep "realpath_cache_ttl => 120"
 
 echo "${PHP_INFO_DEFAULT}" | grep "file_uploads => On"
 echo "${PHP_INFO_DEFAULT}" | grep "post_max_size => 128M"
@@ -42,8 +44,9 @@ PHP_INFO=$(docker run \
     -e DISPLAY_STARTUP_ERRORS=1 \
     -e ERROR_REPORTING=E_NONE \
     -e MAX_EXECUTION_TIME=0 \
-    \
     -e MEMORY_LIMIT=200M \
+    -e REALPATH_CACHE_SIZE=8M \
+    -e REALPATH_CACHE_TTL=200 \
     \
     -e FILE_UPLOADS=0 \
     -e POST_MAX_SIZE=200M \
@@ -71,6 +74,8 @@ echo "${PHP_INFO}" | grep "display_startup_errors => On"
 echo "${PHP_INFO}" | grep "error_reporting => E_NONE"
 echo "${PHP_INFO}" | grep "max_execution_time => 0"
 echo "${PHP_INFO}" | grep "memory_limit => 200M"
+echo "${PHP_INFO}" | grep "realpath_cache_size => 8M"
+echo "${PHP_INFO}" | grep "realpath_cache_ttl => 200"
 
 echo "${PHP_INFO}" | grep "file_uploads => Off"
 echo "${PHP_INFO}" | grep "post_max_size => 200M"

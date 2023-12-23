@@ -8,6 +8,8 @@ display_startup_errors  = ${DISPLAY_STARTUP_ERRORS}
 error_reporting         = ${ERROR_REPORTING}
 max_execution_time      = ${MAX_EXECUTION_TIME}
 memory_limit            = ${MEMORY_LIMIT}
+realpath_cache_size     = ${REALPATH_CACHE_SIZE}
+realpath_cache_ttl      = ${REALPATH_CACHE_TTL}
 
 file_uploads            = ${FILE_UPLOADS}
 post_max_size           = ${POST_MAX_SIZE}
