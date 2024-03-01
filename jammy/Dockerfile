@@ -41,7 +41,7 @@ ENV WORKDIR=/var/www/html \
 	XDEBUG_ENABLE=0 \
 	XDEBUG_MODE=off
 
-RUN set eux;\
+RUN set eux; \
 	apt-get update; \
 	apt-get install -yq --no-install-recommends \
 		curl \
@@ -84,11 +84,11 @@ RUN set eux;\
 COPY --link ./etc/php/cli /etc/php/cli
 COPY --link ./etc/php/mods-available /etc/php/mods-available
 COPY --link --chmod=755 ./docker-entrypoint.d /docker-entrypoint.d
-COPY --link --chmod=755 ./docker-entrypoint /docker-entrypoint
+COPY --link --chmod=755 ./docker-entrypoint.sh /docker-entrypoint.sh
 
 WORKDIR ${WORKDIR}
 
-ENTRYPOINT [ "/docker-entrypoint" ]
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
 
 CMD [ "php", "-a" ]
 

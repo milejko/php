@@ -122,11 +122,11 @@ RUN	curl https://getcomposer.org/installer > composer-setup.php; \
 
 COPY --link ./etc/php /etc/php
 COPY --link --chmod=755 ./docker-entrypoint.d /docker-entrypoint.d
-COPY --link --chmod=755 ./docker-entrypoint /docker-entrypoint
+COPY --link --chmod=755 ./docker-entrypoint.sh /docker-entrypoint.sh
 
 WORKDIR ${WORKDIR}
 
-ENTRYPOINT [ "/docker-entrypoint" ]
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
 
 CMD [ "php", "-a" ]
 

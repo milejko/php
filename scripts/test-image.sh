@@ -1,42 +1,59 @@
-#!/bin/sh
+#!/bin/bash
 
-set -eu;
+set -u
 
-# test default configuration
-PHP_INFO_DEFAULT=$(docker run ${IMAGE_TAG} -r 'phpinfo();')
+TEST_RESULT=0
 
-echo "${PHP_INFO_DEFAULT}" | grep "allow_url_fopen => On"
-echo "${PHP_INFO_DEFAULT}" | grep "default_socket_timeout => 60"
-echo "${PHP_INFO_DEFAULT}" | grep "display_errors => Off"
-echo "${PHP_INFO_DEFAULT}" | grep "display_startup_errors => Off"
-echo "${PHP_INFO_DEFAULT}" | grep "error_reporting => 32767"
-echo "${PHP_INFO_DEFAULT}" | grep "max_execution_time => 0"
-echo "${PHP_INFO_DEFAULT}" | grep "memory_limit => 128M"
-echo "${PHP_INFO_DEFAULT}" | grep "realpath_cache_size => 4096K"
-echo "${PHP_INFO_DEFAULT}" | grep "realpath_cache_ttl => 120"
+echo "Test the default configuration values"
 
-echo "${PHP_INFO_DEFAULT}" | grep "file_uploads => On"
-echo "${PHP_INFO_DEFAULT}" | grep "post_max_size => 128M"
-echo "${PHP_INFO_DEFAULT}" | grep "upload_max_filesize => 128M"
+DEFAULT_PHP_INFO=$(docker run ${IMAGE_TAG} -r 'phpinfo();')
 
-echo "${PHP_INFO_DEFAULT}" | grep "opcache.enable => On"
-echo "${PHP_INFO_DEFAULT}" | grep "opcache.enable_cli => Off"
-echo "${PHP_INFO_DEFAULT}" | grep "opcache.memory_consumption => 128M"
-echo "${PHP_INFO_DEFAULT}" | grep "opcache.validate_timestamps => On"
-echo "${PHP_INFO_DEFAULT}" | grep "opcache.revalidate_freq => 2"
-echo "${PHP_INFO_DEFAULT}" | grep "opcache.max_accelerated_files => 65000"
-echo "${PHP_INFO_DEFAULT}" | grep "opcache.preload => no value"
-echo "${PHP_INFO_DEFAULT}" | grep "opcache.preload_user => no value"
-echo "${PHP_INFO_DEFAULT}" | grep "xdebug.ini"
+DEFAULT_CONFIG_TEST_LINES=( 
+    "allow_url_fopen => On"  
+    "default_socket_timeout => 60" \
+    "display_errors => Off" \
+    "display_startup_errors => Off" \
+    "error_reporting => 32767" \
+    "max_execution_time => 0" \
+    "memory_limit => 128M" \
+    "realpath_cache_size => 4096K" \
+    "realpath_cache_ttl => 120" \
+    "file_uploads => On" \
+    "post_max_size => 128M" \
+    "upload_max_filesize => 128M" \
+    "opcache.enable => On" \
+    "opcache.enable_cli => Off" \
+    "opcache.memory_consumption => 128M" \
+    "opcache.validate_timestamps => On" \
+    "opcache.revalidate_freq => 2" \
+    "opcache.max_accelerated_files => 65000" \
+    "opcache.preload => no value" \
+    "opcache.preload_user => no value" \
+    "xdebug.ini" \
+    "allow_url_fopen => On" \
+)
 
-# test if XDEBUG module is disabled
-if echo "${PHP_INFO_DEFAULT}" | grep "xdebug.mode" ; then
-    echo "XDEBUG enabled!"
-    exit 1
+for TEST_ITEM in ${!DEFAULT_CONFIG_TEST_LINES[*]}; do
+    TEST_ITEM_STR="${DEFAULT_CONFIG_TEST_LINES[$TEST_ITEM]}"
+    CONFIG_KEY="${TEST_ITEM_STR%=*}"
+
+    if  ! echo "${DEFAULT_PHP_INFO}" | grep "${TEST_ITEM_STR}" --quiet ; then
+        REAL_PARAMETER_VALUE=$( echo "${DEFAULT_PHP_INFO}" | grep -e "^${CONFIG_KEY}" )
+        echo -e "[${0}] FAILED for ${CONFIG_KEY} \texpected: [${TEST_ITEM_STR}] \tgot: [${REAL_PARAMETER_VALUE}]"
+        TEST_RESULT=1
+    fi
+done
+
+echo ""
+echo "Test if XDEBUG module is disabled by default"
+if echo "${DEFAULT_PHP_INFO}" | grep "xdebug.mode" ; then
+    echo "XDEBUG enabled FAILED"
+    TEST_RESULT=9
 fi
 
-# test altered configuration (ENV)
-PHP_INFO=$(docker run \
+echo ""
+echo "Test altered configuration (ENV) "
+ALTERED_PHP_INFO=$(docker run \
     \
     -e ALLOW_URL_FOPEN=0 \
     -e DEFAULT_SOCKET_TIMEOUT=15 \
@@ -45,7 +62,7 @@ PHP_INFO=$(docker run \
     -e ERROR_REPORTING=E_NONE \
     -e MAX_EXECUTION_TIME=0 \
     -e MEMORY_LIMIT=200M \
-    -e REALPATH_CACHE_SIZE=8M \
+    -e REALPATH_CACHE_SIZE=6M \
     -e REALPATH_CACHE_TTL=200 \
     \
     -e FILE_UPLOADS=0 \
@@ -67,109 +84,157 @@ PHP_INFO=$(docker run \
     -e XDEBUG_MODE=develop \
 ${IMAGE_TAG} -r 'phpinfo();')
 
-echo "${PHP_INFO}" | grep "allow_url_fopen => Off"
-echo "${PHP_INFO}" | grep "default_socket_timeout => 15"
-echo "${PHP_INFO}" | grep "display_errors => STDOUT"
-echo "${PHP_INFO}" | grep "display_startup_errors => On"
-echo "${PHP_INFO}" | grep "error_reporting => E_NONE"
-echo "${PHP_INFO}" | grep "max_execution_time => 0"
-echo "${PHP_INFO}" | grep "memory_limit => 200M"
-echo "${PHP_INFO}" | grep "realpath_cache_size => 8M"
-echo "${PHP_INFO}" | grep "realpath_cache_ttl => 200"
+ALTERED_CONFIG_TEST_LINES=(
+"allow_url_fopen => Off" \
+"default_socket_timeout => 15" \
+"display_errors => STDOUT" \
+"display_startup_errors => On" \
+"error_reporting => E_NONE" \
+"max_execution_time => 0" \
+"memory_limit => 200M" \
+"realpath_cache_size => 6M" \
+"realpath_cache_ttl => 200" \
+"file_uploads => Off" \
+"post_max_size => 200M" \
+"upload_max_filesize => 200M" \
+"opcache.enable => Off" \
+"opcache.enable_cli => On" \
+"opcache.memory_consumption => 200M" \
+"opcache.validate_timestamps => Off" \
+"opcache.revalidate_freq => 15" \
+"opcache.max_accelerated_files => 65000" \
+"opcache.preload => test.php" \
+"opcache.preload_user => someuser" \
+#"opcache.jit => 1" #not compatible with PHP 7.x \
+#"opcache.jit_buffer_size => 8M" #not compatible with PHP 7.x \
+"xdebug.mode => develop" \
+)
 
-echo "${PHP_INFO}" | grep "file_uploads => Off"
-echo "${PHP_INFO}" | grep "post_max_size => 200M"
-echo "${PHP_INFO}" | grep "upload_max_filesize => 200M"
+for TEST_ITEM in ${!ALTERED_CONFIG_TEST_LINES[*]}; do
+    TEST_ITEM_STR="${ALTERED_CONFIG_TEST_LINES[$TEST_ITEM]}"
+    CONFIG_KEY="${TEST_ITEM_STR%=*}"
 
-echo "${PHP_INFO}" | grep "opcache.enable => Off"
-echo "${PHP_INFO}" | grep "opcache.enable_cli => On"
-echo "${PHP_INFO}" | grep "opcache.memory_consumption => 200M"
-echo "${PHP_INFO}" | grep "opcache.validate_timestamps => Off"
-echo "${PHP_INFO}" | grep "opcache.revalidate_freq => 15"
-echo "${PHP_INFO}" | grep "opcache.max_accelerated_files => 65000"
-echo "${PHP_INFO}" | grep "opcache.preload => test.php"
-echo "${PHP_INFO}" | grep "opcache.preload_user => someuser"
-#not compatible with PHP 7.x
-#echo "${PHP_INFO}" | grep "opcache.jit => 1"
-#echo "${PHP_INFO}" | grep "opcache.jit_buffer_size => 8M"
-echo "${PHP_INFO}" | grep "xdebug.mode => develop"
+    if  ! echo "${ALTERED_PHP_INFO}" | grep "${TEST_ITEM_STR}" --quiet ; then
+        REAL_PARAMETER_VALUE=$( echo "${ALTERED_PHP_INFO}" | grep -e "^${CONFIG_KEY}" )
+        echo -e "[${0}] FAILED for ${CONFIG_KEY} \texpected: [${TEST_ITEM_STR}] \tgot: [${REAL_PARAMETER_VALUE}]"
+        TEST_RESULT=7
+    fi
+done
 
-# test docker-entrypoint.d scripts
-STARTUP_MESSAGES=$(docker run ${IMAGE_TAG} bash)
-echo "${STARTUP_MESSAGES}" | grep "Running docker-entrypoint.d scripts:"
-echo "${STARTUP_MESSAGES}" | grep "00-compile-templates"
-echo "${STARTUP_MESSAGES}" | grep "05-configure-xdebug"
-echo "${STARTUP_MESSAGES}" | grep "config.ini"
-echo "${STARTUP_MESSAGES}" | grep "xdebug.ini"
-echo "${STARTUP_MESSAGES}" | grep "opcache.ini"
-echo "${STARTUP_MESSAGES}" | grep "XDEBUG disabled"
+echo ""
+echo "Test docker-entrypoint.d scripts"
+
+STARTUP_MESSAGES=$(docker run  ${IMAGE_TAG} bash) 
+
+SCRIPTS=("Running docker-entrypoint.d scripts:" \
+    "00-compile-templates" \
+    "05-configure-xdebug" \
+    "config.ini" \
+    "xdebug.ini" \
+    "opcache.ini" \
+    "XDEBUG disabled" \
+)
+
+# echo "STR:>${STARTUP_MESSAGES}<"
+for TEST_ITEM in ${!SCRIPTS[*]}; do
+    TEST_ITEM_STR="${SCRIPTS[$TEST_ITEM]}"
+    CONFIG_KEY="${TEST_ITEM_STR%=*}"
+    # echo "testing: ${TEST_ITEM_STR}" 
+    if  ! echo "${STARTUP_MESSAGES}" | grep "${TEST_ITEM_STR}" --quiet ; then
+        REAL_PARAMETER_VALUE=$( echo "${STARTUP_MESSAGES}" | grep -e "^${CONFIG_KEY}" )
+        echo -e "[${0}] FAILED for ${CONFIG_KEY} \texpected: [${TEST_ITEM_STR}] \tgot: [${REAL_PARAMETER_VALUE}]"
+        TEST_RESULT=8
+    fi
+done
+
+echo ""
+echo "Test various tools"
 
 # test php interactive mode
-docker run ${IMAGE_TAG} -a | grep "Interactive"
-
+docker run ${IMAGE_TAG} -a | grep "Interactive" --quiet || ( TEST_RESULT=2 && echo "interactive mode FAILED" )
+ 
 # test composer
-docker run ${IMAGE_TAG} composer -V | grep "Composer version"
+docker run ${IMAGE_TAG} composer -V | grep "Composer version" --quiet  || ( TEST_RESULT=3 && echo "composer version FAILED" )
 
 # test WORKDIR
-docker run ${IMAGE_TAG} pwd | grep "/var/www/html"
+docker run ${IMAGE_TAG} pwd | grep "/var/www/html" --quiet  || ( TEST_RESULT=4 && echo "Workdir FAILED" )
 
 # test ICONV
-docker run ${IMAGE_TAG} -r "echo iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', 'abc');" | grep 'abc';
+docker run ${IMAGE_TAG} -r "echo iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', 'abc');" | grep 'abc' --quiet || ( TEST_RESULT=5 && echo "iconv FAILED" )
 
-# test installed modules
+echo ""
+echo "Test installed modules "
 INSTALLED_MODULES=$(docker run ${IMAGE_TAG} -m)
 
-echo "${INSTALLED_MODULES}" | grep "amqp"
-echo "${INSTALLED_MODULES}" | grep "apcu"
-echo "${INSTALLED_MODULES}" | grep "bcmath"
-echo "${INSTALLED_MODULES}" | grep "calendar"
-echo "${INSTALLED_MODULES}" | grep "Core"
-echo "${INSTALLED_MODULES}" | grep "ctype"
-echo "${INSTALLED_MODULES}" | grep "curl"
-echo "${INSTALLED_MODULES}" | grep "date"
-echo "${INSTALLED_MODULES}" | grep "dom"
-echo "${INSTALLED_MODULES}" | grep "exif"
-echo "${INSTALLED_MODULES}" | grep "FFI"
-echo "${INSTALLED_MODULES}" | grep "fileinfo"
-echo "${INSTALLED_MODULES}" | grep "gd"
-echo "${INSTALLED_MODULES}" | grep "gettext"
-echo "${INSTALLED_MODULES}" | grep "hash"
-echo "${INSTALLED_MODULES}" | grep "iconv"
-echo "${INSTALLED_MODULES}" | grep "igbinary"
-echo "${INSTALLED_MODULES}" | grep "intl"
-echo "${INSTALLED_MODULES}" | grep "json"
-echo "${INSTALLED_MODULES}" | grep "ldap"
-echo "${INSTALLED_MODULES}" | grep "libxml"
-echo "${INSTALLED_MODULES}" | grep "mbstring"
-echo "${INSTALLED_MODULES}" | grep "mysqli"
-echo "${INSTALLED_MODULES}" | grep "mysqlnd"
-echo "${INSTALLED_MODULES}" | grep "openssl"
-echo "${INSTALLED_MODULES}" | grep "pcntl"
-echo "${INSTALLED_MODULES}" | grep "pcre"
-echo "${INSTALLED_MODULES}" | grep "PDO"
-echo "${INSTALLED_MODULES}" | grep "pdo_mysql"
-echo "${INSTALLED_MODULES}" | grep "pdo_sqlite"
-echo "${INSTALLED_MODULES}" | grep "Phar"
-echo "${INSTALLED_MODULES}" | grep "posix"
-echo "${INSTALLED_MODULES}" | grep "readline"
-echo "${INSTALLED_MODULES}" | grep "redis"
-echo "${INSTALLED_MODULES}" | grep "Reflection"
-echo "${INSTALLED_MODULES}" | grep "session"
-echo "${INSTALLED_MODULES}" | grep "shmop"
-echo "${INSTALLED_MODULES}" | grep "SimpleXML"
-echo "${INSTALLED_MODULES}" | grep "sockets"
-echo "${INSTALLED_MODULES}" | grep "sodium"
-echo "${INSTALLED_MODULES}" | grep "SPL"
-echo "${INSTALLED_MODULES}" | grep "sqlite3"
-echo "${INSTALLED_MODULES}" | grep "standard"
-echo "${INSTALLED_MODULES}" | grep "sysvmsg"
-echo "${INSTALLED_MODULES}" | grep "sysvsem"
-echo "${INSTALLED_MODULES}" | grep "sysvshm"
-echo "${INSTALLED_MODULES}" | grep "tokenizer"
-echo "${INSTALLED_MODULES}" | grep "xml"
-echo "${INSTALLED_MODULES}" | grep "xmlreader"
-echo "${INSTALLED_MODULES}" | grep "xmlwriter"
-echo "${INSTALLED_MODULES}" | grep "xsl"
-echo "${INSTALLED_MODULES}" | grep "Zend OPcache"
-echo "${INSTALLED_MODULES}" | grep "zip"
-echo "${INSTALLED_MODULES}" | grep "zlib"
+MODULES=("amqp" \
+    "apcu" \
+    "bcmath" \
+    "calendar" \
+    "Core" \
+    "ctype" \
+    "curl" \
+    "date" \
+    "dom" \
+    "exif" \
+    "FFI" \
+    "fileinfo" \
+    "gd" \
+    "gettext" \
+    "hash" \
+    "iconv" \
+    "igbinary" \
+    "intl" \
+    "json" \
+    "ldap" \
+    "libxml" \
+    "mbstring" \
+    "mysqli" \
+    "mysqlnd" \
+    "openssl" \
+    "pcntl" \
+    "pcre" \
+    "PDO" \
+    "pdo_mysql" \
+    "pdo_sqlite" \
+    "Phar" \
+    "posix" \
+    "readline" \
+    "redis" \
+    "Reflection" \
+    "session" \
+    "shmop" \
+    "SimpleXML" \
+    "sockets" \
+    "sodium" \
+    "SPL" \
+    "sqlite3" \
+    "standard" \
+    "sysvmsg" \
+    "sysvsem" \
+    "sysvshm" \
+    "tokenizer" \
+    "xml" \
+    "xmlreader" \
+    "xmlwriter" \
+    "xsl" \
+    "Zend OPcache" \
+    "zip" \
+    "zlib" \
+)
+
+for TEST_ITEM in ${!MODULES[*]}; do
+    TEST_ITEM_STR="${MODULES[$TEST_ITEM]}"
+    CONFIG_KEY="${TEST_ITEM_STR%=*}"
+
+    if  ! echo "${INSTALLED_MODULES}" | grep "${TEST_ITEM_STR}" --quiet ; then
+        REAL_PARAMETER_VALUE=$( echo "${MODULES}" | grep -e "^${CONFIG_KEY}" )
+        echo -e "[${0}] FAILED for ${CONFIG_KEY} \texpected: [${TEST_ITEM_STR}] \tgot: [${REAL_PARAMETER_VALUE}]"
+        TEST_RESULT=6
+    fi
+done
+
+echo ""
+echo "---------------------"
+echo "Overall result is: ${TEST_RESULT}"
+echo ""
+exit $TEST_RESULT

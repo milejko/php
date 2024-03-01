@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 TEMPLATE_FILES=$(find /etc/php -name "*.*.template")
 
@@ -8,5 +8,5 @@ do
     TARGET_DIR=$(dirname ${TARGET_PATH})
     mkdir -p ${TARGET_DIR}
     envsubst < $TEMPLATE_FILE_PATH > $TARGET_PATH
-    echo "00-compile-templates: ${TARGET_PATH} compiled"
+    echo "${TARGET_PATH} compiled"
 done
