@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 TEMPLATE_FILES=$(find /etc/php -name "*.*.template")
 
