@@ -78,7 +78,7 @@ jobs:
     - 
       name: Prepare image metadata
       id: meta
-      uses: docker/metadata-action@v4
+      uses: docker/metadata-action@v5
       with:
         images: ${{ secrets.DOCKERHUB_USER }}/php
         # sample tag output: 8.2-cli, 8.2, latest, cli, 8.2.11-cli, 8.2.11-cli-20230712, 8.2.11
