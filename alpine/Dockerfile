@@ -55,6 +55,7 @@ RUN	set -eux; \
 		shadow \
 		gettext \
 		ca-certificates \
+		sudo \
 		unzip \
 		zip \
 		php${PHP_PACKAGE_VERSION} \

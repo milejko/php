@@ -48,6 +48,7 @@ RUN set eux; \
 		gettext-base \
 		software-properties-common \
 		gnupg \
+		sudo \
 		unzip \
 		zip \
 	; \

@@ -12,14 +12,14 @@ jobs:
     name: "Test"
     strategy:
       matrix:
-        base-image: ['jammy', 'alpine', 'bookworm']
-        php-version: ['7.4', '8.0', '8.1', '8.2', '8.3']
+        base-image: ['jammy', 'noble', 'alpine', 'bookworm']
+        php-version: ['8.0', '8.1', '8.2', '8.3']
         target: ['cli', 'fpm', 'apache']
         exclude:
           - base-image: alpine
-            php-version: '8.0'
+            php-version: '8.1'
           - base-image: alpine
-            php-version: '7.4'
+            php-version: '8.0'
       fail-fast: true
     runs-on: ubuntu-latest
     steps:

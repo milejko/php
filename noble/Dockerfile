@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1.6
 
-ARG OS_VERSION=bookworm-slim
+ARG OS_VERSION=noble
 
 ###################
 ## PHP-CLI stage ##
 ###################
-FROM debian:${OS_VERSION} as cli
+FROM ubuntu:${OS_VERSION} as cli
 
 ARG PHP_VERSION=8.2
 
@@ -41,20 +41,18 @@ ENV WORKDIR=/var/www/html \
 	XDEBUG_ENABLE=0 \
 	XDEBUG_MODE=off
 
-RUN set -eux; \
+RUN set eux; \
 	apt-get update; \
 	apt-get install -yq --no-install-recommends \
 		curl \
 		gettext-base \
-		lsb-release \
-		ca-certificates \
+		software-properties-common \
+		gnupg \
 		sudo \
 		unzip \
 		zip \
 	; \
-	curl https://packages.sury.org/php/apt.gpg > /usr/share/keyrings/deb.sury.org-php.gpg; \
-	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php-sury.list; \
-	apt-get update; \
+	add-apt-repository ppa:ondrej/php -y; \
 	apt-get install -yq --no-install-recommends \
 		php${PHP_VERSION}-amqp \
 		php${PHP_VERSION}-apcu \
@@ -78,7 +76,8 @@ RUN set -eux; \
 	mv composer.phar /usr/bin/composer; \
 	rm composer-setup.php; \
 	apt-get purge --autoremove -yq \
-		lsb-release \
+		software-properties-common \
+		gnupg \
 		perl \
 	; \
 	rm -rf /var/lib/apt/lists
@@ -95,7 +94,7 @@ ENTRYPOINT [ "/docker-entrypoint.sh" ]
 CMD [ "php", "-a" ]
 
 ###################
-## PHP-CLI stage ##
+## PHP-FPM stage ##
 ###################
 FROM cli as fpm
 
