@@ -8,7 +8,7 @@ ARG OS_VERSION=jammy
 FROM ubuntu:${OS_VERSION} as cli
 
 ARG PHP_VERSION=8.3 \
-	OS_VERSION=noble \
+	OS_VERSION=jammy \
 	DEBIAN_FRONTEND=noninteractive
 
 ENV WORKDIR=/var/www/html \
