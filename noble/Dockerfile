@@ -7,10 +7,13 @@ ARG OS_VERSION=noble
 ###################
 FROM ubuntu:${OS_VERSION} as cli
 
-ARG PHP_VERSION=8.2
+ARG PHP_VERSION=8.3 \
+	OS_VERSION=noble \
+	DEBIAN_FRONTEND=noninteractive
 
 ENV WORKDIR=/var/www/html \
 	PHP_VERSION=${PHP_VERSION} \
+	OS_VERSION=${OS_VERSION} \
 	\
 	ALLOW_URL_FOPEN=1 \
 	\
@@ -45,14 +48,15 @@ RUN set eux; \
 	apt-get update; \
 	apt-get install -yq --no-install-recommends \
 		curl \
-		gettext-base \
-		software-properties-common \
 		gnupg \
-		sudo \
-		unzip \
-		zip \
+		ca-certificates \
+		gettext-base \
 	; \
-	add-apt-repository ppa:ondrej/php -y; \
+	# Retrieve deb.sury.org certificates and make it visible for APT
+	gpg --keyserver keyserver.ubuntu.com --recv-keys 71DAEAAB4AD4CAB6 4F4EA0AAE5267A6C; \
+	gpg --output /etc/apt/trusted.gpg.d/deb-sury-php.gpg --export; \
+	echo "deb https://ppa.launchpadcontent.net/ondrej/php/ubuntu/ ${OS_VERSION} main" > /etc/apt/sources.list.d/ondrey-php-ubuntu-${OS_VERSION}.list ; \
+	apt-get update; \
 	apt-get install -yq --no-install-recommends \
 		php${PHP_VERSION}-amqp \
 		php${PHP_VERSION}-apcu \
@@ -76,7 +80,6 @@ RUN set eux; \
 	mv composer.phar /usr/bin/composer; \
 	rm composer-setup.php; \
 	apt-get purge --autoremove -yq \
-		software-properties-common \
 		gnupg \
 		perl \
 	; \
