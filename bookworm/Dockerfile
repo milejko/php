@@ -44,6 +44,8 @@ ENV WORKDIR=/var/www/html \
 RUN set -eux; \
 	apt-get update; \
 	apt-get install -yq --no-install-recommends \
+		zip \
+		unzip \
 		curl \
 		gettext-base \
 		lsb-release \
