@@ -1,7 +1,6 @@
 # PHP Docker image
 [![Latest Version](https://img.shields.io/github/release/milejko/php.svg?style=flat-square)](https://github.com/milejko/php)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-[![Total Downloads](https://img.shields.io/packagist/dt/milejko/php.svg?style=flat-square)](https://packagist.org/packages/milejko/php)
 
 PHP Docker image with flexibility, and easy configuration in the heart.<br>
 Offering Debian Slim, Ubuntu, as well as minimalistic Alpine 3 base, each with three PHP modes: CLI, FPM and Apache.
