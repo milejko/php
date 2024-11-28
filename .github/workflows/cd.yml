@@ -19,6 +19,8 @@ jobs:
         php-version: ['8.1', '8.2', '8.3', '8.4']
         target: ['apache', 'fpm', 'cli']
         exclude:
+          - base-image: bookworm
+            php-version: '8.4'
           - base-image: alpine
             php-version: '8.4'
           - base-image: alpine
