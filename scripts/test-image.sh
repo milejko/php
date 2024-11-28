@@ -13,7 +13,6 @@ DEFAULT_CONFIG_TEST_LINES=(
     "default_socket_timeout => 60" \
     "display_errors => Off" \
     "display_startup_errors => Off" \
-    "error_reporting => 32767" \
     "max_execution_time => 0" \
     "memory_limit => 128M" \
     "realpath_cache_size => 4096K" \
