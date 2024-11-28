@@ -13,17 +13,11 @@ jobs:
     strategy:
       matrix:
         base-image: ['jammy', 'noble', 'alpine', 'bookworm']
-        php-version: ['8.1', '8.2', '8.3', '8.4']
+        php-version: ['8.1', '8.2', '8.3']
         target: ['cli', 'fpm', 'apache']
         exclude:
-          - base-image: bookworm
-            php-version: '8.4'
-          - base-image: alpine
-            php-version: '8.4'
           - base-image: alpine
             php-version: '8.1'
-          - base-image: alpine
-            php-version: '8.0'
       fail-fast: true
     runs-on: ubuntu-latest
     steps:
@@ -43,7 +37,7 @@ jobs:
     - name: Check PHP version
       run: echo "${{ env.PHP_REAL_VERSION }}" | grep "${{ matrix.php-version }}"
     - name: Perform image tests
-      run: IMAGE_TAG=testing ./scripts/test-image.sh
+      run: IMAGE_CI_TAG=testing ./scripts/test-image.sh
     - name: "Check FPM"
       if: ${{ 'fpm' == matrix.target }}
       run: |

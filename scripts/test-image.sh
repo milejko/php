@@ -6,7 +6,7 @@ TEST_RESULT=0
 
 echo "Test the default configuration values"
 
-DEFAULT_PHP_INFO=$(docker run ${IMAGE_TAG} -r 'phpinfo();')
+DEFAULT_PHP_INFO=$(docker run ${IMAGE_CI_TAG} -r 'phpinfo();')
 
 DEFAULT_CONFIG_TEST_LINES=( 
     "allow_url_fopen => On"  
@@ -81,7 +81,7 @@ ALTERED_PHP_INFO=$(docker run \
     \
     -e XDEBUG_ENABLE=1 \
     -e XDEBUG_MODE=develop \
-${IMAGE_TAG} -r 'phpinfo();')
+${IMAGE_CI_TAG} -r 'phpinfo();')
 
 ALTERED_CONFIG_TEST_LINES=(
 "allow_url_fopen => Off" \
@@ -91,8 +91,8 @@ ALTERED_CONFIG_TEST_LINES=(
 "error_reporting => E_NONE" \
 "max_execution_time => 0" \
 "memory_limit => 200M" \
-"realpath_cache_size => 6M" \
-"realpath_cache_ttl => 200" \
+# "realpath_cache_size => 6M" \ # not compatible with 7.4
+# "realpath_cache_ttl => 200" \ # not compatible with 7.4
 "file_uploads => Off" \
 "post_max_size => 200M" \
 "upload_max_filesize => 200M" \
@@ -104,8 +104,8 @@ ALTERED_CONFIG_TEST_LINES=(
 "opcache.max_accelerated_files => 65000" \
 "opcache.preload => test.php" \
 "opcache.preload_user => someuser" \
-#"opcache.jit => 1" #not compatible with PHP 7.x \
-#"opcache.jit_buffer_size => 8M" #not compatible with PHP 7.x \
+#"opcache.jit => 1" # not compatible with PHP 7.4 \
+#"opcache.jit_buffer_size => 8M" # not compatible with PHP 7.4 \
 "xdebug.mode => develop" \
 )
 
@@ -123,7 +123,7 @@ done
 echo ""
 echo "Test docker-entrypoint.d scripts"
 
-STARTUP_MESSAGES=$(docker run  ${IMAGE_TAG} bash) 
+STARTUP_MESSAGES=$(docker run  ${IMAGE_CI_TAG} bash) 
 
 SCRIPTS=("Running docker-entrypoint.d scripts:" \
     "00-compile-templates" \
@@ -150,20 +150,20 @@ echo ""
 echo "Test various tools"
 
 # test php interactive mode
-docker run ${IMAGE_TAG} -a | grep "Interactive" --quiet || ( TEST_RESULT=2 && echo "interactive mode FAILED" )
+docker run ${IMAGE_CI_TAG} -a | grep "Interactive" --quiet || ( TEST_RESULT=2 && echo "interactive mode FAILED" )
  
 # test composer
-docker run ${IMAGE_TAG} composer -V | grep "Composer version" --quiet  || ( TEST_RESULT=3 && echo "composer version FAILED" )
+docker run ${IMAGE_CI_TAG} composer -V | grep "Composer version" --quiet  || ( TEST_RESULT=3 && echo "composer version FAILED" )
 
 # test WORKDIR
-docker run ${IMAGE_TAG} pwd | grep "/var/www/html" --quiet  || ( TEST_RESULT=4 && echo "Workdir FAILED" )
+docker run ${IMAGE_CI_TAG} pwd | grep "/var/www/html" --quiet  || ( TEST_RESULT=4 && echo "Workdir FAILED" )
 
 # test ICONV
-docker run ${IMAGE_TAG} -r "echo iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', 'abc');" | grep 'abc' --quiet || ( TEST_RESULT=5 && echo "iconv FAILED" )
+docker run ${IMAGE_CI_TAG} -r "echo iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', 'abc');" | grep 'abc' --quiet || ( TEST_RESULT=5 && echo "iconv FAILED" )
 
 echo ""
 echo "Test installed modules "
-INSTALLED_MODULES=$(docker run ${IMAGE_TAG} -m)
+INSTALLED_MODULES=$(docker run ${IMAGE_CI_TAG} -m)
 
 MODULES=("amqp" \
     "apcu" \

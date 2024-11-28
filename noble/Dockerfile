@@ -44,7 +44,7 @@ ENV WORKDIR=/var/www/html \
 	XDEBUG_ENABLE=0 \
 	XDEBUG_MODE=off
 
-RUN set eux; \
+RUN set -eux; \
 	apt-get update; \
 	apt-get install -yq --no-install-recommends \
 		zip \
