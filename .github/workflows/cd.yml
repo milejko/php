@@ -21,8 +21,6 @@ jobs:
         exclude:
           - base-image: alpine
             php-version: '8.1'
-          - base-image: alpine
-            php-version: '8.0'
       fail-fast: false
     runs-on: ubuntu-latest
 
