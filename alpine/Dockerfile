@@ -50,6 +50,7 @@ RUN	set -eux; \
 	export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
 	apk update; \
 	apk add --no-cache \
+		git \
 		bash \
 		curl \
 		shadow \

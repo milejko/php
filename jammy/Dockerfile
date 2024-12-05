@@ -47,6 +47,7 @@ ENV WORKDIR=/var/www/html \
 RUN set -eux; \
 	apt-get update; \
 	apt-get install -yq --no-install-recommends \
+		git \
 		zip \
 		unzip \
 		curl \
