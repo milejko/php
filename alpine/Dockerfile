@@ -168,6 +168,8 @@ ENV WORKDIR=/var/www/html \
 	XDEBUG_ENABLE=0 \
 	XDEBUG_MODE=off
 
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
+
 COPY --from=cli-build / /
 WORKDIR ${WORKDIR}
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
@@ -217,6 +219,8 @@ ENV WORKDIR=/var/www/html \
 	FPM_PM_MIN_SPARE_SERVERS=4 \
 	FPM_PM_MAX_SPARE_SERVERS=16 \
 	FPM_PM_MAX_REQUESTS=0
+
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 COPY --from=fpm-build / /
 WORKDIR ${WORKDIR}
@@ -270,6 +274,8 @@ ENV WORKDIR=/var/www/html \
 	APACHE_MAX_KEEPALIVE_REQUESTS=100 \
 	APACHE_KEEPALIVE_TIMEOUT=5 \
 	APACHE_LOG_LEVEL=warn
+
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 COPY --from=apache-build / /
 WORKDIR ${WORKDIR}
