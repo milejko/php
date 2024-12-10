@@ -19,7 +19,7 @@ jobs:
           - base-image: alpine
             php-version: '8.1'
           - base-image: alpine
-            php-version: '8.1'
+            php-version: '8.4'
       fail-fast: true
     runs-on: ubuntu-latest
     steps:
