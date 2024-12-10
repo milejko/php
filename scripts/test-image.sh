@@ -165,8 +165,8 @@ echo ""
 echo "Test installed modules "
 INSTALLED_MODULES=$(docker run ${IMAGE_CI_TAG} -m)
 
-MODULES=("amqp" \
-    "apcu" \
+MODULES=("apcu" \
+    "bz2" \
     "bcmath" \
     "calendar" \
     "Core" \
@@ -178,6 +178,7 @@ MODULES=("amqp" \
     "FFI" \
     "fileinfo" \
     "gd" \
+    "gmp" \
     "gettext" \
     "hash" \
     "iconv" \
@@ -203,6 +204,7 @@ MODULES=("amqp" \
     "session" \
     "shmop" \
     "SimpleXML" \
+    "soap" \
     "sockets" \
     "sodium" \
     "SPL" \
@@ -211,6 +213,7 @@ MODULES=("amqp" \
     "sysvmsg" \
     "sysvsem" \
     "sysvshm" \
+    "tidy" \
     "tokenizer" \
     "xml" \
     "xmlreader" \

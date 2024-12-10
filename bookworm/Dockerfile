@@ -7,7 +7,7 @@ ARG OS_VERSION=bookworm-slim
 ###################
 FROM debian:${OS_VERSION} as cli
 
-ARG PHP_VERSION=8.2
+ARG PHP_VERSION=8.4
 
 ENV WORKDIR=/var/www/html \
 	PHP_VERSION=${PHP_VERSION} \
@@ -43,6 +43,7 @@ ENV WORKDIR=/var/www/html \
 
 RUN set -eux; \
 	apt-get update; \
+	apt-get upgrade; \
 	apt-get install -yq --no-install-recommends \
 		zip \
 		unzip \
@@ -58,16 +59,20 @@ RUN set -eux; \
 		php${PHP_VERSION}-amqp \
 		php${PHP_VERSION}-apcu \
 		php${PHP_VERSION}-bcmath \
+		php${PHP_VERSION}-bz2 \
 		php${PHP_VERSION}-cli \
 		php${PHP_VERSION}-curl \
 		php${PHP_VERSION}-dom \
 		php${PHP_VERSION}-gd \
+		php${PHP_VERSION}-gmp \
 		php${PHP_VERSION}-intl \
 		php${PHP_VERSION}-ldap \
 		php${PHP_VERSION}-mbstring \
 		php${PHP_VERSION}-pdo-mysql \
     	php${PHP_VERSION}-pdo-sqlite \
 		php${PHP_VERSION}-redis \
+		php${PHP_VERSION}-soap \
+		php${PHP_VERSION}-tidy \
 		php${PHP_VERSION}-zip \
 		php${PHP_VERSION}-xdebug \
 		php${PHP_VERSION}-xml \
@@ -78,9 +83,9 @@ RUN set -eux; \
 	rm composer-setup.php; \
 	apt-get purge --autoremove -yq \
 		lsb-release \
-		perl \
-	; \
-	rm -rf /var/lib/apt/lists
+		perl; \
+	apt-get clean; \
+	rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 COPY --link ./etc/php/cli /etc/php/cli
 COPY --link ./etc/php/mods-available /etc/php/mods-available
@@ -111,8 +116,9 @@ RUN set -eux; \
 	apt-get install -yq --no-install-recommends \
 		php${PHP_VERSION}-fpm \
 		libfcgi-bin; \
-	rm -rf /var/lib/apt/lists; \
-	ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/bin/php-fpm
+	ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/bin/php-fpm; \
+	apt-get clean; \
+	rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 COPY --link ./etc/php/fpm /etc/php/fpm
 
@@ -153,7 +159,8 @@ RUN set -eux; \
 	rm -rf /etc/apache2/conf-enabled; \
 	rm -rf /etc/apache2/sites-enabled; \
 	rm -rf /var/www/html/*; \
-	rm -rf /var/lib/apt/lists
+	apt-get clean; \
+	rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 COPY --link ./etc/php/apache2 /etc/php/apache2
 COPY --link ./etc/apache2 /etc/apache2

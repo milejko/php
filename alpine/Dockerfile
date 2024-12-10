@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1.6
 
-ARG OS_VERSION=3
+ARG OS_VERSION=3.21
 
 ###################
 ## PHP-CLI stage ##
 ###################
 FROM alpine:${OS_VERSION} as cli
 
-ARG PHP_VERSION=8.2
+ARG PHP_VERSION=8.4
 
 ENV WORKDIR=/var/www/html \
 	PHP_VERSION=${PHP_VERSION} \
@@ -60,6 +60,7 @@ RUN	set -eux; \
 		zip \
 		php${PHP_PACKAGE_VERSION} \
 		php${PHP_PACKAGE_VERSION}-bcmath \
+		php${PHP_PACKAGE_VERSION}-bz2 \
 		php${PHP_PACKAGE_VERSION}-calendar \
 		php${PHP_PACKAGE_VERSION}-common \
 		php${PHP_PACKAGE_VERSION}-ctype \
@@ -70,6 +71,7 @@ RUN	set -eux; \
 		php${PHP_PACKAGE_VERSION}-fileinfo \
 		php${PHP_PACKAGE_VERSION}-gd \
 		php${PHP_PACKAGE_VERSION}-gettext \
+		php${PHP_PACKAGE_VERSION}-gmp \
 		php${PHP_PACKAGE_VERSION}-iconv \
 		php${PHP_PACKAGE_VERSION}-intl \
 		php${PHP_PACKAGE_VERSION}-ldap \
@@ -90,11 +92,13 @@ RUN	set -eux; \
 		php${PHP_PACKAGE_VERSION}-shmop \
 		php${PHP_PACKAGE_VERSION}-simplexml \
 		php${PHP_PACKAGE_VERSION}-sqlite3 \
+		php${PHP_PACKAGE_VERSION}-soap \
 		php${PHP_PACKAGE_VERSION}-sockets \
 		php${PHP_PACKAGE_VERSION}-sodium \
 		php${PHP_PACKAGE_VERSION}-sysvmsg \
 		php${PHP_PACKAGE_VERSION}-sysvsem \
 		php${PHP_PACKAGE_VERSION}-sysvshm \
+		php${PHP_PACKAGE_VERSION}-tidy \
 		php${PHP_PACKAGE_VERSION}-tokenizer \
 		php${PHP_PACKAGE_VERSION}-xdebug \
 		php${PHP_PACKAGE_VERSION}-xml \
@@ -114,9 +118,8 @@ RUN	export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
 	if [ -f "/usr/bin/php" ]; \
 		then echo "PHP BIN exist"; \
 		else ln -s "/usr/bin/php${PHP_PACKAGE_VERSION}" "/usr/bin/php"; \
-	fi;
-
-RUN	curl https://getcomposer.org/installer > composer-setup.php; \
+	fi; \
+	curl https://getcomposer.org/installer > composer-setup.php; \
  	php composer-setup.php; \
  	mv composer.phar /usr/bin/composer; \
  	rm composer-setup.php
