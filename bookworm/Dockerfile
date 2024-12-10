@@ -7,7 +7,8 @@ ARG OS_VERSION=bookworm-slim
 ###################
 FROM debian:${OS_VERSION} as cli
 
-ARG PHP_VERSION=8.4
+ARG PHP_VERSION=8.4 \
+	DEBIAN_FRONTEND=noninteractive
 
 ENV WORKDIR=/var/www/html \
 	PHP_VERSION=${PHP_VERSION} \

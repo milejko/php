@@ -17,17 +17,17 @@ New images are deployed to Docker Hub twice per month.
 ### Example uses ###
 Display PHP version in the terminal
 ```
-docker run milejko/php:8.2-cli -v
+docker run milejko/php:8.4-cli -v
 ```
 Execute composer command (version info)
 ```
-docker run milejko/php:8.2-cli composer -V
+docker run milejko/php:8.4-cli composer -V
 ```
 
 Show phpinfo() using built-in PHP server
 `Dockerfile`
 ```
-FROM milejko/php:8.2-cli
+FROM milejko/php:8.4-cli
 RUN echo "<?php phpinfo();" > /var/www/html/index.php
 EXPOSE 8080
 CMD [ "php", "-S", "0.0.0.0:8080" ]
