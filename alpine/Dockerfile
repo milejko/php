@@ -2,15 +2,43 @@
 
 ARG OS_VERSION=3.21
 
-############################
-## PHP-CLI building stage ##
-############################
-FROM alpine:${OS_VERSION} as cli-build
+###################
+## PHP-CLI stage ##
+###################
+FROM alpine:${OS_VERSION} as cli
 
 ARG PHP_VERSION=8.4
 
-ENV PHP_VERSION=${PHP_VERSION} \
-	WORKDIR=/var/www/html
+ENV WORKDIR=/var/www/html \
+	PHP_VERSION=${PHP_VERSION} \
+	\
+	ALLOW_URL_FOPEN=1 \
+	DEFAULT_SOCKET_TIMEOUT=60 \
+	DISPLAY_ERRORS=0 \
+	DISPLAY_STARTUP_ERRORS=0 \
+	ERROR_REPORTING=E_ALL \
+	MAX_EXECUTION_TIME=30 \
+	MEMORY_LIMIT=128M \
+	REALPATH_CACHE_SIZE=4096K \
+	REALPATH_CACHE_TTL=120 \
+	\
+	FILE_UPLOADS=1 \	
+	POST_MAX_SIZE=128M \
+	UPLOAD_MAX_FILESIZE=128M \
+	\
+	OPCACHE_ENABLE=1 \
+	OPCACHE_ENABLE_CLI=0 \
+	OPCACHE_MEMORY_CONSUMPTION=128M \
+	OPCACHE_INTERNED_STRINGS_BUFFER=16 \
+	OPCACHE_VALIDATE_TIMESTAMPS=1 \
+	OPCACHE_REVALIDATE_FREQ=2 \
+	OPCACHE_PRELOAD= \
+	OPCACHE_PRELOAD_USER= \
+	OPCACHE_JIT=tracing \
+	OPCACHE_JIT_BUFFER_SIZE=0 \
+	\
+	XDEBUG_ENABLE=0 \
+	XDEBUG_MODE=off
 
 # Debian compatible user (www-data)
 RUN set -x; \
@@ -100,10 +128,24 @@ COPY --link ./etc/php /etc/php
 COPY --link --chmod=755 ./docker-entrypoint.d /docker-entrypoint.d
 COPY --link --chmod=755 ./docker-entrypoint.sh /docker-entrypoint.sh
 
-############################
-## PHP-FPM building stage ##
-############################
-FROM cli-build as fpm-build
+WORKDIR ${WORKDIR}
+
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
+
+CMD [ "php", "-a" ]
+
+###################
+## PHP-FPM stage ##
+###################
+FROM cli as fpm
+
+ENV FPM_LISTEN_PORT=9000 \
+	FPM_LOG_LEVEL=notice \
+	FPM_PM_MAX_CHILDREN=90 \
+	FPM_PM_START_SERVERS=10 \
+	FPM_PM_MIN_SPARE_SERVERS=4 \
+	FPM_PM_MAX_SPARE_SERVERS=16 \
+	FPM_PM_MAX_REQUESTS=0
 
 RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
 	apk add --no-cache \
@@ -112,10 +154,25 @@ RUN export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
 	; \
 	ln -s /usr/sbin/php-fpm${PHP_PACKAGE_VERSION} /usr/bin/php-fpm
 
+# https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
+STOPSIGNAL SIGQUIT
+
+EXPOSE ${FPM_LISTEN_PORT}
+
+CMD [ "/usr/bin/php-fpm", "--nodaemonize" ]
+
 ######################
 ## PHP Apache stage ##
 ######################
-FROM cli-build as apache-build
+FROM cli as apache
+
+ENV APACHE_LISTEN_PORT=80 \
+	APACHE_SERVER_NAME=localhost \
+	APACHE_TIMEOUT=300 \
+	APACHE_KEEPALIVE=On \
+	APACHE_MAX_KEEPALIVE_REQUESTS=100 \
+	APACHE_KEEPALIVE_TIMEOUT=5 \
+	APACHE_LOG_LEVEL=warn
 
 RUN set -eux; \
 	export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
@@ -131,150 +188,8 @@ RUN set -eux; \
 COPY --link ./etc/apache2 /etc/apache2
 COPY --link --chmod=755 ./usr/sbin/apache2-foreground /usr/sbin/apache2-foreground
 
-################################
-## PHP-CLI distribution stage ##
-################################
-FROM scratch as cli
-
-ARG PHP_VERSION=8.4
-
-ENV WORKDIR=/var/www/html \
-	\
-	ALLOW_URL_FOPEN=1 \
-	DEFAULT_SOCKET_TIMEOUT=60 \
-	DISPLAY_ERRORS=0 \
-	DISPLAY_STARTUP_ERRORS=0 \
-	ERROR_REPORTING=E_ALL \
-	MAX_EXECUTION_TIME=30 \
-	MEMORY_LIMIT=128M \
-	REALPATH_CACHE_SIZE=4096K \
-	REALPATH_CACHE_TTL=120 \
-	\
-	FILE_UPLOADS=1 \	
-	POST_MAX_SIZE=128M \
-	UPLOAD_MAX_FILESIZE=128M \
-	\
-	OPCACHE_ENABLE=1 \
-	OPCACHE_ENABLE_CLI=0 \
-	OPCACHE_MEMORY_CONSUMPTION=128M \
-	OPCACHE_INTERNED_STRINGS_BUFFER=16 \
-	OPCACHE_VALIDATE_TIMESTAMPS=1 \
-	OPCACHE_REVALIDATE_FREQ=2 \
-	OPCACHE_PRELOAD= \
-	OPCACHE_PRELOAD_USER= \
-	OPCACHE_JIT=tracing \
-	OPCACHE_JIT_BUFFER_SIZE=0 \
-	\
-	XDEBUG_ENABLE=0 \
-	XDEBUG_MODE=off
-
-COPY --from=cli-build / /
-WORKDIR ${WORKDIR}
-ENTRYPOINT [ "/docker-entrypoint.sh" ]
-CMD [ "php", "-a" ]
-
-################################
-## PHP-FPM distribution stage ##
-################################
-FROM scratch as fpm
-
-ARG PHP_VERSION=8.4
-
-ENV WORKDIR=/var/www/html \
-	\
-	ALLOW_URL_FOPEN=1 \
-	DEFAULT_SOCKET_TIMEOUT=60 \
-	DISPLAY_ERRORS=0 \
-	DISPLAY_STARTUP_ERRORS=0 \
-	ERROR_REPORTING=E_ALL \
-	MAX_EXECUTION_TIME=30 \
-	MEMORY_LIMIT=128M \
-	REALPATH_CACHE_SIZE=4096K \
-	REALPATH_CACHE_TTL=120 \
-	\
-	FILE_UPLOADS=1 \	
-	POST_MAX_SIZE=128M \
-	UPLOAD_MAX_FILESIZE=128M \
-	\
-	OPCACHE_ENABLE=1 \
-	OPCACHE_ENABLE_CLI=0 \
-	OPCACHE_MEMORY_CONSUMPTION=128M \
-	OPCACHE_INTERNED_STRINGS_BUFFER=16 \
-	OPCACHE_VALIDATE_TIMESTAMPS=1 \
-	OPCACHE_REVALIDATE_FREQ=2 \
-	OPCACHE_PRELOAD= \
-	OPCACHE_PRELOAD_USER= \
-	OPCACHE_JIT=tracing \
-	OPCACHE_JIT_BUFFER_SIZE=0 \
-	\
-	XDEBUG_ENABLE=0 \
-	XDEBUG_MODE=off \
-	\
-	FPM_LISTEN_PORT=9000 \
-	FPM_LOG_LEVEL=notice \
-	FPM_PM_MAX_CHILDREN=90 \
-	FPM_PM_START_SERVERS=10 \
-	FPM_PM_MIN_SPARE_SERVERS=4 \
-	FPM_PM_MAX_SPARE_SERVERS=16 \
-	FPM_PM_MAX_REQUESTS=0
-
-COPY --from=fpm-build / /
-WORKDIR ${WORKDIR}
-# https://github.com/php/php-src/blob/17baa87faddc2550def3ae7314236826bc1b1398/sapi/fpm/php-fpm.8.in#L163
-STOPSIGNAL SIGQUIT
-ENTRYPOINT [ "/docker-entrypoint.sh" ]
-EXPOSE ${FPM_LISTEN_PORT}
-CMD [ "/usr/bin/php-fpm", "--nodaemonize" ]
-
-###################################
-## PHP-Apache distribution stage ##
-###################################
-FROM scratch as apache
-
-ARG PHP_VERSION=8.4
-
-ENV WORKDIR=/var/www/html \
-	\
-	ALLOW_URL_FOPEN=1 \
-	DEFAULT_SOCKET_TIMEOUT=60 \
-	DISPLAY_ERRORS=0 \
-	DISPLAY_STARTUP_ERRORS=0 \
-	ERROR_REPORTING=E_ALL \
-	MAX_EXECUTION_TIME=30 \
-	MEMORY_LIMIT=128M \
-	REALPATH_CACHE_SIZE=4096K \
-	REALPATH_CACHE_TTL=120 \
-	\
-	FILE_UPLOADS=1 \	
-	POST_MAX_SIZE=128M \
-	UPLOAD_MAX_FILESIZE=128M \
-	\
-	OPCACHE_ENABLE=1 \
-	OPCACHE_ENABLE_CLI=0 \
-	OPCACHE_MEMORY_CONSUMPTION=128M \
-	OPCACHE_INTERNED_STRINGS_BUFFER=16 \
-	OPCACHE_VALIDATE_TIMESTAMPS=1 \
-	OPCACHE_REVALIDATE_FREQ=2 \
-	OPCACHE_PRELOAD= \
-	OPCACHE_PRELOAD_USER= \
-	OPCACHE_JIT=tracing \
-	OPCACHE_JIT_BUFFER_SIZE=0 \
-	\
-	XDEBUG_ENABLE=0 \
-	XDEBUG_MODE=off \
-	\
-	APACHE_LISTEN_PORT=80 \
-	APACHE_SERVER_NAME=localhost \
-	APACHE_TIMEOUT=300 \
-	APACHE_KEEPALIVE=On \
-	APACHE_MAX_KEEPALIVE_REQUESTS=100 \
-	APACHE_KEEPALIVE_TIMEOUT=5 \
-	APACHE_LOG_LEVEL=warn
-
-COPY --from=apache-build / /
-WORKDIR ${WORKDIR}
 STOPSIGNAL SIGTERM
-ENTRYPOINT [ "/docker-entrypoint.sh" ]
+
 EXPOSE ${APACHE_LISTEN_PORT}
 
 # This script specifies filters out all stop signals except of TERM, KILL, STOP, HUP, QUIT, INT
@@ -284,4 +199,3 @@ EXPOSE ${APACHE_LISTEN_PORT}
 # https://stackoverflow.com/questions/780853/what-is-in-apache-2-a-caught-sigwinch-error
 # https://github.com/docker-library/php/issues/64
 CMD [ "/usr/sbin/apache2-foreground" ]
-	
