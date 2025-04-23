@@ -46,7 +46,7 @@ ENV WORKDIR=/var/www/html \
 
 RUN set -eux; \
 	apt-get update; \
-	apt-get upgrade; \
+	apt-get -yq upgrade; \
 	apt-get install -yq --no-install-recommends \
 		zip \
 		unzip \
