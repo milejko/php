@@ -70,7 +70,7 @@ RUN set -eux; \
 		php${PHP_VERSION}-ldap \
 		php${PHP_VERSION}-mbstring \
 		php${PHP_VERSION}-pdo-mysql \
-    	php${PHP_VERSION}-pdo-sqlite \
+		php${PHP_VERSION}-pdo-sqlite \
 		php${PHP_VERSION}-redis \
 		php${PHP_VERSION}-soap \
 		php${PHP_VERSION}-tidy \
@@ -112,8 +112,8 @@ ENV FPM_LISTEN_PORT=9000 \
 	FPM_PM_MAX_SPARE_SERVERS=16 \
 	FPM_PM_MAX_REQUESTS=0 \
 	FPM_PM_MODE="dynamic" \
-    FPM_PM_STATUS_PATH="/status" \
-    FPM_PM_STATUS_LISTEN="${FPM_LISTEN_PORT}"
+	FPM_PM_STATUS_PATH="/status" \
+	FPM_PM_STATUS_LISTEN="${FPM_LISTEN_PORT}"
 
 RUN set -eux; \
 	apt-get update; \
