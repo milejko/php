@@ -6,8 +6,9 @@ clear_env   = no
 
 access.log  = /dev/null
 
-pm                      = dynamic
-pm.status_path          = /status
+pm                      = ${FPM_PM_MODE}
+pm.status_path          = ${FPM_PM_STATUS_PATH}
+pm.status_listen        = ${FPM_PM_STATUS_LISTEN}
 pm.max_children         = ${FPM_PM_MAX_CHILDREN}
 pm.start_servers        = ${FPM_PM_START_SERVERS}
 pm.min_spare_servers    = ${FPM_PM_MIN_SPARE_SERVERS}
