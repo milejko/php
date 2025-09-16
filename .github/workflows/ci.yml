@@ -15,9 +15,6 @@ jobs:
         base-image: ['jammy', 'noble', 'alpine', 'bookworm']
         php-version: ['8.2', '8.3', '8.4']
         target: ['cli', 'fpm', 'apache']
-        exclude:
-          - base-image: alpine
-            php-version: '8.4'
       fail-fast: true
     runs-on: ubuntu-latest
     steps:
