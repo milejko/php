@@ -15,9 +15,9 @@ jobs:
     name: "Deploy"
     strategy:
       matrix:
-        base-image: ['noble', 'jammy', 'bookworm', 'alpine']
+        base-image: ['jammy', 'noble', 'alpine', trixie, 'bookworm']
         php-version: ['8.2', '8.3', '8.4']
-        target: ['apache', 'fpm', 'cli']
+        target: ['cli', 'fpm', 'apache']
       fail-fast: false
     runs-on: ubuntu-latest
 

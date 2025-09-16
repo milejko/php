@@ -42,7 +42,7 @@ docker run --publish 127.0.0.1:8080:8080 phpinfo-http
 Show phpinfo() using Apache server
 `Dockerfile`
 ```
-FROM milejko/php:8.2-apache
+FROM milejko/php:8.4-apache
 RUN echo "<?php phpinfo();" > /var/www/html/index.php
 ```
 
@@ -58,5 +58,6 @@ For further details, instructions and more examples, visit our Docker hub: [http
 
 OS choice: Debian Bookworm (Slim), Ubuntu Noble, Ubuntu Jammy, Alpine 3<br>
 Image variants: CLI, PHP-FPM, Apache<br>
-PHP versions: 7.4, 8.0, 8.1, 8.2, 8.3<br>
+Supported PHP versions: 8.2, 8.3, 8.4<br>
+Legacy PHP versions: 7.4, 8.1, 8.2<br>
 Platforms: linux/amd64, linux/arm64, linux/arm/v7

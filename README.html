@@ -6,8 +6,9 @@
     href="https://github.com/milejko/php">https://github.com/milejko/php</a>.<br>
     <br>
     OS choice: Debian Slim Bookworm, Ubuntu Noble, Ubuntu Jammy, Alpine 3<br>
-    Image variants: CLI, PHP-FPM, Apache2<br>
-    Supported versions: 7.4, 8.0, 8.1, 8.2, 8.3<br>
+    Image variants: CLI, PHP-FPM, Apache<br>
+    Actively supported versions: 8.2, 8.3, 8.4<br>
+    Legacy versions: 7.4, 8.0, 8.1<br>
     Platforms: linux/amd64, linux/arm64, linux/arm/v7
 </p>
 <h2>Core features</h2>
@@ -34,14 +35,14 @@
     PHP-CLI by default runs PHP's interactive shell, but it is also a frontend to php command:
 </p>
 <pre>
-docker run milejko/php:8.2-cli -r 'phpinfo();'
+docker run milejko/php:8.4-cli -r 'phpinfo();'
 </pre>
 <p>
     You should be able to see the phpinfo() page in your terminal. Note that php command is missing in the line.<br>
     Running other commands (ie. composer) can be acheived like that:
 </p>
 <pre>
-docker run milejko/php:8.2-cli composer
+docker run milejko/php:8.4-cli composer
 </pre>
 
 <h2>Example #2: Display phpinfo() as a website</h2>
@@ -50,7 +51,7 @@ docker run milejko/php:8.2-cli composer
 </p>
 <code>Dockerfile</code>
 <pre>
-FROM milejko/php:8.2-cli
+FROM milejko/php:8.4-cli
 RUN echo "&lt;?php phpinfo();" > /var/www/html/index.php
 EXPOSE 8080
 CMD [ "php", "-S", "0.0.0.0:8080" ]
@@ -67,11 +68,11 @@ docker run --publish 127.0.0.1:8080:8080 phpinfo-http
 
 <h2>Example #3: Running a regular PHP-FPM server</h2>
 <p>
-    The example below shows a typical php:8.2-fpm image usage.
+    The example below shows a typical php:8.4-fpm image usage.
 </p>
 <code>Dockerfile</code>
 <pre>
-FROM milejko/php:8.2-fpm
+FROM milejko/php:8.4-fpm
 RUN echo "&lt;?php phpinfo();" > /var/www/html/index.php
 </pre>
 <p>
@@ -90,11 +91,11 @@ docker run --env FPM_LOG_LEVEL=debug --publish 127.0.0.1:9000:9000 phpinfo-fpm
 
 <h2>Example #4: Running an Apache server</h2>
 <p>
-    The example below shows a typical php:8.2-apache image usage.
+    The example below shows a typical php:8.4-apache image usage.
 </p>
 <code>Dockerfile</code>
 <pre>
-FROM milejko/php:8.2-apache
+FROM milejko/php:8.4-apache
 RUN echo "&lt;?php phpinfo();" > /var/www/html/index.php
 </pre>
 <p>
@@ -179,16 +180,16 @@ zlib
 </p>
 <code>Dockerfile</code>
 <pre>
-ARG PHP_VERSION=8.2
+ARG PHP_VERSION=8.4
 FROM milejko/php:${PHP_VERSION}-fpm
 RUN apt-get update && \
     apt-get install -y php${PHP_VERSION}-imagick
 </pre>
 <code>Dockerfile.alpine</code>
 <pre>
-FROM milejko/php:8.2-fpm-alpine
+FROM milejko/php:8.4-fpm-alpine
 RUN apk update && \
-    apk add --no-cache php82-pecl-imagick
+    apk add --no-cache php84-pecl-imagick
 </pre>
 <p>Note that Alpine uses "no-dot" notation for PHP version, and "pecl" prefix for some modules, see the list here: <a target="_blank" href="https://pkgs.alpinelinux.org/packages">pkgs.alpinelinux.org/packages</a></p>
 <p>After that just build and run your image:</p>

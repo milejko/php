@@ -10,10 +10,10 @@ jobs:
   Security:
     name: "Scan"
     strategy:
-      #only supported versions (8.1, 8.2) targets - Apache and FPM (as FPM is based on CLI)
+      #only supported versions (8.3, 8.4) targets - Apache and FPM (as FPM is based on CLI)
       matrix:
-        base-image: ['jammy', 'bookworm', 'alpine']
-        php-version: ['8.2', '8.1']
+        base-image: ['noble', 'trixie', 'alpine']
+        php-version: ['8.3', '8.4']
         target: ['fpm', 'apache']
       fail-fast: false
     runs-on: ubuntu-latest
