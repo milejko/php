@@ -1,0 +1,9 @@
+#!/bin/bash 
+
+trap 'echo "Caught termination signal, quitting..."' TERM KILL STOP HUP QUIT INT
+
+echo "Starting Apache2 server";
+/usr/sbin/apache2 -DFOREGROUND &
+
+child=$!
+wait "$child"

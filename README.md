@@ -56,7 +56,7 @@ Now you can visit: [http://127.0.0.1:8080](http://127.0.0.1:8080) in your favori
 <br>
 For further details, instructions and more examples, visit our Docker hub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)
 
-OS choice: Debian Bookworm (Slim), Ubuntu Noble, Ubuntu Jammy, Alpine 3<br>
+OS choice: Debian Bookworm (Slim), Debian Trixie (Slim), Ubuntu Noble, Ubuntu Jammy, Alpine 3<br>
 Image variants: CLI, PHP-FPM, Apache<br>
 Supported PHP versions: 8.2, 8.3, 8.4<br>
 Legacy PHP versions: 7.4, 8.1, 8.2<br>

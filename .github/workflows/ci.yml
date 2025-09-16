@@ -12,7 +12,7 @@ jobs:
     name: "Test"
     strategy:
       matrix:
-        base-image: ['jammy', 'noble', 'alpine', trixie, 'bookworm']
+        base-image: ['jammy', 'noble', 'alpine', 'bookworm', 'trixie']
         php-version: ['8.2', '8.3', '8.4']
         target: ['cli', 'fpm', 'apache']
       fail-fast: true
