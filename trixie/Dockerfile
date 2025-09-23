@@ -119,6 +119,7 @@ RUN set -eux; \
 	apt-get update; \
 	apt-get install -yq --no-install-recommends \
 		php${PHP_VERSION}-fpm \
+        libldap-common \
 		libfcgi-bin; \
 	ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/bin/php-fpm; \
 	apt-get clean; \

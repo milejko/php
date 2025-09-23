@@ -26,7 +26,7 @@ ENV WORKDIR=/var/www/html \
 	REALPATH_CACHE_SIZE=4096K \
 	REALPATH_CACHE_TTL=120 \
 	\
-	FILE_UPLOADS=1 \	
+	FILE_UPLOADS=1 \
 	POST_MAX_SIZE=128M \
 	UPLOAD_MAX_FILESIZE=128M \
 	\
@@ -123,6 +123,7 @@ RUN set -eux; \
 	apt-get update; \
 	apt-get install -yq --no-install-recommends \
 		php${PHP_VERSION}-fpm \
+    	libldap-common \
 		libfcgi-bin; \
 	ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/bin/php-fpm; \
 	apt-get clean; \
