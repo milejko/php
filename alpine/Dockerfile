@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1.6
 
-ARG OS_VERSION=3.21
+ARG OS_VERSION=3.23
 
 ###################
 ## PHP-CLI stage ##
 ###################
-FROM alpine:${OS_VERSION} as cli
+FROM alpine:${OS_VERSION} AS cli
 
-ARG PHP_VERSION=8.4
+ARG PHP_VERSION=8.5
 
 ENV WORKDIR=/var/www/html \
 	PHP_VERSION=${PHP_VERSION} \
@@ -111,7 +111,7 @@ RUN	set -eux; \
 # https://github.com/docker-library/php/issues/1121
 RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community/ gnu-libiconv=1.15-r3
 
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
+ENV LD_PRELOAD="/usr/lib/preloadable_libiconv.so php"
 
 # fixing variable PHP binary name ie. linking /usr/bin/php82 to /usr/bin/php
 RUN	export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
@@ -137,7 +137,7 @@ CMD [ "php", "-a" ]
 ###################
 ## PHP-FPM stage ##
 ###################
-FROM cli as fpm
+FROM cli AS fpm
 
 ENV FPM_LISTEN_PORT=9000 \
 	FPM_LOG_LEVEL=notice \
@@ -167,7 +167,7 @@ CMD [ "/usr/bin/php-fpm", "--nodaemonize" ]
 ######################
 ## PHP Apache stage ##
 ######################
-FROM cli as apache
+FROM cli AS apache
 
 ENV APACHE_LISTEN_PORT=80 \
 	APACHE_SERVER_NAME=localhost \

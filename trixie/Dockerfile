@@ -5,9 +5,9 @@ ARG OS_VERSION=trixie-slim
 ###################
 ## PHP-CLI stage ##
 ###################
-FROM debian:${OS_VERSION} as cli
+FROM debian:${OS_VERSION} AS cli
 
-ARG PHP_VERSION=8.4 \
+ARG PHP_VERSION=8.5 \
 	DEBIAN_FRONTEND=noninteractive
 
 ENV WORKDIR=/var/www/html \
@@ -102,7 +102,7 @@ CMD [ "php", "-a" ]
 ###################
 ## PHP-CLI stage ##
 ###################
-FROM cli as fpm
+FROM cli AS fpm
 
 ENV FPM_LISTEN_PORT=9000 \
 	FPM_LOG_LEVEL=notice \
@@ -137,7 +137,7 @@ CMD [ "/usr/bin/php-fpm" ]
 ######################
 ## PHP Apache stage ##
 ######################
-FROM cli as apache
+FROM cli AS apache
 
 ENV APACHE_LISTEN_PORT=80 \
 	APACHE_SERVER_NAME=localhost \

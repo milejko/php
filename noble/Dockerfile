@@ -5,9 +5,9 @@ ARG OS_VERSION=noble
 ###################
 ## PHP-CLI stage ##
 ###################
-FROM ubuntu:${OS_VERSION} as cli
+FROM ubuntu:${OS_VERSION} AS cli
 
-ARG PHP_VERSION=8.4 \
+ARG PHP_VERSION=8.5 \
 	OS_VERSION=noble \
 	DEBIAN_FRONTEND=noninteractive
 
@@ -106,7 +106,7 @@ CMD [ "php", "-a" ]
 ###################
 ## PHP-FPM stage ##
 ###################
-FROM cli as fpm
+FROM cli AS fpm
 
 ENV FPM_LISTEN_PORT=9000 \
 	FPM_LOG_LEVEL=notice \
@@ -141,7 +141,7 @@ CMD [ "/usr/bin/php-fpm" ]
 ######################
 ## PHP Apache stage ##
 ######################
-FROM cli as apache
+FROM cli AS apache
 
 ENV APACHE_LISTEN_PORT=80 \
 	APACHE_SERVER_NAME=localhost \

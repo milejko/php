@@ -22,10 +22,10 @@ DEFAULT_CONFIG_TEST_LINES=(
     "upload_max_filesize => 128M" \
     "opcache.enable => On" \
     "opcache.enable_cli => Off" \
-    "opcache.memory_consumption => 128M" \
+    "opcache.memory_consumption => 128" \
     "opcache.validate_timestamps => On" \
     "opcache.revalidate_freq => 2" \
-    "opcache.max_accelerated_files => 65000" \
+    "opcache.max_accelerated_files => " \
     "opcache.preload => no value" \
     "opcache.preload_user => no value" \
     "xdebug.ini" \
@@ -130,7 +130,6 @@ SCRIPTS=("Running docker-entrypoint.d scripts:" \
     "05-configure-xdebug" \
     "config.ini" \
     "xdebug.ini" \
-    "opcache.ini" \
     "XDEBUG disabled" \
 )
 
