@@ -99,12 +99,7 @@ RUN	set -eux; \
 		php${PHP_PACKAGE_VERSION}-sysvshm \
 		php${PHP_PACKAGE_VERSION}-tidy \
 		php${PHP_PACKAGE_VERSION}-tokenizer \
-		php${PHP_PACKAGE_VERSION}-xdebug \
-		php${PHP_PACKAGE_VERSION}-xml \
-		php${PHP_PACKAGE_VERSION}-xmlreader \
-		php${PHP_PACKAGE_VERSION}-xmlwriter \
-		php${PHP_PACKAGE_VERSION}-xsl \
-		php${PHP_PACKAGE_VERSION}-zip
+		php${PHP_PACKAGE_VERSION}-xdebug
 	
 # fixing built-in iconv translit problem
 # https://github.com/docker-library/php/issues/1121
