@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.6
 
-ARG OS_VERSION=3.21
+ARG OS_VERSION=3.23
 
 ###################
 ## PHP-CLI stage ##
@@ -99,7 +99,12 @@ RUN	set -eux; \
 		php${PHP_PACKAGE_VERSION}-sysvshm \
 		php${PHP_PACKAGE_VERSION}-tidy \
 		php${PHP_PACKAGE_VERSION}-tokenizer \
-		php${PHP_PACKAGE_VERSION}-xdebug
+		php${PHP_PACKAGE_VERSION}-xdebug \
+		php${PHP_PACKAGE_VERSION}-xml \
+		php${PHP_PACKAGE_VERSION}-xmlreader \
+		php${PHP_PACKAGE_VERSION}-xmlwriter \
+		php${PHP_PACKAGE_VERSION}-xsl \
+		php${PHP_PACKAGE_VERSION}-zip
 	
 # fixing built-in iconv translit problem
 # https://github.com/docker-library/php/issues/1121
