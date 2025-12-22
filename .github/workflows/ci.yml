@@ -20,7 +20,7 @@ jobs:
           php-version: '8.2'
         - base-image: 'alpine322'
           php-version: '8.3'
-        - base-image: 'alpine323'
+        - base-image: 'alpine322'
           php-version: '8.4'
         - base-image: 'alpine323'
           php-version: '8.5'

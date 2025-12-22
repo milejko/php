@@ -15,14 +15,19 @@ jobs:
     name: "Deploy"
     strategy:
       matrix:
-        base-image: ['jammy', 'noble', 'alpine', 'bookworm', 'trixie']
+        base-image: ['jammy', 'noble', 'bookworm', 'trixie']
         php-version: ['8.1', '8.2', '8.3', '8.4']
         target: ['cli', 'fpm', 'apache']
-        exclude:
-        - base-image: 'alpine'
+        include:
+        - base-image: 'alpine322'
           php-version: '8.2'
-        - base-image: 'alpine'
-          php-version: '8.1'
+        - base-image: 'alpine322'
+          php-version: '8.3'
+        - base-image: 'alpine322'
+          php-version: '8.4'
+        - base-image: 'alpine323'
+          php-version: '8.5'
+        exclude:
         - base-image: 'noble'
           php-version: '8.1'
         - base-image: 'trixie'
