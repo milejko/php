@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.6
 
-ARG OS_VERSION=3.22
+ARG OS_VERSION=3.23
 
 ###################
 ## PHP-CLI stage ##
