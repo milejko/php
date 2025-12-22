@@ -17,6 +17,8 @@ jobs:
         target: ['cli', 'fpm', 'apache']
         exclude:
         - base-image: 'alpine'
+          php-version: '8.2'
+        - base-image: 'alpine'
           php-version: '8.1'
         - base-image: 'noble'
           php-version: '8.1'
