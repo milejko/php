@@ -29,6 +29,10 @@ jobs:
           php-version: '8.1'
         - base-image: 'trixie'
           php-version: '8.1'
+        - base-image: 'jammy'
+          php-version: '8.5'
+        - base-image: 'bookworm'
+          php-version: '8.5'
       fail-fast: true
     runs-on: ubuntu-latest
     steps:
