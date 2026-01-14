@@ -91,8 +91,8 @@ ALTERED_CONFIG_TEST_LINES=(
 "error_reporting => E_NONE" \
 "max_execution_time => 0" \
 "memory_limit => 200M" \
-# "realpath_cache_size => 6M" \ # not compatible with 7.4
-# "realpath_cache_ttl => 200" \ # not compatible with 7.4
+"realpath_cache_size => 6M" \
+"realpath_cache_ttl => 200" \
 "file_uploads => Off" \
 "post_max_size => 200M" \
 "upload_max_filesize => 200M" \
@@ -104,8 +104,8 @@ ALTERED_CONFIG_TEST_LINES=(
 "opcache.max_accelerated_files => 65000" \
 "opcache.preload => test.php" \
 "opcache.preload_user => someuser" \
-#"opcache.jit => 1" # not compatible with PHP 7.4 \
-#"opcache.jit_buffer_size => 8M" # not compatible with PHP 7.4 \
+"opcache.jit => 1" \
+"opcache.jit_buffer_size => 8M" \
 "xdebug.mode => develop" \
 )
 
