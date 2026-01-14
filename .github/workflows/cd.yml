@@ -21,21 +21,21 @@ jobs:
     strategy:
       matrix:
         os: [
-          {base: 'ubuntu', version: 'noble'},
-          {base: 'debian', version: 'trixie'},
-          {base: 'alpine', version: '3.22'}, 
-          {base: 'alpine', version: '3.23'}
+          {base: 'ubuntu', version: 'noble', label: 'noble'},
+          {base: 'debian', version: 'trixie', label: 'trixie'},
+          {base: 'alpine', version: '3.22', label: 'alpine'}, 
+          {base: 'alpine', version: '3.23', label: 'alpine'}
         ]
         php-version: ['8.2', '8.3', '8.4', '8.5']
         target: ['cli', 'fpm', 'apache']
         exclude:
-        - os: {base: 'alpine', version: '3.22'}
+        - os: {base: 'alpine', version: '3.22', label: 'alpine'}
           php-version: '8.4'
-        - os: {base: 'alpine', version: '3.22'}
+        - os: {base: 'alpine', version: '3.22', label: 'alpine'}
           php-version: '8.5'
-        - os: {base: 'alpine', version: '3.23'}
+        - os: {base: 'alpine', version: '3.23', label: 'alpine'}
           php-version: '8.2'
-        - os: {base: 'alpine', version: '3.23'}
+        - os: {base: 'alpine', version: '3.23', label: 'alpine'}
           php-version: '8.3'
       fail-fast: false
     runs-on: ubuntu-latest
