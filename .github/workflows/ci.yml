@@ -41,6 +41,19 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+    - name: Build testing Docker image
+      uses: docker/build-push-action@v5
+      with:
+        push: false
+        file: ./${{ matrix.os.base }}/Dockerfile
+        context: ./${{ matrix.os.base }}/
+        target: ${{ matrix.target }}
+        tags: testing
+        build-args: |
+          PHP_VERSION=${{ matrix.php-version }}
+          OS_VERSION=${{ matrix.os.version }}
+    - name: Dump installed PHP version
+      run: echo "PHP_REAL_VERSION=$(docker run testing -v | grep -Eo -m 1 'PHP [7-8]\.[0-9]+\.[0-9]+' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
     - 
       name: Prepare image metadata
       id: meta
@@ -62,19 +75,6 @@ jobs:
           type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-${{ matrix.os.base }}
           type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-${{ matrix.os.base }}-{{date 'YYYYMMDD'}}
           type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.os.base }},enable=${{ env.latest_image_target == matrix.target }}
-    - name: Build testing Docker image
-      uses: docker/build-push-action@v5
-      with:
-        push: false
-        file: ./${{ matrix.os.base }}/Dockerfile
-        context: ./${{ matrix.os.base }}/
-        target: ${{ matrix.target }}
-        tags: testing
-        build-args: |
-          PHP_VERSION=${{ matrix.php-version }}
-          OS_VERSION=${{ matrix.os.version }}
-    - name: Dump installed PHP version
-      run: echo "PHP_REAL_VERSION=$(docker run testing -v | grep -Eo -m 1 'PHP [7-8]\.[0-9]+\.[0-9]+' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
     - name: Check PHP version
       run: echo "${{ env.PHP_REAL_VERSION }}" | grep "${{ matrix.php-version }}"
     - name: Perform image tests
