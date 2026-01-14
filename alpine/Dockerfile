@@ -78,7 +78,6 @@ RUN	set -eux; \
 		php${PHP_PACKAGE_VERSION}-mbstring \
 		php${PHP_PACKAGE_VERSION}-mysqli \
 		php${PHP_PACKAGE_VERSION}-mysqlnd \
-		php${PHP_PACKAGE_VERSION}-opcache \
 		php${PHP_PACKAGE_VERSION}-openssl \
 		php${PHP_PACKAGE_VERSION}-pdo_sqlite \
 		php${PHP_PACKAGE_VERSION}-pdo_mysql \
@@ -107,7 +106,11 @@ RUN	set -eux; \
 		php${PHP_PACKAGE_VERSION}-xsl \
 		php${PHP_PACKAGE_VERSION}-zip
 
-# @TODO install opcache for alpine 3.22 + PHP 8.2-8.4
+RUN if [ "$PHP_VERSION" != "8.5" ]; then \
+        apk add --no-cache php${PHP_PACKAGE_VERSION}-opcache; \
+    else \
+        echo "No need to install Opcache for PHP 8.5"; \
+    fi
 	
 # fixing built-in iconv translit problem
 # https://github.com/docker-library/php/issues/1121

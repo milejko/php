@@ -34,8 +34,6 @@ jobs:
           php-version: '8.2'
         - os: {base: 'alpine', version: '3.23'}
           php-version: '8.3'
-        - os: {base: 'alpine', version: '3.23'}
-          php-version: '8.5'
       fail-fast: true
     runs-on: ubuntu-latest
     steps:
@@ -68,7 +66,7 @@ jobs:
           type=raw,value=${{ matrix.target }},enable=${{ env.latest_php_version == matrix.php-version && env.latest_os_version == matrix.os.version }}
           type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }},enable=${{ env.latest_os_version == matrix.os.version }}
           type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-{{ date 'YYYYMMDD' }},enable=${{ env.latest_os_version == matrix.os.version }}
-          type=raw,value=${{ env.PHP_REAL_VERSION }},enable=${{ env.latest_image_target == matrix.target && env.latest_os_version == matrix.os.version  }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }},enable=${{ env.latest_image_target == matrix.target && env.latest_os_version == matrix.os.version }}
           type=raw,value=${{ matrix.php-version }}-${{ matrix.target }}-${{ matrix.os.base }}
           type=raw,value=${{ matrix.php-version }}-${{ matrix.os.base }},enable=${{ env.latest_image_target == matrix.target }}
           type=raw,value=${{ matrix.target }}-${{ matrix.os.base }},enable=${{ env.latest_php_version == matrix.php-version }}
