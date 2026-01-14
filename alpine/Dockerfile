@@ -78,6 +78,7 @@ RUN	set -eux; \
 		php${PHP_PACKAGE_VERSION}-mbstring \
 		php${PHP_PACKAGE_VERSION}-mysqli \
 		php${PHP_PACKAGE_VERSION}-mysqlnd \
+		php${PHP_PACKAGE_VERSION}-opcache \
 		php${PHP_PACKAGE_VERSION}-openssl \
 		php${PHP_PACKAGE_VERSION}-pdo_sqlite \
 		php${PHP_PACKAGE_VERSION}-pdo_mysql \
