@@ -70,12 +70,12 @@ jobs:
           type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }},enable=${{ env.latest_os_version == matrix.os.version }}
           type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-{{ date 'YYYYMMDD' }},enable=${{ env.latest_os_version == matrix.os.version }}
           type=raw,value=${{ env.PHP_REAL_VERSION }},enable=${{ env.latest_image_target == matrix.target && env.latest_os_version == matrix.os.version }}
-          type=raw,value=${{ matrix.php-version }}-${{ matrix.target }}-${{ matrix.os.base }}
-          type=raw,value=${{ matrix.php-version }}-${{ matrix.os.base }},enable=${{ env.latest_image_target == matrix.target }}
-          type=raw,value=${{ matrix.target }}-${{ matrix.os.base }},enable=${{ env.latest_php_version == matrix.php-version }}
-          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-${{ matrix.os.base }}
-          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-${{ matrix.os.base }}-{{date 'YYYYMMDD'}}
-          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.os.base }},enable=${{ env.latest_image_target == matrix.target }}
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.target }}-${{ matrix.os.version }}
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.os.version }},enable=${{ env.latest_image_target == matrix.target }}
+          type=raw,value=${{ matrix.target }}-${{ matrix.os.version }},enable=${{ env.latest_php_version == matrix.php-version }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-${{ matrix.os.version }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-${{ matrix.os.version }}-{{date 'YYYYMMDD'}}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.os.version }},enable=${{ env.latest_image_target == matrix.target }}
     - 
       name: Check PHP version
       run: echo "${{ env.PHP_REAL_VERSION }}" | grep "${{ matrix.php-version }}"
