@@ -104,9 +104,11 @@ RUN	set -eux; \
 		php${PHP_PACKAGE_VERSION}-xmlreader \
 		php${PHP_PACKAGE_VERSION}-xmlwriter \
 		php${PHP_PACKAGE_VERSION}-xsl \
-		php${PHP_PACKAGE_VERSION}-zip
+		php${PHP_PACKAGE_VERSION}-zip;
 
-RUN if [ "$PHP_VERSION" = "8.5" ]; then \
+RUN set -eux; \
+	export PHP_PACKAGE_VERSION=${PHP_VERSION/./}; \
+	if [ "$PHP_VERSION" = "8.5" ]; then \
         echo "No need to install Opcache for PHP 8.5"; \
     else \
         apk add --no-cache php${PHP_PACKAGE_VERSION}-opcache; \
