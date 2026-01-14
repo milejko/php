@@ -7,41 +7,67 @@ on:
   # workflow can be called directly
   workflow_call:
 
+env:
+  latest_os_version: 'trixie'
+  latest_php_version: '8.5'
+  latest_image_target: 'cli'
+
 jobs:
   Test:
     name: "Test"
     strategy:
       matrix:
         os: [
-          {image: 'noble', version: 'noble'},
-          {image: 'trixie', version: 'trixie'},
-          {image: 'alpine', version: '3.22'}, 
-          {image: 'alpine', version: '3.23'}
+          {base: 'ubuntu', version: 'noble'},
+          {base: 'debian', version: 'trixie'},
+          {base: 'alpine', version: '3.22'}, 
+          {base: 'alpine', version: '3.23'}
         ]
         php-version: ['8.2', '8.3', '8.4', '8.5']
         target: ['cli', 'fpm', 'apache']
         exclude:
-        - os: {image: 'alpine', version: '3.22'}
+        - os: {base: 'alpine', version: '3.22'}
           php-version: '8.4'
-        - os: {image: 'alpine', version: '3.22'}
+        - os: {base: 'alpine', version: '3.22'}
           php-version: '8.5'
-        - os: {image: 'alpine', version: '3.23'}
+        - os: {base: 'alpine', version: '3.23'}
           php-version: '8.2'
-        - os: {image: 'alpine', version: '3.23'}
+        - os: {base: 'alpine', version: '3.23'}
           php-version: '8.3'
-        - os: {image: 'alpine', version: '3.23'}
+        - os: {base: 'alpine', version: '3.23'}
           php-version: '8.5'
       fail-fast: true
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+    - 
+      name: Prepare image metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ secrets.DOCKERHUB_USERNAME }}/php
+        # sample tag output: 8.5-cli, 8.5, latest, cli, 8.5.1-cli, 8.5.1-cli-20230712, 8.5.1
+        tags: |
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.target }},enable=${{ env.latest_os_version == matrix.os.version }}
+          type=raw,value=${{ matrix.php-version }},enable=${{ env.latest_image_target == matrix.target && env.latest_os_version == matrix.os.version }}
+          type=raw,value=latest,enable=${{ env.latest_php_version == matrix.php-version && env.latest_image_target == matrix.target && env.latest_os_version == matrix.os.version }}
+          type=raw,value=${{ matrix.target }},enable=${{ env.latest_php_version == matrix.php-version && env.latest_os_version == matrix.os.version }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }},enable=${{ env.latest_os_version == matrix.os.version }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-{{ date 'YYYYMMDD' }},enable=${{ env.latest_os_version == matrix.os.version }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }},enable=${{ env.latest_image_target == matrix.target && env.latest_os_version == matrix.os.version  }} }}
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.target }}-${{ matrix.os.base }}
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.os.base }},enable=${{ env.latest_image_target == matrix.target }}
+          type=raw,value=${{ matrix.target }}-${{ matrix.os.base }},enable=${{ env.latest_php_version == matrix.php-version }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-${{ matrix.os.base }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-${{ matrix.os.base }}-{{date 'YYYYMMDD'}}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.os.base }},enable=${{ env.latest_image_target == matrix.target }}
     - name: Build testing Docker image
       uses: docker/build-push-action@v5
       with:
         push: false
-        file: ./${{ matrix.os.image }}/Dockerfile
-        context: ./${{ matrix.os.image }}/
+        file: ./${{ matrix.os.base }}/Dockerfile
+        context: ./${{ matrix.os.base }}/
         target: ${{ matrix.target }}
         tags: testing
         build-args: |

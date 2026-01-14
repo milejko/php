@@ -1,4 +1,4 @@
-name: "Delivery"
+name: "CD"
 
 on:
   schedule:
@@ -9,27 +9,35 @@ on:
       - "v*.*.*"
   workflow_dispatch:
 
+env:
+  latest_os_version: 'trixie'
+  latest_php_version: '8.5'
+  latest_image_target: 'cli'
+
 jobs:
 
   Deploy:
     name: "Deploy"
     strategy:
       matrix:
-        base-image: ['noble', 'trixie']
+        os: [
+          {base: 'ubuntu', version: 'noble'},
+          {base: 'debian', version: 'trixie'},
+          {base: 'alpine', version: '3.22'}, 
+          {base: 'alpine', version: '3.23'}
+        ]
         php-version: ['8.2', '8.3', '8.4', '8.5']
         target: ['cli', 'fpm', 'apache']
-        include:
-        - base-image: 'alpine'
-          os-version: '3.22'
-          php-version: '8.2'
-        - base-image: 'alpine'
-          os-version: '3.23'
-          php-version: '8.3'
-        - base-image: 'alpine'
-          os-version: '3.23'
+        exclude:
+        - os: {base: 'alpine', version: '3.22'}
           php-version: '8.4'
-        - base-image: 'alpine'
-          os-version: '3.23'
+        - os: {base: 'alpine', version: '3.22'}
+          php-version: '8.5'
+        - os: {base: 'alpine', version: '3.23'}
+          php-version: '8.2'
+        - os: {base: 'alpine', version: '3.23'}
+          php-version: '8.3'
+        - os: {base: 'alpine', version: '3.23'}
           php-version: '8.5'
       fail-fast: false
     runs-on: ubuntu-latest
@@ -43,13 +51,13 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         push: false
-        file: ./${{ matrix.base-image }}/Dockerfile
-        context: ./${{ matrix.base-image }}/
+        file: ./${{ matrix.os.base }}/Dockerfile
+        context: ./${{ matrix.os.base }}/
         target: ${{ matrix.target }}
         tags: testing
         build-args: |
           PHP_VERSION=${{ matrix.php-version }}
-          OS_VERSION=${{ matrix.os-version }}
+          OS_VERSION=${{ matrix.os.version }}
     - 
       name: Dump installed PHP version
       run: echo "PHP_REAL_VERSION=$(docker run testing -v | grep -Eo -m 1 'PHP [7-8]\.[0-9]+\.[0-9]+' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
@@ -91,33 +99,32 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: ${{ secrets.DOCKERHUB_USERNAME }}/php
-        # sample tag output: 8.2-cli, 8.2, latest, cli, 8.2.11-cli, 8.2.11-cli-20230712, 8.2.11
+        # sample tag output: 8.5-cli, 8.5, latest, cli, 8.5.1-cli, 8.5.1-cli-20230712, 8.5.1
         tags: |
-          type=raw,value=${{ matrix.php-version }}-${{ matrix.target }},enable=${{ 'bookworm' == matrix.base-image }}
-          type=raw,value=${{ matrix.php-version }},enable=${{ 'cli' == matrix.target && 'bookworm' == matrix.base-image }}
-          type=raw,value=latest,enable=${{ '8.4' == matrix.php-version && 'cli' == matrix.target && 'bookworm' == matrix.base-image }}
-          type=raw,value=${{ matrix.target }},enable=${{ '8.4' == matrix.php-version && 'bookworm' == matrix.base-image }}
-          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }},enable=${{ 'bookworm' == matrix.base-image }}
-          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-{{ date 'YYYYMMDD' }},enable=${{ 'bookworm' == matrix.base-image }}
-          type=raw,value=${{ env.PHP_REAL_VERSION }},enable=${{ 'cli' == matrix.target && 'bookworm' == matrix.base-image }}
-
-          type=raw,value=${{ matrix.php-version }}-${{ matrix.target }}-${{ matrix.base-image }}
-          type=raw,value=${{ matrix.php-version }}-${{ matrix.base-image }},enable=${{ 'cli' == matrix.target }}
-          type=raw,value=${{ matrix.target }}-${{ matrix.base-image }},enable=${{ '8.4' == matrix.php-version }}
-          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-${{ matrix.base-image }}
-          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-${{ matrix.base-image }}-{{date 'YYYYMMDD'}}
-          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.base-image }},enable=${{ 'cli' == matrix.target }}
-    - 
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.target }},enable=${{ env.latest_os_version == matrix.os.version }}
+          type=raw,value=${{ matrix.php-version }},enable=${{ env.latest_image_target == matrix.target && env.latest_os_version == matrix.os.version }}
+          type=raw,value=latest,enable=${{ env.latest_php_version == matrix.php-version && env.latest_image_target == matrix.target && env.latest_os_version == matrix.os.version }}
+          type=raw,value=${{ matrix.target }},enable=${{ env.latest_php_version == matrix.php-version && env.latest_os_version == matrix.os.version }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }},enable=${{ env.latest_os_version == matrix.os.version }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-{{ date 'YYYYMMDD' }},enable=${{ env.latest_os_version == matrix.os.version }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }},enable=${{ env.latest_image_target == matrix.target && env.latest_os_version == matrix.os.version  }} }}
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.target }}-${{ matrix.os.base }}
+          type=raw,value=${{ matrix.php-version }}-${{ matrix.os.base }},enable=${{ env.latest_image_target == matrix.target }}
+          type=raw,value=${{ matrix.target }}-${{ matrix.os.base }},enable=${{ env.latest_php_version == matrix.php-version }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-${{ matrix.os.base }}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.target }}-${{ matrix.os.base }}-{{date 'YYYYMMDD'}}
+          type=raw,value=${{ env.PHP_REAL_VERSION }}-${{ matrix.os.base }},enable=${{ env.latest_image_target == matrix.target }}
+    -
       name: Build & push to Docker Hub
       uses: docker/build-push-action@v5
       with:
         push: true
-        file: ./${{ matrix.base-image }}/Dockerfile
-        context: ./${{ matrix.base-image }}/
+        file: ./${{ matrix.os.base }}/Dockerfile
+        context: ./${{ matrix.os.base }}/
         platforms: linux/amd64,linux/arm64/v8,linux/arm/v7
         target: ${{ matrix.target }}
         tags: ${{ steps.meta.outputs.tags }},
         labels: ${{ steps.meta.outputs.labels }},
         build-args: |
           PHP_VERSION=${{ matrix.php-version }}
-          OS_VERSION=${{ matrix.os-version }}
+          OS_VERSION=${{ matrix.os.version }}

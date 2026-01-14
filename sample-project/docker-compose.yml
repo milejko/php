@@ -1,6 +1,6 @@
 services:
   php-fpm:
-    image: milejko/php:fpm
+    image: milejko/php:apache
     environment:
       - MEMORY_LIMIT=256M
       - UPLOAD_MAX_FILESIZE=10M
