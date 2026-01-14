@@ -106,10 +106,10 @@ RUN	set -eux; \
 		php${PHP_PACKAGE_VERSION}-xsl \
 		php${PHP_PACKAGE_VERSION}-zip
 
-RUN if [ "$PHP_VERSION" != "8.5" ]; then \
-        apk add --no-cache php${PHP_PACKAGE_VERSION}-opcache; \
-    else \
+RUN if [ "$PHP_VERSION" = "8.5" ]; then \
         echo "No need to install Opcache for PHP 8.5"; \
+    else \
+        apk add --no-cache php${PHP_PACKAGE_VERSION}-opcache; \
     fi
 	
 # fixing built-in iconv translit problem
