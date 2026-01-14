@@ -12,22 +12,39 @@ jobs:
     name: "Test"
     strategy:
       matrix:
-        base-image: ['noble', 'trixie']
+        base-image: ['noble', 'trixie', 'alpine']
+        os-version: ['noble', 'trixie', '3.22', '3.23']
         php-version: ['8.2', '8.3', '8.4', '8.5']
         target: ['cli', 'fpm', 'apache']
-        include:
+        exclude:
+        - base-image: 'alpine'
+          os-version: 'noble'
+        - base-image: 'alpine'
+          os-version: 'trixie'
         - base-image: 'alpine'
           os-version: '3.22'
-          php-version: '8.2'
-        - base-image: 'alpine'
-          os-version: '3.22'
-          php-version: '8.3'
+          php-version: '8.5'
         - base-image: 'alpine'
           os-version: '3.22'
           php-version: '8.4'
         - base-image: 'alpine'
           os-version: '3.23'
-          php-version: '8.5'
+          php-version: '8.2'
+        - base-image: 'alpine'
+          os-version: '3.23'
+          php-version: '8.3'
+        - base-image: 'noble'
+          os-version: 'trixie'
+        - base-image: 'noble'
+          os-version: '3.22'
+        - base-image: 'noble'
+          os-version: '3.23'
+        - base-image: 'trixie'
+          os-version: 'noble'
+        - base-image: 'trixie'
+          os-version: '3.22'
+        - base-image: 'trixie'
+          os-version: '3.23'
       fail-fast: true
     runs-on: ubuntu-latest
     steps:
