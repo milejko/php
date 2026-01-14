@@ -12,39 +12,20 @@ jobs:
     name: "Test"
     strategy:
       matrix:
-        base-image: ['noble', 'trixie', 'alpine']
-        os-version: ['noble', 'trixie', '3.22', '3.23']
+        os: [{'noble': 'noble'}, {'trixie': 'trixie'}, {'alpine': '3.22'}, {'alpine': '3.23'}]
         php-version: ['8.2', '8.3', '8.4', '8.5']
         target: ['cli', 'fpm', 'apache']
         exclude:
-        - base-image: 'alpine'
-          os-version: 'noble'
-        - base-image: 'alpine'
-          os-version: 'trixie'
-        - base-image: 'alpine'
-          os-version: '3.22'
-          php-version: '8.5'
-        - base-image: 'alpine'
-          os-version: '3.22'
+        - os: {'alpine': '3.22'}
           php-version: '8.4'
-        - base-image: 'alpine'
-          os-version: '3.23'
+        - os: {'alpine': '3.22'}
+          php-version: '8.5'
+        - os: {'alpine': '3.23'}
           php-version: '8.2'
-        - base-image: 'alpine'
-          os-version: '3.23'
+        - os: {'alpine': '3.23'}
           php-version: '8.3'
-        - base-image: 'noble'
-          os-version: 'trixie'
-        - base-image: 'noble'
-          os-version: '3.22'
-        - base-image: 'noble'
-          os-version: '3.23'
-        - base-image: 'trixie'
-          os-version: 'noble'
-        - base-image: 'trixie'
-          os-version: '3.22'
-        - base-image: 'trixie'
-          os-version: '3.23'
+        - os: {'alpine': '3.23'}
+          php-version: '8.5'
       fail-fast: true
     runs-on: ubuntu-latest
     steps:
@@ -54,13 +35,13 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         push: false
-        file: ./${{ matrix.base-image }}/Dockerfile
-        context: ./${{ matrix.base-image }}/
+        file: ./${{ matrix.os[0] }}/Dockerfile
+        context: ./${{ matrix.os[0] }}/
         target: ${{ matrix.target }}
         tags: testing
         build-args: |
           PHP_VERSION=${{ matrix.php-version }}
-          OS_VERSION=${{ matrix.os-version }}
+          OS_VERSION=${{ matrix.os[1] }}
     - name: Dump installed PHP version
       run: echo "PHP_REAL_VERSION=$(docker run testing -v | grep -Eo -m 1 'PHP [7-8]\.[0-9]+\.[0-9]+' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
     - name: Check PHP version
