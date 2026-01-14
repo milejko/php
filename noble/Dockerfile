@@ -1,11 +1,9 @@
 # syntax=docker/dockerfile:1.6
 
-ARG OS_VERSION=noble
-
 ###################
 ## PHP-CLI stage ##
 ###################
-FROM ubuntu:${OS_VERSION} AS cli
+FROM ubuntu:noble AS cli
 
 ARG PHP_VERSION=8.5 \
 	OS_VERSION=noble \

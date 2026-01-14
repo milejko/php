@@ -105,6 +105,8 @@ RUN	set -eux; \
 		php${PHP_PACKAGE_VERSION}-xmlwriter \
 		php${PHP_PACKAGE_VERSION}-xsl \
 		php${PHP_PACKAGE_VERSION}-zip
+
+# @TODO install opcache for alpine 3.22 + PHP 8.2-8.4
 	
 # fixing built-in iconv translit problem
 # https://github.com/docker-library/php/issues/1121

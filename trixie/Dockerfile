@@ -1,11 +1,9 @@
 # syntax=docker/dockerfile:1.6
 
-ARG OS_VERSION=trixie-slim
-
 ###################
 ## PHP-CLI stage ##
 ###################
-FROM debian:${OS_VERSION} AS cli
+FROM debian:trixie-slim AS cli
 
 ARG PHP_VERSION=8.5 \
 	DEBIAN_FRONTEND=noninteractive
