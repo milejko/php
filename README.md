@@ -17,17 +17,17 @@ New images are deployed to Docker Hub twice per month.
 ### Example uses ###
 Display PHP version in the terminal
 ```
-docker run milejko/php:8.4-cli -v
+docker run milejko/php:8.5-cli -v
 ```
 Execute composer command (version info)
 ```
-docker run milejko/php:8.4-cli composer -V
+docker run milejko/php:8.5-cli composer -V
 ```
 
 Show phpinfo() using built-in PHP server
 `Dockerfile`
 ```
-FROM milejko/php:8.4-cli
+FROM milejko/php:8.5-cli
 RUN echo "<?php phpinfo();" > /var/www/html/index.php
 EXPOSE 8080
 CMD [ "php", "-S", "0.0.0.0:8080" ]
@@ -42,7 +42,7 @@ docker run --publish 127.0.0.1:8080:8080 phpinfo-http
 Show phpinfo() using Apache server
 `Dockerfile`
 ```
-FROM milejko/php:8.4-apache
+FROM milejko/php:8.5-apache
 RUN echo "<?php phpinfo();" > /var/www/html/index.php
 ```
 
@@ -56,7 +56,7 @@ Now you can visit: [http://127.0.0.1:8080](http://127.0.0.1:8080) in your favori
 <br>
 For further details, instructions and more examples, visit our Docker hub: [https://hub.docker.com/r/milejko/php](https://hub.docker.com/r/milejko/php)
 
-OS choice: Debian Bookworm (Slim), Debian Trixie (Slim), Ubuntu Noble, Ubuntu Jammy, Alpine 3<br>
+OS choice: Debian Trixie (Slim), Debian Bookworm (Slim), Ubuntu Noble, Ubuntu Jammy, Alpine<br>
 Image variants: CLI, PHP-FPM, Apache<br>
 Supported PHP versions: 8.2, 8.3, 8.4, 8.5<br>
 Legacy PHP versions: 7.4, 8.1<br>
