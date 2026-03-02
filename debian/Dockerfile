@@ -38,7 +38,8 @@ ENV WORKDIR=/var/www/html \
 	OPCACHE_JIT_BUFFER_SIZE=0 \
 	\
 	XDEBUG_ENABLE=0 \
-	XDEBUG_MODE=off
+	XDEBUG_MODE=off \
+	XDEBUG_CLIENT_HOST=host.docker.internal
 
 RUN set -eux; \
 	apt-get update; \
