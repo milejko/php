@@ -8,8 +8,8 @@ echo "Test the default configuration values"
 
 DEFAULT_PHP_INFO=$(docker run ${IMAGE_CI_TAG} -r 'phpinfo();')
 
-DEFAULT_CONFIG_TEST_LINES=( 
-    "allow_url_fopen => On"  
+DEFAULT_CONFIG_TEST_LINES=(
+    "allow_url_fopen => On"
     "default_socket_timeout => 60" \
     "display_errors => Off" \
     "display_startup_errors => Off" \
@@ -81,6 +81,7 @@ ALTERED_PHP_INFO=$(docker run \
     \
     -e XDEBUG_ENABLE=1 \
     -e XDEBUG_MODE=develop \
+    -e XDEBUG_CLIENT_HOST=localhost \
 ${IMAGE_CI_TAG} -r 'phpinfo();')
 
 ALTERED_CONFIG_TEST_LINES=(
@@ -107,6 +108,7 @@ ALTERED_CONFIG_TEST_LINES=(
 "opcache.jit => 1" \
 "opcache.jit_buffer_size => 8M" \
 "xdebug.mode => develop" \
+"xdebug.client_host => localhost" \
 )
 
 for TEST_ITEM in ${!ALTERED_CONFIG_TEST_LINES[*]}; do
@@ -123,7 +125,7 @@ done
 echo ""
 echo "Test docker-entrypoint.d scripts"
 
-STARTUP_MESSAGES=$(docker run  ${IMAGE_CI_TAG} bash) 
+STARTUP_MESSAGES=$(docker run  ${IMAGE_CI_TAG} bash)
 
 SCRIPTS=("Running docker-entrypoint.d scripts:" \
     "00-compile-templates" \
@@ -137,7 +139,7 @@ SCRIPTS=("Running docker-entrypoint.d scripts:" \
 for TEST_ITEM in ${!SCRIPTS[*]}; do
     TEST_ITEM_STR="${SCRIPTS[$TEST_ITEM]}"
     CONFIG_KEY="${TEST_ITEM_STR%=*}"
-    # echo "testing: ${TEST_ITEM_STR}" 
+    # echo "testing: ${TEST_ITEM_STR}"
     if  ! echo "${STARTUP_MESSAGES}" | grep "${TEST_ITEM_STR}" --quiet ; then
         REAL_PARAMETER_VALUE=$( echo "${STARTUP_MESSAGES}" | grep -e "^${CONFIG_KEY}" )
         echo -e "[${0}] FAILED for ${CONFIG_KEY} \texpected: [${TEST_ITEM_STR}] \tgot: [${REAL_PARAMETER_VALUE}]"
@@ -150,7 +152,7 @@ echo "Test various tools"
 
 # test php interactive mode
 docker run ${IMAGE_CI_TAG} -a | grep "Interactive" --quiet || ( TEST_RESULT=2 && echo "interactive mode FAILED" )
- 
+
 # test composer
 docker run ${IMAGE_CI_TAG} composer -V | grep "Composer version" --quiet  || ( TEST_RESULT=3 && echo "composer version FAILED" )
 
