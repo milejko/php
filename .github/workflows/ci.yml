@@ -39,10 +39,10 @@ jobs:
     steps:
     - 
       name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     - 
       name: Build testing Docker image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v7
       with:
         push: false
         file: ./${{ matrix.os.base }}/Dockerfile
@@ -58,7 +58,7 @@ jobs:
     - 
       name: Prepare image metadata
       id: meta
-      uses: docker/metadata-action@v5
+      uses: docker/metadata-action@v6
       with:
         images: ${{ secrets.DOCKERHUB_USERNAME }}/php
         # sample tag output: 8.5-cli, 8.5, latest, cli, 8.5.1-cli, 8.5.1-cli-20230712, 8.5.1
