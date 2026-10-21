@@ -44,7 +44,7 @@ ENV WORKDIR=/var/www/html \
 	XDEBUG_CLIENT_HOST=host.docker.internal
 
 RUN set -eux; \
-	apt-get -o Acquire::Retries=30 update; \
+	apt-get update; \
 	apt-get -yq upgrade; \
 	apt-get install -yq --no-install-recommends \
 		zip \
@@ -58,8 +58,8 @@ RUN set -eux; \
 	gpg --keyserver keyserver.ubuntu.com --recv-keys 71DAEAAB4AD4CAB6 4F4EA0AAE5267A6C; \
 	gpg --output /etc/apt/trusted.gpg.d/deb-sury-php.gpg --export; \
 	echo "deb https://ppa.setup-php.com/ondrej/php/ubuntu/ ${OS_VERSION} main" > /etc/apt/sources.list.d/ondrey-php-ubuntu-${OS_VERSION}.list ; \
-	apt-get -o Acquire::Retries=30 update; \
-	apt-get -o Acquire::Retries=30 install -yq --no-install-recommends \
+	apt-get update; \
+	apt-get install -yq --no-install-recommends \
 		php${PHP_VERSION}-amqp \
 		php${PHP_VERSION}-apcu \
 		php${PHP_VERSION}-bcmath \
@@ -119,8 +119,8 @@ ENV FPM_LISTEN_PORT=9000 \
 	FPM_PM_STATUS_LISTEN="9001"
 
 RUN set -eux; \
-	apt-get -o Acquire::Retries=30 update; \
-	apt-get -o Acquire::Retries=30 install -yq --no-install-recommends \
+	apt-get update; \
+	apt-get install -yq --no-install-recommends \
 		php${PHP_VERSION}-fpm \
     	libldap-common \
 		libfcgi-bin; \
@@ -151,8 +151,8 @@ ENV APACHE_LISTEN_PORT=80 \
 	APACHE_LOG_LEVEL=warn
 
 RUN set -eux; \
-	apt-get -o Acquire::Retries=30update; \
-	apt-get -o Acquire::Retries=30 install -y --no-install-recommends \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
 		# https://github.com/docker-library/httpd/issues/214
 		ca-certificates \
 		libaprutil1-ldap \
