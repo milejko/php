@@ -21,7 +21,7 @@ jobs:
           {base: 'ubuntu', version: 'noble', label: 'noble'},
           {base: 'debian', version: 'trixie', label: 'trixie'},
           {base: 'alpine', version: '3.22', label: 'alpine'}, 
-          {base: 'alpine', version: '3.23', label: 'alpine'}
+          {base: 'alpine', version: '3.24', label: 'alpine'}
         ]
         php-version: ['8.2', '8.3', '8.4', '8.5']
         target: ['cli', 'fpm', 'apache']
@@ -30,9 +30,9 @@ jobs:
           php-version: '8.4'
         - os: {base: 'alpine', version: '3.22', label: 'alpine'}
           php-version: '8.5'
-        - os: {base: 'alpine', version: '3.23', label: 'alpine'}
+        - os: {base: 'alpine', version: '3.24', label: 'alpine'}
           php-version: '8.2'
-        - os: {base: 'alpine', version: '3.23', label: 'alpine'}
+        - os: {base: 'alpine', version: '3.24', label: 'alpine'}
           php-version: '8.3'
       fail-fast: true
     runs-on: ubuntu-latest
