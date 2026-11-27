@@ -14,3 +14,17 @@ realpath_cache_ttl      = ${REALPATH_CACHE_TTL}
 file_uploads            = ${FILE_UPLOADS}
 post_max_size           = ${POST_MAX_SIZE}
 upload_max_filesize     = ${UPLOAD_MAX_FILESIZE}
+
+opcache.enable                  = ${OPCACHE_ENABLE}
+opcache.enable_cli              = ${OPCACHE_ENABLE_CLI}
+opcache.memory_consumption      = ${OPCACHE_MEMORY_CONSUMPTION}
+opcache.interned_strings_buffer = ${OPCACHE_INTERNED_STRINGS_BUFFER}
+opcache.validate_timestamps     = ${OPCACHE_VALIDATE_TIMESTAMPS}
+opcache.revalidate_freq         = ${OPCACHE_REVALIDATE_FREQ}
+opcache.preload                 = ${OPCACHE_PRELOAD}
+opcache.preload_user            = ${OPCACHE_PRELOAD_USER}
+
+opcache.jit                     = ${OPCACHE_JIT}
+opcache.jit_buffer_size         = ${OPCACHE_JIT_BUFFER_SIZE}
+opcache.max_accelerated_files   = 65000
+opcache.max_wasted_percentage   = 10
